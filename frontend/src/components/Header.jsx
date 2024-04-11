@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { lazy } from 'react';
+import useLogout from '../hooks/useLogout';
 
 const THEMES = ["light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", "retro", "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua", "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", "cmyk", "autumn", "business", "acid", "lemonade", "night", "coffee", "winter"];
 
@@ -14,6 +15,8 @@ export default function Header() {
         setTheme(val)
     }
 
+    const {loading, logout } = useLogout()
+
     return (
         <header className='bg-base-100 py-2 sticky top-0 z-50'>
             <div className='container'>
@@ -22,8 +25,8 @@ export default function Header() {
                         <div className="dropdown">
                             <label tabIndex={0} className="btn btn-circle btn-primary lg:hidden mr-1">
                                 <i className='bi bi-list text-2xl'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                                     </svg>
                                 </i>
                             </label>
@@ -32,7 +35,8 @@ export default function Header() {
                                 <li><a href="#!">Services</a></li>
                                 <li><a href="#!">About</a></li>
                                 <li><a href="#!">Work</a></li>
-                                <li><a href="#!">Case Study</a></li>
+                                {!loading ? (<li><a href="#!" onClick={logout}>Logout</a></li>) : (<span className='loading loading-spinner'></span>)}
+                                
                             </ul>
                         </div>
                         <a className="btn btn-ghost normal-case text-2xl">daisyUI</a>
@@ -43,7 +47,7 @@ export default function Header() {
                             <li><a href="#!">Services</a></li>
                             <li><a href="#!">About</a></li>
                             <li><a href="#!">Work</a></li>
-                            <li><a href="#!">Case Study</a></li>
+                            <li><a href="#!">Logout</a></li>
                         </ul>
                     </div>
                     <div className="navbar-end">

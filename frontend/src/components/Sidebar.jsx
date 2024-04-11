@@ -1,8 +1,9 @@
 import React from 'react';
-import Conversation from './Conversation.jsx';
+// import Conversation from './Conversation.jsx';
 import Header from './Header.jsx';
 import MessageContainer from './messages/MessageContainer.jsx';
 import MessageInput from './messages/MessageInput.jsx';
+import Conversations from './messages/Conversations.jsx';
 
 function Sidebar() {
   return (
@@ -11,13 +12,10 @@ function Sidebar() {
         <Header />
         <div className='flex flex-row'>
           <div className='sticky left-0'>
-            <Conversation />
-            <Conversation />
-            <Conversation />
+            <Conversations/>
           </div>
           <div className='flex flex-col'>
             <MessageContainer />
-            <MessageInput />
           </div>
 
 
