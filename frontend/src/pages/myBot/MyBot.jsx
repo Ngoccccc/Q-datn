@@ -1,9 +1,10 @@
 import React from 'react'
+import {Bot} from '../../components/bot/Bot'
 
 const MyBot = () => {
   return (
-    <div>
-      mybot
+    <div className='w-full'>
+        <Bot/>
     </div>
   )
 }

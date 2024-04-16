@@ -7,7 +7,7 @@ import { useAuthContext } from "./context/AuthContext";
 import { Navbar } from "./components/navbar/Navbar";
 import Analytics from "./pages/analytics/Analytics";
 import Rooms from "./pages/rooms/Rooms";
-import MyBot from "./pages/MyBot/MyBot";
+import MyBot from "./pages/mybot/MyBot";
 
 function App() {
 	const { authUser } = useAuthContext();
@@ -15,10 +15,10 @@ function App() {
 		<div className='h-full flex flex-col items-center '>
 			{authUser ? <Navbar /> : <></>}
 			<Routes>
-				<Route path='/' element={authUser ? <MyBot /> : <Navigate to={"/login"} />} />
+				<Route path="/" element={authUser ?<MyBot /> : <Navigate to='/' />} />
 				<Route path='/login' element={authUser ? <Navigate to='/' /> : <Login />} />
 				<Route path='/signup' element={authUser ? <Navigate to='/' /> : <SignUp />} />
-				<Route path='/analytics/:id' element={authUser ? <Analytics />:  <Navigate to='/' />} />
+				<Route path='/analytics/:id' element={authUser ? <Analytics /> : <Navigate to='/' />} />
 				<Route path='/rooms/:id' element={authUser ? <Rooms /> : <Navigate to='/' />} />
 			</Routes>
 			<Toaster />

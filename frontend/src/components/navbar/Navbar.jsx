@@ -7,7 +7,7 @@ import useLogout from '../../hooks/useLogout';
 export const Navbar = () => {
     const { authUser } = useAuthContext();
     const { loading, logout } = useLogout();
- 
+
     return (
         <div className="sticky top-0 navbar bg-base-100 shadow-md z-50">
             <div className="navbar-start">
@@ -19,13 +19,6 @@ export const Navbar = () => {
                         <Link to="/">
                             <li><a>My bot</a></li>
                         </Link>
-                        {/* <li>
-                            <a></a>
-                            <ul className="p-2">
-                                <li><a>Submenu 1</a></li>
-                                <li><a>Submenu 2</a></li>
-                            </ul>
-                        </li> */}
                         <Link to={`/rooms/${authUser._id}`}>
                             <li><a>Rooms</a></li></Link>
 
@@ -41,7 +34,7 @@ export const Navbar = () => {
             <div className="navbar-center hidden md:flex">
                 <ul className="menu menu-horizontal px-1 gap-12">
                     {/* <li><a>My bot</a></li> */}
-                    <Link to={`/`}>
+                    <Link to="/">
                         <div role="button" className="btn btn-ghost btn-circle">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
@@ -108,8 +101,8 @@ export const Navbar = () => {
                             </a>
                         </li>
                         <li><a>Settings</a></li>
-                        {!loading ?(<li onClick={logout}><a>Logout</a></li>) :(<span className='loading loading-spinner'></span>) }
-                        
+                        {!loading ? (<li onClick={logout}><a>Logout</a></li>) : (<span className='loading loading-spinner'></span>)}
+
                     </ul>
                 </div>
             </div>
