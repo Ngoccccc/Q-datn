@@ -20,6 +20,7 @@ function App() {
 				<Route path='/signup' element={authUser ? <Navigate to='/' /> : <SignUp />} />
 				<Route path='/analytics/:id' element={authUser ? <Analytics /> : <Navigate to='/' />} />
 				<Route path='/rooms/:id' element={authUser ? <Rooms /> : <Navigate to='/' />} />
+				<Route path="/mention" element={<p>hi</p>}/>
 			</Routes>
 			<Toaster />
 		</div>

@@ -1,7 +1,7 @@
 import { Box, Stack } from '@mui/material'
 import React from 'react'
 import { BotMessage } from './BotMessage'
-import { Input } from './Input'
+import SimpleMentionEditor from './inputToBot/SimpleMentionEditor.jsx'
 
 export const Bot = () => {
     return (
@@ -13,7 +13,7 @@ export const Bot = () => {
                 </Box>
 
             </Stack>
-            <Input />
+            <SimpleMentionEditor/>
 
         </>
 

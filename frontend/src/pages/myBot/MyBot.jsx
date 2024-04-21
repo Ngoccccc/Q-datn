@@ -5,6 +5,7 @@ const MyBot = () => {
   return (
     <div className='w-full'>
         <Bot/>
+        
     </div>
   )
 }
