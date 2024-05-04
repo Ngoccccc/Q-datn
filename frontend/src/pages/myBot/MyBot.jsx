@@ -3,7 +3,7 @@ import {Bot} from '../../components/bot/Bot'
 
 const MyBot = () => {
   return (
-    <div className='w-full'>
+    <div className='w-screen'>
         <Bot/>
         
     </div>

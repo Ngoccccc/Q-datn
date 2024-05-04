@@ -4,10 +4,10 @@ const mentions = [
         name: 'chi tiêu',
     },
     {
-        name: 'thanh toán',
+        name: 'thu nhập',
     },
     {
-        name: 'tiết kiệm',
+        name: 'lập kế hoạch',
     },
     
 ];

@@ -9,6 +9,8 @@ export const Navbar = () => {
     const { loading, logout } = useLogout();
 
     return (
+
+        (authUser ? 
         <div className="sticky top-0 navbar bg-base-100 shadow-md z-50">
             <div className="navbar-start">
                 <div className="dropdown">
@@ -106,6 +108,6 @@ export const Navbar = () => {
                     </ul>
                 </div>
             </div>
-        </div>
+        </div> : <></>)
     )
 }

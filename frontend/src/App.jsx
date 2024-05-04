@@ -13,22 +13,22 @@ import { Layout } from "./components/layout";
 function App() {
 	const { authUser } = useAuthContext();
 	return (
-		<div className='h-full flex flex-col items-center '>
+		<div>
 			<Routes>
 				{/* <Route path="/" element={authUser ?<MyBot /> : <Navigate to='/' />} /> */}
 				<Route path="/" element={<Layout />} >
-					<Route path="rooms/:id" element={authUser ? <Rooms /> : <Navigate to='/' />} />
-					<Route path='analytics/:id' element={authUser ? <Analytics /> : <Navigate to='/' />} />
+					<Route path="" element={authUser ? <MyBot /> : <Navigate to='/login' />} />
+					<Route path="rooms/:id" element={authUser ? <Rooms /> : <Navigate to='/login' />} />
+					<Route path='analytics/:id' element={authUser ? <Analytics /> : <Navigate to='/login' />} />
 				</Route>
 				<Route path='/login' element={authUser ? <Navigate to='/' /> : <Login />} />
 				<Route path='/signup' element={authUser ? <Navigate to='/' /> : <SignUp />} />
-				{/* <Route path='/analytics/:id' element={authUser ? <Analytics /> : <Navigate to='/' />} /> */}
-				{/* <Route path='/rooms/:id' element={authUser ? <Rooms /> : <Navigate to='/' />} /> */}
-				<Route path="/mention" element={<p>hi</p>} />
+				{/* <Route path="/mention" element={<p>hi</p>} /> */}
 			</Routes>
 			<Toaster />
 		</div>
 	);
 }
+
 
 export default App;
