@@ -1,10 +1,11 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
 import generateTokenAndSetCookie from "../utils/generateToken.js";
+import { createNewSheet } from "../db/connectToGGSheet.js";
 
 export const signup = async (req, res) => {
 	try {
-		const { fullName, username, password, confirmPassword, gender } = req.body;
+		const { fullName, username, email, password, confirmPassword, gender } = req.body;
 
 		if (password !== confirmPassword) {
 			return res.status(400).json({ error: "Passwords don't match" });
@@ -24,13 +25,17 @@ export const signup = async (req, res) => {
 
 		const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
 		const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
+		const sheetId = await createNewSheet(email);
+		console.log(sheetId)
 
 		const newUser = new User({
 			fullName,
 			username,
+			email,
 			password: hashedPassword,
 			gender,
 			profilePic: gender === "male" ? boyProfilePic : girlProfilePic,
+			sheetId
 		});
 
 		if (newUser) {

@@ -11,6 +11,10 @@ const userSchema = new mongoose.Schema(
 			required: true,
 			unique: true,
 		},
+		email: {
+			type: String,
+			required: true,
+		},
 		password: {
 			type: String,
 			required: true,
@@ -25,6 +29,11 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			default: "",
 		},
+		sheetId: {
+			type: String,
+			// required: true,
+
+		}
 		// createdAt, updatedAt => Member since <createdAt>
 	},
 	{ timestamps: true }
