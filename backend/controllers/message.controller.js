@@ -19,9 +19,10 @@ export const sendMessage = async (req, res) => {
 		}
 
 		const newMessage = new Message({
+			type:message.type,
 			senderId,
 			receiverId,
-			message,
+			message: message.mess,
 		});
 
 		if (newMessage) {

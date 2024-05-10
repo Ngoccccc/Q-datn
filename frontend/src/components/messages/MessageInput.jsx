@@ -3,14 +3,17 @@ import { BsSend } from "react-icons/bs";
 import useSendMessage from "../../hooks/useSendMessage";
 
 const MessageInput = () => {
-	const [message, setMessage] = useState("");
+	const [message, setMessage] = useState({
+		type: 0,
+		mess:""
+	});
 	const { loading, sendMessage } = useSendMessage();
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (!message) return;
 		await sendMessage(message);
-		setMessage("");
+		setMessage({...message, mess:""});
 	};
 
 	return (
@@ -20,8 +23,8 @@ const MessageInput = () => {
 					type='text'
 					className='border text-sm rounded-lg block w-full p-2.5  bg-gray-700 border-gray-600 text-white'
 					placeholder='Send a message'
-					value={message}
-					onChange={(e) => setMessage(e.target.value)}
+					value={message.mess}
+					onChange={(e) => setMessage({...message, mess: e.target.value})}
 				/>
 				
 				<button type='submit' className='absolute inset-y-0 end-0 flex items-center pe-3'>
