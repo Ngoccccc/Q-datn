@@ -15,6 +15,7 @@ import editorStyles from './SimpleMentionEditor.module.css';
 import mentions from './Mentions';
 import '@draft-js-plugins/mention/lib/plugin.css';
 import { BsSend } from "react-icons/bs";
+import { useSendMessageToBot } from '../../../hooks/useSendMessage';
 
 
 export default function SimpleMentionEditor() {
@@ -91,23 +92,33 @@ export default function SimpleMentionEditor() {
 
     };
 
-    // const tesst = () => (
 
-    // )
+    const { loading, sendMessage } = useSendMessageToBot();
 
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const contentState = editorState.getCurrentContent();
         const raw = convertToRaw(contentState);
-        console.log("submit ok");
+        const blocks = raw.blocks
+
+        const texts = []
+        blocks.map(text => {
+            texts.push(text.text)
+        })
+        // if (!message) return;
+        await sendMessage(texts);
+        // setMessage("");
+
+        // console.log(texts);
+
+        // useSendMessageToBot
     }
 
 
     return (
         <form onSubmit={handleSubmit}
             className={editorStyles.editor}
-            
+
         >
 
             <Editor
@@ -128,7 +139,7 @@ export default function SimpleMentionEditor() {
             />
 
             <button type='submit' className='absolute inset-y-0 end-0 flex items-center pe-3'>
-                 <BsSend />
+                <BsSend />
             </button>
         </form>
     );

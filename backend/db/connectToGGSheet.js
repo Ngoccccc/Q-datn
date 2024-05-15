@@ -50,9 +50,9 @@ export const createNewSheet = async (userMail) => {
 const getTime = () => {
   var currentTime = new Date();
 
-  var day = date.getDate();
-  var month = date.getMonth() + 1; // Tháng bắt đầu từ 0, nên cộng 1
-  var year = date.getFullYear();
+  var day = currentTime.getDate();
+  var month = currentTime.getMonth() + 1; // Tháng bắt đầu từ 0, nên cộng 1
+  var year = currentTime.getFullYear();
 
   // Định dạng ngày, tháng và năm thành chuỗi "dd/mm/yyyy"
   var formattedDay = day < 10 ? "0" + day : day;
@@ -73,30 +73,59 @@ const getTime = () => {
   return formattedDate
 }
 
+const convertStringToNumber = (input) => {
+  // Sử dụng regex để kiểm tra và bắt nhóm số và chữ cái cuối cùng
+  const regex = /^(\d+(\.\d+)?)([kK]|[tT][rR])?$/;
+  const segments = input.match(regex);
+
+  if (segments) {
+    let numberPart = parseFloat(segments[1]);
+    let suffix = segments[3];
+
+    if (suffix) {
+      if (suffix.toLowerCase() === 'k') {
+        return numberPart * 1000;
+      } else if (suffix.toLowerCase() === 'tr') {
+        return numberPart * 1000000;
+      }
+    }
+
+    return numberPart;
+  } else {
+    throw new Error('Invalid input format');
+  }
+}
+
+
 
 export const handleGGSheet = async (message, sheetID) => {
-  const keywords = ['chi tiêu', 'thu nhập', 'lập kế hoạch'];
-  const messageHandledSpace = message.replace(/\s+/g, ' ') // loại bỏ khoảng trống thừa
-  const pattern = new RegExp(`(\\b(?:${keywords.join('|')})\\b)`, 'gi');
-  // pattern = pattern.filter(element => element !== ''); // loại bỏ ''
-  const segments = messageHandledSpace.split(pattern);
+  message.map(async (message) => {
+    const keywords = ['chi tiêu', 'thu nhập', 'lập kế hoạch'];
+    const messageHandledSpace = message.replace(/\s+/g, ' ') // loại bỏ khoảng trống thừa
+    const pattern = new RegExp(`(\\b(?:${keywords.join('|')})\\b)`, 'gi');
+    // pattern = pattern.filter(element => element !== ''); // loại bỏ ''
+    const segments = messageHandledSpace.split(pattern);
 
-  // trường hợp chỉ nhập 1 type
-  const type = segments[1]
-  const [item, money] = segments[2].split(/ ?: ?/);
+    const type = segments[1]
+    var [item, money] = segments[2].split(/ ?: ?/);
 
-  // mở file sheet
-  const file = new GoogleSpreadsheet(sheetID, jwt);
-  await file.loadInfo();
-  const sheet = file.sheetsByIndex[2];
+    money = convertStringToNumber(money)
 
-  const timeDayMonthYear = getTime();
+    // mở file sheet
+    const file = new GoogleSpreadsheet("1Zqvtd0Usx6bqkEOOsZb26h-bDMMhpqxuwJjwMUKIFf0", jwt);
+    await file.loadInfo();
+    const sheet = file.sheetsByIndex[2];
 
-  await sheet.addRow({
-    "Thời gian": timeDayMonthYear,
-    "Loại thu nhập": item,
-    "Số tiền": money,
-  });
+    const timeDayMonthYear = getTime();
+
+    await sheet.addRow({
+      "Thời gian": timeDayMonthYear,
+      "Loại thu nhập": item,
+      "Số tiền": money,
+    });
+
+  })
+
 
 
 }

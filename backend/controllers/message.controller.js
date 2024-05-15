@@ -75,48 +75,51 @@ export const sendMessageToMyBot = async (req, res) => {
 	try {
 		const { message } = req.body;
 		const senderId = req.user._id;
-		const receiverId = process.env.BOT_ID;
-
-		let conversation = await Conversation.findOne({
-			participants: { $all: [senderId, receiverId] },
-		});
-
 		let user = await User.findById(req.user._id)
+		await handleGGSheet(message, user.sheetId)
 
-		if (!conversation) {
-			conversation = await Conversation.create({
-				participants: [senderId, receiverId],
-			});
-		}
+		// const receiverId = process.env.BOT_ID;
 
-		const newMessage = new Message({
-			type: 1,
-			senderId,
-			receiverId,
-			message,
-		});
+		// let conversation = await Conversation.findOne({
+		// 	participants: { $all: [senderId, receiverId] },
+		// });
 
-		if (newMessage) {
-			conversation.messages.push(newMessage._id);
-		}
+		// let user = await User.findById(req.user._id)
 
-		// await conversation.save();
-		// await newMessage.save();
+		// if (!conversation) {
+		// 	conversation = await Conversation.create({
+		// 		participants: [senderId, receiverId],
+		// 	});
+		// }
 
-		// this will run in parallel
-		await Promise.all([conversation.save(), newMessage.save()]);
+		// const newMessage = new Message({
+		// 	type: 1,
+		// 	senderId,
+		// 	receiverId,
+		// 	message,
+		// });
 
-		// SOCKET IO FUNCTIONALITY WILL GO HERE
-		const receiverSocketId = getReceiverSocketId(receiverId);
-		if (receiverSocketId) {
-			// io.to(<socket_id>).emit() used to send events to specific client
-			io.to(receiverSocketId).emit("newMessage", newMessage);
-		}
+		// if (newMessage) {
+		// 	conversation.messages.push(newMessage._id);
+		// }
 
-		res.status(201).json(newMessage);
+		// // await conversation.save();
+		// // await newMessage.save();
 
-		// lưu vào google sheet
-		handleGGSheet(newMessage, user.sheetId)
+		// // this will run in parallel
+		// await Promise.all([conversation.save(), newMessage.save()]);
+
+		// // SOCKET IO FUNCTIONALITY WILL GO HERE
+		// const receiverSocketId = getReceiverSocketId(receiverId);
+		// if (receiverSocketId) {
+		// 	// io.to(<socket_id>).emit() used to send events to specific client
+		// 	io.to(receiverSocketId).emit("newMessage", newMessage);
+		// }
+
+		// res.status(201).json(newMessage);
+
+		// // lưu vào google sheet
+		// handleGGSheet(newMessage, user.sheetId)
 
 
 	} catch (error) {
