@@ -114,7 +114,19 @@ export const handleGGSheet = async (message, sheetID) => {
     // mở file sheet
     const file = new GoogleSpreadsheet("1Zqvtd0Usx6bqkEOOsZb26h-bDMMhpqxuwJjwMUKIFf0", jwt);
     await file.loadInfo();
-    const sheet = file.sheetsByIndex[2];
+    var sheet = file.sheetsByIndex[2];
+    if(type == "Chi tiêu"){
+      sheet = file.sheetsByIndex[2];
+    }
+    else if( type == "Lập kế hoạch"){
+      sheet = file.sheetsByIndex[3];
+    }
+    else if(type == "Thu nhập"){
+      sheet = file.sheetsByIndex[4];
+    }
+    else{
+      sheet = file.sheetsByIndex[5];
+    }
 
     const timeDayMonthYear = getTime();
 
