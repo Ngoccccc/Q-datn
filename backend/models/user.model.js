@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema(
 	{
 		fullName: {
 			type: String,
-			required: true,
+			// required: true,
 		},
 		username: {
 			type: String,
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
 		},
 		gender: {
 			type: String,
-			required: true,
+			// required: true,
 			enum: ["male", "female"],
 		},
 		profilePic: {

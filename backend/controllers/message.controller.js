@@ -1,5 +1,7 @@
+import { handleGGSheet } from "../db/connectToGGSheet.js";
 import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
+import User from "../models/user.model.js";
 import { getReceiverSocketId, io } from "../socket/socket.js";
 
 export const sendMessage = async (req, res) => {
@@ -19,10 +21,10 @@ export const sendMessage = async (req, res) => {
 		}
 
 		const newMessage = new Message({
-			type:message.type,
+			type: 0,
 			senderId,
 			receiverId,
-			message: message.mess,
+			message,
 		});
 
 		if (newMessage) {
@@ -71,12 +73,15 @@ export const getMessages = async (req, res) => {
 
 export const sendMessageToMyBot = async (req, res) => {
 	try {
-		const { type, item, money } = req.body;
+		const { message } = req.body;
 		const senderId = req.user._id;
+		const receiverId = process.env.BOT_ID;
 
 		let conversation = await Conversation.findOne({
 			participants: { $all: [senderId, receiverId] },
 		});
+
+		let user = await User.findById(req.user._id)
 
 		if (!conversation) {
 			conversation = await Conversation.create({
@@ -85,6 +90,7 @@ export const sendMessageToMyBot = async (req, res) => {
 		}
 
 		const newMessage = new Message({
+			type: 1,
 			senderId,
 			receiverId,
 			message,
@@ -108,6 +114,11 @@ export const sendMessageToMyBot = async (req, res) => {
 		}
 
 		res.status(201).json(newMessage);
+
+		// lưu vào google sheet
+		handleGGSheet(newMessage, user.sheetId)
+
+
 	} catch (error) {
 		console.log("Error in sendMessage controller: ", error.message);
 		res.status(500).json({ error: "Internal server error" });
