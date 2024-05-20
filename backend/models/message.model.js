@@ -6,15 +6,14 @@ const messageSchema = new mongoose.Schema(
 			type: Number,
 			required: true
 		},
+		conversation_id:{
+			type:mongoose.Schema.Types.ObjectId,
+			ref: "Conversation",
+			required: true
+		},
 		senderId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
-			required: true,
-		},
-		receiverId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
-			required: true,
 		},
 		message: {
 			type: String,

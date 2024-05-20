@@ -2,19 +2,16 @@ import mongoose from "mongoose";
 
 const conversationSchema = new mongoose.Schema(
 	{
-		participants: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "User",
-			},
-		],
-		messages: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "Message",
-				default: [],
-			},
-		],
+		// chỉ dùng cho nhóm
+		conversation_name: {
+			type: String,
+			// required: true,
+		},
+		// nhom = 1, k phai nhom = 0
+		is_group:{
+			type:Boolean,
+			required: true
+		},
 	},
 	{ timestamps: true }
 );
