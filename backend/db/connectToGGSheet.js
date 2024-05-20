@@ -106,8 +106,16 @@ export const handleGGSheet = async (message, sheetID) => {
     // pattern = pattern.filter(element => element !== ''); // loại bỏ ''
     const segments = messageHandledSpace.split(pattern);
 
+    var message = ""
+    var format = "@chi tiêu/Lập kế hoạch/Thu nhập [tên chi tiêu/kế hoạch/thu nhập]:[số tiền]"
+
     const type = segments[1]
     var [item, money] = segments[2].split(/ ?: ?/);
+
+    if(item == "" || money == "" || !item || !money){
+        message = "Cú pháp không đúng định dạng. "
+    }
+
 
     money = convertStringToNumber(money)
 
