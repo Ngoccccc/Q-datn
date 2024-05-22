@@ -4,6 +4,6 @@ import { createGroup } from "../controllers/group.controller.js";
 
 const router = express.Router();
 
-router.get("/", protectRoute, createGroup);
+router.post("/", protectRoute, createGroup);
 
 export default router;
