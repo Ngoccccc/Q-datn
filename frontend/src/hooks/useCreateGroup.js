@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 export const useCreateGroup = () => {
 	const [loading, setLoading] = useState(false);
 	const createGroup = async ({title, members}) => {
-        // console.log({title, members})
+		console.log("title")
 		setLoading(true);
 		try {
 			const res = await fetch(`/api/group`, {
@@ -21,7 +21,7 @@ export const useCreateGroup = () => {
 			toast.error(error.message);
 		} finally {
 			setLoading(false);
-            toast.success("thanh cong")
+            // toast.success("thanh cong")
 		}
 	};
 

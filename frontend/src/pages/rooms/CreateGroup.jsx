@@ -1,6 +1,9 @@
 import React from 'react'
 import * as Yup from "yup";
 import toast from "react-hot-toast";
+import TextField from '@mui/material/TextField';
+import { useState } from "react";
+
 
 
 import {
@@ -17,79 +20,44 @@ import RHFAutocomplete from '../../components/hook-form/RHFAutocomplete';
 import RHFTextField from '../../components/hook-form/RHFTextField';
 import { useCreateGroup } from '../../hooks/useCreateGroup';
 
-const TAGS_OPTION = [
-  "Toy Story 3",
-  "Logan",
-  "Full Metal Jacket",
-  "Dangal",
-  "The Sting",
-  "2001: A Space Odyssey",
-  "Singin' in the Rain",
-  "Toy Story",
-  "Bicycle Thieves",
-  "The Kid",
-  "Inglourious Basterds",
-  "Snatch",
-  "3 Idiots",
-];
 
 
 const CreateGroupForm = ({ handleClose }) => {
-  const NewGroupSchema = Yup.object().shape({
-    title: Yup.string().required("Title is required"),
+  const [groupChatName, setGroupChatName] = useState();
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [search, setSearch] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-    members: Yup.array().min(2, "Must have at least 2 members"),
-  });
+  const handleSearch = async (query) => {
+    setSearch(query);
+    if (!query) {
+      return;
+    }
 
-  const defaultValues = {
-    title: "",
 
-    tags: [],
+    try {
+      const res = await fetch(`/api/users?search=${search}`);
+      const data = await res.json();
+      console.log(data)
+      setLoading(false);
+      setSearchResult(data);
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Search Results",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
   };
-
-  const methods = useForm({
-    resolver: yupResolver(NewGroupSchema),
-    defaultValues,
-  });
-
-  const {
-    reset,
-    watch,
-    setValue,
-    handleSubmit,
-    formState: { isSubmitting, isValid },
-  } = methods;
-
-  // const [message, setMessage] = useState("");
-  const { loading, createGroup } = useCreateGroup();
-
-  const onSubmit = async (data) => {
-    const { title, members } = data
-    await createGroup({ title, members });
-    window.location.reload();
-    // try {
-
-
-    //   //  API Call
-    //   console.log("DATA", data);
-    // } catch (error) {
-    //   console.error(error);
-    // }
-
-  };
-
   return (
-    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+    <Stack>
       <Stack spacing={3} sx={{ pt: 2 }}>
-        <RHFTextField name="title" label="Title" />
-        <RHFAutocomplete
-          name="members"
-          label="Members"
-          multiple
-          freeSolo
-          options={TAGS_OPTION.map((option) => option)}
-          ChipProps={{ size: "medium" }}
-        />
+        <TextField id="outlined-basic" label="Tên nhóm" variant="outlined" onChange={e => setGroupChatName(e.target.value)} />
+        <TextField id="outlined-basic" label="Thành viên" variant="outlined" onChange={e => handleSearch(e.target.value)} />
         <Stack
           spacing={2}
           direction={"row"}
@@ -102,7 +70,7 @@ const CreateGroupForm = ({ handleClose }) => {
           </Button>
         </Stack>
       </Stack>
-    </FormProvider>
+    </Stack>
   );
 };
 

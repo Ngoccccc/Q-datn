@@ -7,15 +7,13 @@ import Participant from "../models/participant.model.js";
 
 
 export const createGroup = async (req, res) => {
-	console.log(req.body)
 	try {
 		const { title, members } = req.body;
 
 		const newGroup = await Conversation.create({
 			conversation_name: title,
 			is_group: 1
-		});
-
+		})
 
 		const conversation_id = newGroup._id;
 
