@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const generateToken = require("../config/generateToken");
+const { createNewSheet } = require("../googleSheet/googleSheetHandler")
 
 //@description     Get or Search all users
 //@route           GET /api/user?search=
@@ -38,12 +39,15 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("User already exists");
   }
+  // tao sheet moi cho ca nhan user
+  const sheetId = await createNewSheet(email);
 
   const user = await User.create({
     name,
     email,
     password,
     pic,
+    sheetId
   });
 
   if (user) {

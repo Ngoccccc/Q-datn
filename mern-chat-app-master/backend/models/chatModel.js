@@ -10,6 +10,11 @@ const chatModel = mongoose.Schema(
       ref: "Message",
     },
     groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    sheetId: {
+      type: String,
+      // required: true,
+
+    }
   },
   { timestamps: true }
 );
