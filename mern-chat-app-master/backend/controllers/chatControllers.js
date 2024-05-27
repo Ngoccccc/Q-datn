@@ -91,6 +91,8 @@ const createGroupChat = asyncHandler(async (req, res) => {
   }
 
   users.push(req.user);
+  // TODO tạo sheet cho mỗi nhóm chat
+   
 
   try {
     const groupChat = await Chat.create({

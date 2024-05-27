@@ -4,18 +4,28 @@ import { Box, Text } from "@chakra-ui/layout";
 import "./styles.css";
 import { IconButton, Spinner, useToast } from "@chakra-ui/react";
 import { getSender, getSenderFull } from "../config/ChatLogics";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import ProfileModal from "./miscellaneous/ProfileModal";
 import ScrollableChat from "./ScrollableChat";
 import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
+import { EditorState, convertToRaw } from 'draft-js';
+import Editor from '@draft-js-plugins/editor';
+import createMentionPlugin, {
+  defaultSuggestionsFilter,
+} from '@draft-js-plugins/mention';
+import editorStyles from './SimpleMentionEditor.module.css';
+import mentions from './Mentions';
+import '@draft-js-plugins/mention/lib/plugin.css';
+import { BsSend } from "react-icons/bs";
+
 
 import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
-import SimpleMentionEditor from "./ChatInput/SimpleMentionEditor";
+import SimpleMentionEditor from "./SimpleMentionEditor";
 const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
 var socket, selectedChatCompare;
 
@@ -159,6 +169,83 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }, timerLength);
   };
 
+  ////////////////////////////
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty()
+  );
+
+  const [open, setOpen] = useState(false);
+  const [suggestions, setSuggestions] = useState(mentions);
+
+  const { MentionSuggestions, plugins } = useMemo(() => {
+    const mentionPlugin = createMentionPlugin();
+    // eslint-disable-next-line no-shadow
+    const { MentionSuggestions } = mentionPlugin;
+    // eslint-disable-next-line no-shadow
+    const plugins = [mentionPlugin];
+    return { plugins, MentionSuggestions };
+  }, []);
+
+  const onOpenChange = useCallback((open) => {
+    setOpen(open);
+  }, []);
+  const onSearchChange = useCallback(({ value }) => {
+    setSuggestions(defaultSuggestionsFilter(value, mentions));
+  }, []);
+
+
+
+
+
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const contentState = editorState.getCurrentContent();
+    const raw = convertToRaw(contentState);
+    const blocks = raw.blocks
+
+    const texts = []
+    blocks.map(text => {
+      texts.push(text.text)
+    })
+
+    const newMessage = texts.join("\n").replace(",", "")
+    // ok
+
+    // socket.emit("stop typing", selectedChat._id);
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      setNewMessage("");
+      setEditorState(EditorState.createEmpty())
+      const { data } = await axios.post(
+        "/api/message",
+        {
+          content: newMessage,
+          chatId: selectedChat,
+        },
+        config
+      );
+      socket.emit("new message", data);
+      setMessages([...messages, data]);
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to send the Message",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+
+  }
+
   return (
     <>
       {selectedChat ? (
@@ -223,7 +310,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             )}
 
             <FormControl
-              onKeyDown={sendMessage}
+              // onKeyDown={sendMessage}
               id="first-name"
               isRequired
               mt={3}
@@ -247,8 +334,36 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 value={newMessage}
                 onChange={typingHandler}
               /> */}
-              <SimpleMentionEditor/>
+
             </FormControl>
+            {/* <SimpleMentionEditor fetchAgain={fetchAgain}
+              setFetchAgain={setFetchAgain} /> */}
+
+            <form onSubmit={handleSubmit}
+              className={editorStyles.editor}
+            >
+
+              <Editor
+                editorKey={'editor'}
+                editorState={editorState}
+                onChange={setEditorState}
+                plugins={plugins}
+              />
+
+              <MentionSuggestions
+                open={open}
+                onOpenChange={onOpenChange}
+                suggestions={suggestions}
+                onSearchChange={onSearchChange}
+                onAddMention={() => {
+                  // get the mention object selected
+                }}
+              />
+
+              <button type='submit' >
+                <BsSend />
+              </button>
+            </form>
           </Box>
         </>
       ) : (
