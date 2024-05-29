@@ -161,7 +161,7 @@ const handleGGSheet = async (message, sheetID) => {
 
 }
 
-module.exports = { createNewSheet, handleGGSheet }
+module.exports = { createNewSheet, handleGGSheet, convertStringToNumber }
 
 
 

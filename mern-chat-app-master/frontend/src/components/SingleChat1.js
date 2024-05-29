@@ -81,6 +81,39 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
+  const sendMessage = async (event) => {
+    if (event.key === "Enter" && newMessage) {
+      socket.emit("stop typing", selectedChat._id);
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        setNewMessage("");
+        const { data } = await axios.post(
+          "/api/message",
+          {
+            content: newMessage,
+            chatId: selectedChat,
+          },
+          config
+        );
+        socket.emit("new message", data);
+        setMessages([...messages, data]);
+      } catch (error) {
+        toast({
+          title: "Error Occured!",
+          description: "Failed to send the Message",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     socket = io(ENDPOINT);
@@ -161,42 +194,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   }, []);
 
 
-  const sendMessToBot = async (messages, chatId) => {
-    try {
-      const configMention = {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      const { data } = await axios.post(
-        "/api/message/bot",
-        {
-          messages,
-          chatId
-        },
-        configMention
-      );
-
-      console.log(data)
-
-
-    } catch (error) {
-      // toast({
-      //   title: "Error Occured!",
-      //   description: error,
-      //   status: "error",
-      //   duration: 5000,
-      //   isClosable: true,
-      //   position: "bottom",
-      // });
-      console.log(error)
-
-    }
-    
-  }
-
-
 
 
 
@@ -206,7 +203,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     e.preventDefault();
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
-    const array = raw.blocks
+    const blocks = raw.blocks
 
     // check co mentions hay khong
     const onExtractMentions = () => {
@@ -223,7 +220,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
 
     const texts = []
-    array.map(text => {
+    blocks.map(text => {
       texts.push(text.text)
     })
 
@@ -254,7 +251,39 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       const haveMention = onExtractMentions()
 
       if (haveMention == 1) {
-        sendMessToBot(texts, selectedChat)
+        console.log(texts)
+
+
+        try {
+          const configMention = {
+            headers: {
+              "Content-type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          };
+          const { data } = await axios.post(
+            "/api/message/bot",
+            {
+              messages: texts,
+              chatId: selectedChat,
+            },
+            configMention
+          );
+
+          
+        } catch (error) {
+          toast({
+            title: "Error Occured!",
+            description: error,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          // console.log(error)
+          
+        }
+
       }
 
 
