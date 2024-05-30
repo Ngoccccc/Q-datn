@@ -40,14 +40,14 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error("User already exists");
   }
   // tao sheet moi cho ca nhan user
-  const sheetId = await createNewSheet(email);
+  // const sheetId = await createNewSheet(email);
 
   const user = await User.create({
     name,
     email,
     password,
     pic,
-    sheetId
+    // sheetId
   });
 
   if (user) {

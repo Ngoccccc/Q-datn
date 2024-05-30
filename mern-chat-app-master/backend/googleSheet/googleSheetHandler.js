@@ -31,7 +31,7 @@ info()
         console.log('Đã xảy ra lỗi:', error);
     });
 
-const createNewSheet = async (userMail) => {
+const createNewSheet = async (userMails) => {
     // tạo file mới
     const newDoc = await GoogleSpreadsheet.createNewSpreadsheetDocument(jwt, { title: 'Quan ly chi tieu' });
     newDoc.loadInfo();
@@ -54,7 +54,10 @@ const createNewSheet = async (userMail) => {
     await sheet1.delete()
 
     // share quyền cho user
-    await newDoc.share(userMail)
+
+    for (const mail of userMails) {
+        await newDoc.share(mail)
+    }
     return newDoc.spreadsheetId
 }
 

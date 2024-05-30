@@ -26,6 +26,7 @@ import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
 import SimpleMentionEditor from "./SimpleMentionEditor";
+
 const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
 var socket, selectedChatCompare;
 
@@ -207,6 +208,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
     const array = raw.blocks
+    console.log(raw);
+
 
     // check co mentions hay khong
     const onExtractMentions = () => {
@@ -403,6 +406,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           </Text>
         </Box>
       )}
+
     </>
   );
 };

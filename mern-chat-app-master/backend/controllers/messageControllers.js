@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Message = require("../models/messageModel");
 const User = require("../models/userModel");
 const Chat = require("../models/chatModel");
-const convertStringToNumber = require("../googleSheet/googleSheetHandler")
+const {convertStringToNumber} = require("../googleSheet/googleSheetHandler")
 
 //@description     Get all Messages
 //@route           GET /api/Message/:chatId
@@ -79,7 +79,14 @@ const sendMessageToBot = asyncHandler(async (req, res) => {
     if (item == "" || money == "" || !item || !money) {
       message = "Cú pháp không đúng định dạng. "
       res.json(message)
+      return;
+
     }
+
+    money = convertStringToNumber(money)
+    
+
+
   })
 
 

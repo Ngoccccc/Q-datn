@@ -134,6 +134,7 @@ export default function SimpleMentionEditor({ fetchAgain, setFetchAgain }) {
         e.preventDefault();
         const contentState = editorState.getCurrentContent();
         const raw = convertToRaw(contentState);
+        console.log(raw);
         const blocks = raw.blocks
 
         const texts = []

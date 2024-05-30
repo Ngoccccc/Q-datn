@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Chat = require("../models/chatModel");
 const User = require("../models/userModel");
+const { createNewSheet } = require("../googleSheet/googleSheetHandler");
 
 //@description     Create or fetch One to One Chat
 //@route           POST /api/chat/
@@ -90,9 +91,22 @@ const createGroupChat = asyncHandler(async (req, res) => {
       .send("More than 2 users are required to form a group chat");
   }
 
-  users.push(req.user);
+  users.push(req.user.id);
+
+
+  var mailUsers = []
+
+  for (const user of users) {
+    const userData = await User.findById(user);
+    mailUsers.push(userData.email);
+  }
   // TODO tạo sheet cho mỗi nhóm chat
-   
+
+  const sheetId = await createNewSheet(mailUsers)
+
+  console.log(sheetId)
+
+
 
   try {
     const groupChat = await Chat.create({
@@ -100,6 +114,7 @@ const createGroupChat = asyncHandler(async (req, res) => {
       users: users,
       isGroupChat: true,
       groupAdmin: req.user,
+      // sheetId
     });
 
     const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
