@@ -9,6 +9,7 @@ const Conversation = () => {
       <Header />
       <Body />
       <InputMessage className='bottom-0' />
+
     </div>
   )
 }
