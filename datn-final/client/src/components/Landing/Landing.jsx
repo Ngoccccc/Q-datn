@@ -14,6 +14,7 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/24/solid";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import Slider from "./Slider";
 
 function NavItem({ children }) {
   return (
@@ -43,46 +44,44 @@ function Landing() {
   }, []);
 
   return (
-    <>
-      <header className="p-8 w-full">
-        <div className="grid mt-16 ">
-          <div className="w-full container mx-auto px-4 text-center">
-            <Typography
-              variant="h1"
-              color="blue-gray"
-              className="mx-auto my-6 w-full leading-snug  !text-2xl lg:max-w-3xl lg:!text-5xl"
+    <div className="flex flex-col h-full w-full place-content-center">
+      <div className="w-full container mx-auto px-4 text-center mb-8">
+        <Typography
+          variant="h1"
+          color="blue-gray"
+          className="mx-auto my-1 w-full leading-snug  !text-2xl  lg:!text-5xl"
+        >
+          Quản lý chi tiêu{" "}
+          <span className="text-blue-600 leading-snug ">
+            đơn giản
+          </span>{" "}
+          và{" "}
+          <span className="leading-snug text-blue-600">
+            hiệu quả
+          </span>
+        </Typography>
+        <Typography
+          variant="lead"
+          className="mx-auto w-full !text-gray-500 lg:text-lg text-base"
+        >
+          Kiến thức về quản lý tài chính & Công cụ thống kê lại chi tiêu, kế hoạch chi tiêu, thu nhập
+        </Typography>
+        <div className="mt-8 grid w-full place-items-start md:justify-center">
+          <div className="mb-2 flex w-full flex-col gap-4 md:flex-row">
+            <Input color="gray" label="Enter your email" size="lg" />
+            <Button
+              color="gray"
+              className="w-full px-4 md:w-[12rem]"
             >
-              Quản lý chi tiêu{" "}
-              <span className="text-blue-500 leading-snug ">
-               đơn giản
-              </span>{" "}
-              và{" "}
-              <span className="leading-snug text-blue-500">
-                hiệu quả
-              </span>
-            </Typography>
-            <Typography
-              variant="lead"
-              className="mx-auto w-full !text-gray-500 lg:text-lg text-base"
-            >
-              The time is now for it to be okay to be great. For being a bright
-              color. For standing out.
-            </Typography>
-            <div className="mt-8 grid w-full place-items-start md:justify-center">
-              <div className="mb-2 flex w-full flex-col gap-4 md:flex-row">
-                <Input color="gray" label="Enter your email" size="lg" />
-                <Button
-                  color="gray"
-                  className="w-full px-4 md:w-[12rem]"
-                >
-                  get started
-                </Button>
-              </div>
-            </div>
+              get started
+            </Button>
           </div>
         </div>
-      </header>
-    </>
+      </div>
+      <div className="h-1/2 container w-3/4 mx-auto text-center">
+        <Slider />
+      </div>
+    </div>
   );
 }
 
