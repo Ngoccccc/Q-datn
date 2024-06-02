@@ -44,7 +44,7 @@ function Landing() {
   }, []);
 
   return (
-    <div className="flex flex-col h-full w-full place-content-center">
+    <div className="flex flex-col h-full w-full place-content-center gap-12">
       <div className="w-full container mx-auto px-4 text-center mb-8">
         <Typography
           variant="h1"
@@ -62,21 +62,10 @@ function Landing() {
         </Typography>
         <Typography
           variant="lead"
-          className="mx-auto w-full !text-gray-500 lg:text-lg text-base"
+          className="mx-auto w-full !text-gray-500 text-xs text-base"
         >
           Kiến thức về quản lý tài chính & Công cụ thống kê lại chi tiêu, kế hoạch chi tiêu, thu nhập
         </Typography>
-        <div className="mt-8 grid w-full place-items-start md:justify-center">
-          <div className="mb-2 flex w-full flex-col gap-4 md:flex-row">
-            <Input color="gray" label="Enter your email" size="lg" />
-            <Button
-              color="gray"
-              className="w-full px-4 md:w-[12rem]"
-            >
-              get started
-            </Button>
-          </div>
-        </div>
       </div>
       <div className="h-1/2 container w-3/4 mx-auto text-center">
         <Slider />

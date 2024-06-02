@@ -5,18 +5,22 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-import { FreeMode, Pagination, Navigation } from "swiper/modules";
+import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import './styles.css';
 
 
 const Slider = () => {
     return (
         <Swiper
-            modules={[Navigation, Pagination]}
+            modules={[Autoplay, Navigation, Pagination]}
             spaceBetween={30}
             slidesPerView={3}
             navigation
             pagination={{ clickable: true }}
+            autoplay={{
+                delay: 2000,
+                disableOnInteraction: false,
+            }}
         >
 
 

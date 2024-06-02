@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { Badge, Avatar, Typography } from '@material-tailwind/react'
+import { Badge, Avatar, Typography, Button, Tooltip } from '@material-tailwind/react'
 
 const Header = () => {
     return (
@@ -18,20 +18,44 @@ const Header = () => {
                         alt="avatar"
                     />
                 </Badge>
-                <div className='flex flex-col'>
+                <div className='flex flex-col pr-5'>
                     <Typography variant="h6">ten nguoi chat</Typography>
 
                     <div className='text-sm font-light text-neutral-500'>Active</div>
                 </div>
+                <Tooltip
+                    placement="bottom"
+                    className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
+                    content={
+                        <div className="w-80">
+                            
+                            <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal opacity-80"
+                            >
+                               File chung lưu trữ các thông tin về chi tiêu, kế hoạch chi tiêu của các thành viên trong đoạn chat.
+                            </Typography>
+                        </div>
+                    }
+                >
+                    <Button color='green' size="sm">
+                        <span className='text-sx'>
+
+                            Tạo file Google Sheet mới
+                        </span>
+                    </Button>
+                </Tooltip>
 
 
             </div>
             <div className='text-blue-500 cursor-pointer hover:text-blue-gray-700 transition'>
-                
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-            </svg>
-</div>
+
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                </svg>
+               
+            </div>
 
 
 
