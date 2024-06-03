@@ -7,6 +7,8 @@ import { getContacts, createContact } from "../contacts";
 
 export async function loader({ request }) {
     const url = new URL(request.url);
+    console.log("request", request);
+    console.log("\n url", url);
     const q = url.searchParams.get("q");
     const contacts = await getContacts(q);
     return { contacts, q };

@@ -26,31 +26,31 @@ const Slider = () => {
 
             <SwiperSlide >Slide 3</SwiperSlide>
             <SwiperSlide >
-                <iframe style={{ borderRadius: "10px" }} width="100%" height="70%" src="https://www.youtube.com/embed/UH5HZOtTNb4?si=M611h6qbjz6N9JzC" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <iframe style={{ borderRadius: "10px" }} width="100%" height="70%" src="https://www.youtube.com/embed/UH5HZOtTNb4?si=M611h6qbjz6N9JzC" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
                 <Typography variant="h5" color="blue-gray" className="mt-4">
                     UI/UX Review Chec
                 </Typography>
             </SwiperSlide>
             <SwiperSlide >
-                <iframe style={{ borderRadius: "10px" }} width="100%" height="70%" src="https://www.youtube.com/embed/UH5HZOtTNb4?si=M611h6qbjz6N9JzC" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <iframe style={{ borderRadius: "10px" }} width="100%" height="70%" src="https://www.youtube.com/embed/UH5HZOtTNb4?si=M611h6qbjz6N9JzC" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
                 <Typography variant="h5" color="blue-gray" className="mt-4">
                     UI/UX Review Chec
                 </Typography>
             </SwiperSlide>
             <SwiperSlide >
-                <iframe style={{ borderRadius: "10px" }} width="100%" height="70%" src="https://www.youtube.com/embed/UH5HZOtTNb4?si=M611h6qbjz6N9JzC" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <iframe style={{ borderRadius: "10px" }} width="100%" height="70%" src="https://www.youtube.com/embed/UH5HZOtTNb4?si=M611h6qbjz6N9JzC" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
                 <Typography variant="h5" color="blue-gray" className="mt-4">
                     UI/UX Review Chec
                 </Typography>
             </SwiperSlide>
             <SwiperSlide >
-                <iframe style={{ borderRadius: "10px" }} width="100%" height="70%" src="https://www.youtube.com/embed/rfscVS0vtbw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <iframe style={{ borderRadius: "10px" }} width="100%" height="70%" src="https://www.youtube.com/embed/rfscVS0vtbw" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
                 <Typography variant="h5" color="blue-gray" className="mt-4">
                     UI/UX Review Chec
                 </Typography>
             </SwiperSlide>
             <SwiperSlide >
-                <iframe style={{ borderRadius: "10px" }} width="100%" height="70%" src="https://www.youtube.com/embed/_uQrJ0TkZlc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <iframe style={{ borderRadius: "10px" }} width="100%" height="70%" src="https://www.youtube.com/embed/_uQrJ0TkZlc" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
                 <Typography variant="h5" color="blue-gray" className="mt-4">
                     UI/UX Review Chec
                 </Typography>

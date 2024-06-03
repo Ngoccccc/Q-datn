@@ -11,9 +11,7 @@ import {
     Checkbox,
 } from "@material-tailwind/react";
 
-function Login({ open, handleOpen, isLogin }) {
-    // const [open, setOpen] = React.useState(false);
-    // const handleOpen = () => setOpen((cur) => !cur);
+function Login({ open, handleOpen }) {
 
     return (
         <>
@@ -26,7 +24,7 @@ function Login({ open, handleOpen, isLogin }) {
                 <Card className="mx-auto w-full max-w-[24rem]">
                     <CardBody className="flex flex-col gap-4">
                         <Typography variant="h4" color="blue-gray">
-                            Sign In
+                           Đăng nhập
                         </Typography>
                         <Typography
                             className="mb-3 font-normal"
@@ -56,19 +54,19 @@ function Login({ open, handleOpen, isLogin }) {
                         <Button color="purple" onClick={handleOpen} fullWidth>
                             Sign In
                         </Button>
-                        <Typography variant="small" className="mt-4 flex justify-center">
+                        {/* <Typography variant="small" className="mt-4 flex justify-center">
                             Don&apos;t have an account?
                             <Typography
-                                as="a"
-                                href="#signup"
+                                // as="a"
+                                // href="#signup"
                                 variant="small"
                                 color="blue-gray"
                                 className="ml-1 font-bold"
-                                onClick={handleOpen }
+                                // onClick={handleOpenSignup }
                             >
                                 Sign up
                             </Typography>
-                        </Typography>
+                        </Typography> */}
                     </CardFooter>
                 </Card>
             </Dialog>
