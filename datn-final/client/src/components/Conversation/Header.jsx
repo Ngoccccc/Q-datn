@@ -1,8 +1,11 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { Badge, Avatar, Typography, Button, Tooltip } from '@material-tailwind/react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Header = () => {
+
     return (
         <div className='bg-white w-full flex border-b-[1px] sm:px-4 py-3 px-4 lg:px-6 justify-between items-center shadow-sm'>
             <div className='flex gap-3 items-center'>
@@ -39,13 +42,13 @@ const Header = () => {
                         </div>
                     }
                 >
-                    <Button color='green' size="sm">
+                    <Button color='green' size="sm" >
                         <span className='text-sx'>
-
                             Tạo file Google Sheet mới
                         </span>
                     </Button>
                 </Tooltip>
+                        
 
 
             </div>

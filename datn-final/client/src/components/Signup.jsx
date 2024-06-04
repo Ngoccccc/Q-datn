@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useToast } from "@chakra-ui/toast";
 import {
     Button,
     Dialog,
@@ -10,12 +9,14 @@ import {
     Typography,
     Input,
     Checkbox,
+    Alert
 } from "@material-tailwind/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Signup({ open, handleOpen }) {
-    const toast = useToast();
     const navigate = useNavigate();
 
     const [name, setName] = useState();
@@ -29,27 +30,14 @@ function Signup({ open, handleOpen }) {
     const submitHandler = async () => {
         setPicLoading(true);
         if (!name || !email || !password || !confirmpassword) {
-            toast({
-                title: "Please Fill all the Feilds",
-                status: "warning",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom",
-            });
+            // toast 
             setPicLoading(false);
             return;
         }
         if (password !== confirmpassword) {
-            toast({
-                title: "Passwords Do Not Match",
-                status: "warning",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom",
-            });
+            // toast
             return;
         }
-        console.log(name, email, password, pic);
         try {
             const config = {
                 headers: {
@@ -66,39 +54,19 @@ function Signup({ open, handleOpen }) {
                 },
                 config
             ).then((res) => {
-                
-                console.log(res);
-                toast({
-                    title: "Registration Successful",
-                    status: "success",
-                    duration: 5000,
-                    isClosable: true,
-                    position: "bottom",
+                toast.success("Đăng ký thành công !", {
+                    position: "top-center",
                 });
                 localStorage.setItem("userInfo", JSON.stringify(res));
                 setPicLoading(false);
                 handleOpen(false);
                 navigate("/chats");
             }).catch((err) => {
-                toast({
-                    title: "Error Occured!",
-                    description: err.response.data.message,
-                    status: "error",
-                    duration: 5000,
-                    isClosable: true,
-                    position: "bottom",
-                });
+                // toast 
                 setPicLoading(false);
             });
         } catch (error) {
-            toast({
-                title: "Error Occured!",
-                description: error.response.data.message,
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom",
-            });
+            //toast
             setPicLoading(false);
         }
     };
@@ -107,14 +75,8 @@ function Signup({ open, handleOpen }) {
     const postDetails = (pics) => {
         setPicLoading(true);
         if (pics === undefined) {
-            toast({
-                title: "Please Select an Image!",
-                status: "warning",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom",
-            });
-            
+            //toast
+
             return;
         }
         console.log(pics);
@@ -138,13 +100,7 @@ function Signup({ open, handleOpen }) {
                     setPicLoading(false);
                 });
         } else {
-            toast({
-                title: "Please Select an Image!",
-                status: "warning",
-                duration: 5000,
-                isClosable: true,
-                position: "bottom",
-            });
+            //toast
             setPicLoading(false);
             return;
         }

@@ -4,6 +4,7 @@ import Home from '../pages/Home';
 import Chats from './Chats';
 import Analysis from './Analysis';
 import Landing from '../components/Landing/Landing';
+import BadgeDefault from '../nhap';
 
 const router = createBrowserRouter([
     {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
             {
                 path: "analysis",
                 element: <Analysis />
+            },
+            {
+                path: "nhap",
+                element: <BadgeDefault />
             },
 
         ]

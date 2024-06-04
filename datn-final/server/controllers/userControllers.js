@@ -27,7 +27,6 @@ const allUsers = asyncHandler(async (req, res) => {
 //@access          Public
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
-  console.log(req.body)
 
   if (!name || !email || !password) {
     res.status(400);

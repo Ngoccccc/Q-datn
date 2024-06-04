@@ -1,11 +1,16 @@
 import React from 'react'
 import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLoaderData } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import { ChatState } from '../Context/ChatProvider'
+
 
 function Home() {
+  const user = useLoaderData()
   return (
     <div className='h-screen flex flex-col items-center'>
+      <ToastContainer/>
       <div className='w-full max-w-screen-xl'>
         <Header />
       </div>

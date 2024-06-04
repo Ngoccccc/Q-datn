@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Button,
     Dialog,
@@ -10,8 +10,68 @@ import {
     Input,
     Checkbox,
 } from "@material-tailwind/react";
+import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
+import { ChatState } from "../Context/ChatProvider";
 
 function Login({ open, handleOpen }) {
+    const navigate = useNavigate();
+
+    const { setUser } = ChatState();
+
+    const [show, setShow] = useState(false);
+    const handleClick = () => setShow(!show);
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const [loading, setLoading] = useState(false);
+
+
+
+    const submitHandler = async () => { 
+        console.log(email, password);
+        setLoading(true);
+        if (!email || !password) {
+            // toast
+            console.log("Please enter email and password");
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const config = {
+                headers: {
+                    "Content-type": "application/json",
+                },
+            };
+
+            await axios.post(
+                "/api/user/login",
+                { email, password },
+                config
+            ).then((res) => {
+                toast.success("Đăng nhập thành công !", {
+                    position: "top-center",
+                })
+                setUser(res);
+                localStorage.setItem("userInfo", JSON.stringify(res));
+                setLoading(false);
+                handleOpen(false);
+                navigate('/')
+            }).catch((error) => {
+                // toast
+                console.log(error);
+                setLoading(false);
+            })
+
+            // toast  
+            console.log(data);
+        } catch (error) {
+            // toast
+            setLoading(false);
+        }
+    };
 
     return (
         <>
@@ -26,33 +86,19 @@ function Login({ open, handleOpen }) {
                         <Typography variant="h4" color="blue-gray">
                            Đăng nhập
                         </Typography>
-                        <Typography
-                            className="mb-3 font-normal"
-                            variant="paragraph"
-                            color="gray"
-                        >
-                            Enter your email and password to Sign In.
-                        </Typography>
-                        <Typography className="-mb-2" variant="h6">
-                            Username
-                        </Typography>
-                        <Input color="purple" label="Username" size="lg" />
 
                         <Typography className="-mb-2" variant="h6">
-                            Your Email
+                            Email
                         </Typography>
-                        <Input color="purple" label="Email" size="lg" />
-                        <Typography className="-mb-2" variant="h6">
-                            Your Password
+                        <Input color="blue" label="Email" size="lg" onChange={(e) => setEmail(e.target.value)} />
+                        <Typography className="-mb-2" variant="h6" >
+                            Password
                         </Typography>
-                        <Input color="purple" label="Password" size="lg" />
-                        <div className="-ml-2.5 -mt-3" >
-                            <Checkbox color="purple" label="Remember Me" />
-                        </div>
+                        <Input color="blue" label="Password" size="lg" onChange={(e) => setPassword(e.target.value)} />
                     </CardBody>
                     <CardFooter className="pt-0">
-                        <Button color="purple" onClick={handleOpen} fullWidth>
-                            Sign In
+                        <Button color="blue" onClick={submitHandler} fullWidth>
+                            Đăng nhập
                         </Button>
                         {/* <Typography variant="small" className="mt-4 flex justify-center">
                             Don&apos;t have an account?

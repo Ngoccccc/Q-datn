@@ -9,8 +9,12 @@ import {
 import { NavLink } from "react-router-dom";
 import Signup from "../components/Signup";
 import Login from "../components/Login";
+import { ChatState } from "../Context/ChatProvider";
+import ProfileMenu from "../components/Profile/ProfileMenu";
+import NotificationIcon from "../components/Notification/NotificationIcon";
 
 function Header() {
+    const { user } = ChatState();
     const [openNav, setOpenNav] = React.useState(false);
 
     const [openLogin, setOpenLogin] = React.useState(false);
@@ -110,25 +114,25 @@ function Header() {
                     </svg>
 
                     <div className="hidden lg:block">{navList}</div>
-                    <div className="flex items-center gap-x-1">
+                    {user ?
+                        <>
+                            <div className="flex flex-row gap-6">
+                                <NotificationIcon />
+                                <ProfileMenu />
+                            </div>
+                        </>
+                        : <div className="flex items-center gap-x-1">
+                            <Button onClick={handleOpenLogin} variant="text" size="sm" className="hidden lg:inline-block rounded-full">
+                                <span>Đăng nhập</span>
+                            </Button>
+                            <Login open={openLogin} handleOpen={handleOpenLogin} />
 
-                        {/* TODO sửa dialog signup */}
-                        <Button onClick={handleOpenLogin} variant="text" size="sm" className="hidden lg:inline-block rounded-full">
-                            <span>Đăng nhập</span>
-                        </Button>
-                        <Login open={openLogin} handleOpen={handleOpenLogin}/>
+                            <Button onClick={handleOpenSignup} size="sm" className="hidden lg:inline-block bg-blue-800 rounded-full">
+                                <span>Đăng ký</span>
+                            </Button>
+                            <Signup open={openSignup} handleOpen={handleOpenSignup} />
+                        </div>}
 
-                        <Button onClick={handleOpenSignup} size="sm" className="hidden lg:inline-block bg-blue-800 rounded-full">
-                            <span>Đăng ký</span>
-                        </Button>
-                        <Signup open={openSignup} handleOpen={handleOpenSignup}/>
-
-                        
-
-
-
-                        {/* <Signup open={signupOpen} handleOpen={handleSignupOpen} onSwitch={switchToLogin} />  */}
-                    </div>
                     <IconButton
                         variant="text"
                         className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
