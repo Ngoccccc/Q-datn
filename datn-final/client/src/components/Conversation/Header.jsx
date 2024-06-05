@@ -2,9 +2,17 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { Badge, Avatar, Typography, Button, Tooltip } from '@material-tailwind/react'
 import { ToastContainer, toast } from 'react-toastify';
+import { ChatState } from '../../Context/ChatProvider';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Header = () => {
+    const { user } = ChatState();
+
+    const handerCreateFileForMyseft = () => {
+        toast.success("Đang cập nhật !", {
+            position: "top-center",
+        })
+    }
 
     return (
         <div className='bg-white w-full flex border-b-[1px] sm:px-4 py-3 px-4 lg:px-6 justify-between items-center shadow-sm'>
@@ -31,24 +39,24 @@ const Header = () => {
                     className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
                     content={
                         <div className="w-80">
-                            
+
                             <Typography
                                 variant="small"
                                 color="blue-gray"
                                 className="font-normal opacity-80"
                             >
-                               File chung lưu trữ các thông tin về chi tiêu, kế hoạch chi tiêu của các thành viên trong đoạn chat.
+                                File chung lưu trữ các thông tin về chi tiêu, kế hoạch chi tiêu của các thành viên trong đoạn chat.
                             </Typography>
                         </div>
                     }
                 >
-                    <Button color='green' size="sm" >
+                    <Button color='green' size="sm" onClick={handerCreateFileForMyseft} >
                         <span className='text-sx'>
                             Tạo file Google Sheet mới
                         </span>
                     </Button>
                 </Tooltip>
-                        
+
 
 
             </div>
@@ -57,7 +65,7 @@ const Header = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                 </svg>
-               
+
             </div>
 
 

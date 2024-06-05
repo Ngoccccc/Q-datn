@@ -22,6 +22,14 @@ const allUsers = asyncHandler(async (req, res) => {
   res.send(users);
 });
 
+//@description     create new file sheet for myself
+//@route           POST /api/user/createfile
+//@access          Public
+const createSheet = asyncHandler(async (req, res) => {
+  const sheetId = await createNewSheet(req.user.email);
+  res.send(sheetId);
+});
+
 //@description     Register new user
 //@route           POST /api/user/
 //@access          Public
@@ -88,4 +96,4 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { allUsers, registerUser, authUser };
+module.exports = { allUsers, registerUser, authUser, createSheet };
