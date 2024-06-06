@@ -26,7 +26,8 @@ const allUsers = asyncHandler(async (req, res) => {
 //@route           POST /api/user/createfile
 //@access          Public
 const createSheet = asyncHandler(async (req, res) => {
-  const sheetId = await createNewSheet(req.user.email);
+  console.log(req.body.email);
+  const sheetId = await createNewSheet(req.body.email);
   res.send(sheetId);
 });
 

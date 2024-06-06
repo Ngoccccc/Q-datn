@@ -55,10 +55,11 @@ const createNewSheet = async (userMails) => {
 
     // share quyền cho user
 
-    for (const mail of userMails) {
-        await newDoc.share(mail)
-    }
-    return newDoc.spreadsheetId
+    // for (const mail of userMails) {
+    await newDoc.share(userMails)
+    // }
+    const link = `https://docs.google.com/spreadsheets/d/${newDoc.spreadsheetId}`
+    return link
 }
 
 const getTime = () => {

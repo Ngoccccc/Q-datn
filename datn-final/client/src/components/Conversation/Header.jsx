@@ -1,17 +1,47 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
+import React, {useState} from 'react'
+import { Link, NavLink } from 'react-router-dom'
 import { Badge, Avatar, Typography, Button, Tooltip } from '@material-tailwind/react'
 import { ToastContainer, toast } from 'react-toastify';
 import { ChatState } from '../../Context/ChatProvider';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
 
 const Header = () => {
     const { user } = ChatState();
+    const email = user?.data.email;
+    const [loading, setLoading] = useState(false);
+    const [isShowLinkFile, setIsShowLinkFile] = useState();
 
-    const handerCreateFileForMyseft = () => {
-        toast.success("Đang cập nhật !", {
-            position: "top-center",
-        })
+    const handerCreateFileForMyseft = async () => {
+        setLoading(true)
+        try {
+            const config = {
+                headers: {
+                    "Content-type": "application/json",
+                },
+            };
+
+            await axios.post(
+                "/api/user/createfile",
+                { email },
+                config
+            ).then((res) => {
+                setLoading(false);
+                toast.success("Tao file thành công !", {
+                    position: "top-center",
+                })
+                console.log(res);
+            }).catch((error) => {
+                // toast
+                console.log(error);
+                setLoading(false);
+            })
+
+            // toast  
+            console.log(data);
+        } catch (error) {
+            // toast
+        }
     }
 
     return (
@@ -56,6 +86,10 @@ const Header = () => {
                         </span>
                     </Button>
                 </Tooltip>
+                {loading && <span>Loading...</span>} 
+
+                {/* link file google sheet nếu có */}
+                <Link to={`https://www.facebook.com/`} target="_blank" className='italic font-semibold text-blue-500 cursor-pointer hover:text-blue-700 transition'>link file quản lý chi tiêu chung</Link>
 
 
 
