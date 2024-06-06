@@ -26,9 +26,33 @@ const allUsers = asyncHandler(async (req, res) => {
 //@route           POST /api/user/createfile
 //@access          Public
 const createSheet = asyncHandler(async (req, res) => {
-  console.log(req.body.email);
-  const sheetId = await createNewSheet(req.body.email);
-  res.send(sheetId);
+  const userId = req.body.userId;
+  const email = req.body.email;
+
+  // tao sheet moi cho user
+
+  try {
+    const user = await User.findById(userId);
+    console.log(user.sheetId);
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+    if (user.sheetId) {
+      return res.send({ message: 'User already has a sheet' });
+    }
+    else {
+      const sheetId = await createNewSheet(req.body.email);
+      user.sheetId = sheetId;
+      const updatedUser = await user.save();
+      // const updatedUser = await User.findByIdAndUpdate(userId, {sheetId}, { new: true, runValidators: true });
+      // if (!updatedUser) {
+      //   return res.status(404).send({ message: 'User not found' });
+      // }
+      res.status(200).send(updatedUser);
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
 });
 
 //@description     Register new user

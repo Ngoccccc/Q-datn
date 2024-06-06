@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { Badge, Avatar, Typography, Button, Tooltip } from '@material-tailwind/react'
 import { ToastContainer, toast } from 'react-toastify';
@@ -8,9 +8,12 @@ import axios from "axios";
 
 const Header = () => {
     const { user } = ChatState();
+    // console.log(user?.data.email);
     const email = user?.data.email;
+    const userId = user?.data._id;
     const [loading, setLoading] = useState(false);
     const [isShowLinkFile, setIsShowLinkFile] = useState();
+    console.log(user?.data);
 
     const handerCreateFileForMyseft = async () => {
         setLoading(true)
@@ -23,7 +26,7 @@ const Header = () => {
 
             await axios.post(
                 "/api/user/createfile",
-                { email },
+                { email, userId },
                 config
             ).then((res) => {
                 setLoading(false);
@@ -38,7 +41,6 @@ const Header = () => {
             })
 
             // toast  
-            console.log(data);
         } catch (error) {
             // toast
         }
@@ -64,32 +66,34 @@ const Header = () => {
 
                     <div className='text-sm font-light text-neutral-500'>Active</div>
                 </div>
-                <Tooltip
-                    placement="bottom"
-                    className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
-                    content={
-                        <div className="w-80">
+                {user?.sheetId ? <Link to={`https://www.facebook.com/`} target="_blank" className='italic font-semibold text-blue-500 cursor-pointer hover:text-blue-700 transition'>link file quản lý chi tiêu chung</Link> :
+                    <Tooltip
+                        placement="bottom"
+                        className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
+                        content={
+                            <div className="w-80">
 
-                            <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal opacity-80"
-                            >
-                                File chung lưu trữ các thông tin về chi tiêu, kế hoạch chi tiêu của các thành viên trong đoạn chat.
-                            </Typography>
-                        </div>
-                    }
-                >
-                    <Button color='green' size="sm" onClick={handerCreateFileForMyseft} >
-                        <span className='text-sx'>
-                            Tạo file Google Sheet mới
-                        </span>
-                    </Button>
-                </Tooltip>
-                {loading && <span>Loading...</span>} 
+                                <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal opacity-80"
+                                >
+                                    File chung lưu trữ các thông tin về chi tiêu, kế hoạch chi tiêu của các thành viên trong đoạn chat.
+                                </Typography>
+                            </div>
+                        }
+                    >
+                        <Button color='green' size="sm" onClick={handerCreateFileForMyseft} >
+                            <span className='text-sx'>
+                                Tạo file Google Sheet mới
+                            </span>
+                        </Button>
+                    </Tooltip>
+                }
+                {loading && <span>Loading...</span>}
 
                 {/* link file google sheet nếu có */}
-                <Link to={`https://www.facebook.com/`} target="_blank" className='italic font-semibold text-blue-500 cursor-pointer hover:text-blue-700 transition'>link file quản lý chi tiêu chung</Link>
+
 
 
 
