@@ -79,6 +79,7 @@ const fetchChats = asyncHandler(async (req, res) => {
 //@route           POST /api/chat/group
 //@access          Protected
 const createGroupChat = asyncHandler(async (req, res) => {
+  console.log(req.body);
   if (!req.body.users || !req.body.name) {
     return res.status(400).send({ message: "Please Fill all the feilds" });
   }
@@ -91,20 +92,20 @@ const createGroupChat = asyncHandler(async (req, res) => {
       .send("More than 2 users are required to form a group chat");
   }
 
-  users.push(req.user.id);
+  // users.push(req.user.id);
 
 
-  var mailUsers = []
+  // var mailUsers = []
 
-  for (const user of users) {
-    const userData = await User.findById(user);
-    mailUsers.push(userData.email);
-  }
+  // for (const user of users) {
+  //   const userData = await User.findById(user);
+  //   mailUsers.push(userData.email);
+  // }
   // TODO tạo sheet cho mỗi nhóm chat
 
-  const sheetId = await createNewSheet(mailUsers)
+  // const sheetId = await createNewSheet(mailUsers)
 
-  console.log(sheetId)
+  // console.log(sheetId)
 
 
 
@@ -113,13 +114,13 @@ const createGroupChat = asyncHandler(async (req, res) => {
       chatName: req.body.name,
       users: users,
       isGroupChat: true,
-      groupAdmin: req.user,
+      // groupAdmin: req.user,
       // sheetId
     });
 
     const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
       .populate("users", "-password")
-      .populate("groupAdmin", "-password");
+      // .populate("groupAdmin", "-password");
 
     res.status(200).json(fullGroupChat);
   } catch (error) {

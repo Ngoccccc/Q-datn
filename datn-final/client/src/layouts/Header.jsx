@@ -76,9 +76,9 @@ function Header() {
                             fill="#334155"
                         />
                     </svg>
-                    <a href="#" className="flex items-center text-blue-gray-700 hover:text-blue-800 ">
+                    <span href="#" className="flex items-center text-blue-gray-700 hover:text-blue-800 ">
                         Chats
-                    </a>
+                    </span>
                 </Typography>
             </NavLink>
 
@@ -94,9 +94,9 @@ function Header() {
                             fill="#334155" className="hover:text-blue-800" />
                     </svg>
 
-                    <a href="#" className="flex items-center">
+                    <span href="#" className="flex items-center">
                         Thống kê
-                    </a>
+                    </span>
                 </Typography>
             </NavLink>
         </ul>

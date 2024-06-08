@@ -30,7 +30,7 @@ info()
     .catch(error => {
         console.log('Đã xảy ra lỗi:', error);
     });
-
+// tạo file cho 1 người dùng
 const createNewSheet = async (userMails) => {
     // tạo file mới
     const newDoc = await GoogleSpreadsheet.createNewSpreadsheetDocument(jwt, { title: 'Quan ly chi tieu' });
@@ -58,6 +58,38 @@ const createNewSheet = async (userMails) => {
     // for (const mail of userMails) {
     await newDoc.share(userMails)
     // }
+    const link = `https://docs.google.com/spreadsheets/d/${newDoc.spreadsheetId}`
+    return link
+}
+
+// tạo file cho nhóm
+const createNewSheetForGroup = async (userMails) => {
+    // tạo file mới
+    const newDoc = await GoogleSpreadsheet.createNewSpreadsheetDocument(jwt, { title: 'Quan ly chi tieu' });
+    newDoc.loadInfo();
+
+    // copy template sheets vào file mới 
+    for (let i = 0; i < templateSheetsAmount; i++) {
+        const z = await template.sheetsByIndex[i].copyToSpreadsheet(newDoc.spreadsheetId)
+    }
+
+    // rename sheet từ "bản sao của ..." -> "..."
+    const duplicatedDoc = new GoogleSpreadsheet(newDoc.spreadsheetId, jwt);
+    await duplicatedDoc.loadInfo()
+    for (let i = 1; i < templateSheetsAmount + 1; i++) {
+        const name = duplicatedDoc.sheetsByIndex[i].title.replace("Copy of ", "")
+        duplicatedDoc.sheetsByIndex[i].updateProperties({ title: name })
+    }
+
+    //xoa sheet dau tien
+    const sheet1 = duplicatedDoc.sheetsByIndex[0]
+    await sheet1.delete()
+
+    // share quyền cho user
+
+    for (const mail of userMails) {
+        await newDoc.share(mail)
+    }
     const link = `https://docs.google.com/spreadsheets/d/${newDoc.spreadsheetId}`
     return link
 }
@@ -165,7 +197,7 @@ const handleGGSheet = async (message, sheetID) => {
 
 }
 
-module.exports = { createNewSheet, handleGGSheet, convertStringToNumber }
+module.exports = { createNewSheet, createNewSheetForGroup, handleGGSheet, convertStringToNumber }
 
 
 

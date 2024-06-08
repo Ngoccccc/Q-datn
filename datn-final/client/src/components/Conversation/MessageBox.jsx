@@ -10,7 +10,7 @@ const MessageBox = ({ data, isLast }) => {
     useEffect(() => {
         setTimeout(() => {
             lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-        }, 100);
+        }, 0);
     }, []);
 
     const container = clsx(

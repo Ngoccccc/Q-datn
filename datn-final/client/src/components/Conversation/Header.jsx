@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { Badge, Avatar, Typography, Button, Tooltip } from '@material-tailwind/react'
 import { ToastContainer, toast } from 'react-toastify';
@@ -8,12 +8,17 @@ import axios from "axios";
 
 const Header = () => {
     const { user } = ChatState();
-    // console.log(user?.data.email);
     const email = user?.data.email;
     const userId = user?.data._id;
     const [loading, setLoading] = useState(false);
-    const [isShowLinkFile, setIsShowLinkFile] = useState();
-    console.log(user?.data);
+
+
+    const [sheetId, setSheetId] = useState("");
+
+
+
+
+
 
     const handerCreateFileForMyseft = async () => {
         setLoading(true)
@@ -33,7 +38,6 @@ const Header = () => {
                 toast.success("Tao file thành công !", {
                     position: "top-center",
                 })
-                console.log(res);
             }).catch((error) => {
                 // toast
                 console.log(error);

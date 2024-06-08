@@ -30,11 +30,9 @@ function Login({ open, handleOpen }) {
 
 
     const submitHandler = async () => { 
-        console.log(email, password);
         setLoading(true);
         if (!email || !password) {
             // toast
-            console.log("Please enter email and password");
             setLoading(false);
             return;
         }
@@ -61,12 +59,10 @@ function Login({ open, handleOpen }) {
                 navigate('/')
             }).catch((error) => {
                 // toast
-                console.log(error);
                 setLoading(false);
             })
 
             // toast  
-            console.log(data);
         } catch (error) {
             // toast
             setLoading(false);
