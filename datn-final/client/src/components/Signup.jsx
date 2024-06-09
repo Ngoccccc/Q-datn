@@ -9,14 +9,17 @@ import {
     Typography,
     Input,
     Checkbox,
-    Alert
+    Alert,
+    IconButton
 } from "@material-tailwind/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from "react-router-dom";
 
-function Signup({ open, handleOpen }) {
+
+function Signup() {
     const navigate = useNavigate();
 
     const [name, setName] = useState();
@@ -59,8 +62,8 @@ function Signup({ open, handleOpen }) {
                 });
                 localStorage.setItem("userInfo", JSON.stringify(res));
                 setPicLoading(false);
-                handleOpen(false);
-                navigate("/chats");
+                // handleOpen(false);
+                navigate("/login");
             }).catch((err) => {
                 // toast 
                 setPicLoading(false);
@@ -108,15 +111,24 @@ function Signup({ open, handleOpen }) {
         <>
             <Dialog
                 size="xs"
-                open={open}
-                handler={handleOpen}
+                open={true}
+                // handler={handleOpen}
                 className="bg-transparent shadow-none"
             >
                 <Card className="mx-auto w-full max-w-[24rem]">
                     <CardBody className="flex flex-col gap-4">
-                        <Typography variant="h4" color="blue-gray">
-                            Đăng ký
-                        </Typography>
+                        <div className="flex items-center justify-between">
+                            <Typography variant="h4" color="blue-gray">
+                                Đăng ký
+                            </Typography>
+                            <Link to="/">
+                            <IconButton variant="text" color="gray" className="rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                </svg>
+                            </IconButton>
+                            </Link>
+                        </div>
                         <Typography className="-mb-2" variant="h6">
                             Username
                         </Typography>
@@ -149,20 +161,20 @@ function Signup({ open, handleOpen }) {
                         <Button color="blue" fullWidth onClick={submitHandler}>
                             Đăng ký
                         </Button>
-                        {/* <Typography variant="small" className="mt-4 flex justify-center">
-                            Don&apos;t have an account?
+                        <Typography variant="small" className="mt-4 flex justify-center">
+                            Bạn đã có tài khoản
+                            <Link to={"/login"}>
                             <Typography
                                 as="a"
-                                href="#signup"
                                 variant="small"
                                 color="blue-gray"
                                 className="ml-1 font-bold"
-                                onClick={handleOpen}
                                 
                             >
-                                Sign up
+                                Đăng nhập
                             </Typography>
-                        </Typography> */}
+                            </Link>
+                        </Typography>
                     </CardFooter>
                 </Card>
             </Dialog>

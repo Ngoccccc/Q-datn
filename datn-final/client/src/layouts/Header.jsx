@@ -12,8 +12,10 @@ import Login from "../components/Login";
 import { ChatState } from "../Context/ChatProvider";
 import ProfileMenu from "../components/Profile/ProfileMenu";
 import NotificationIcon from "../components/Notification/NotificationIcon";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
+    const navigate = useNavigate();
     const { user } = ChatState();
     const [openNav, setOpenNav] = React.useState(false);
 
@@ -57,7 +59,10 @@ function Header() {
                 </Typography>
             </NavLink>
 
-            <NavLink to={`/chats`}>
+
+            {/* {user ? } */}
+
+            <NavLink to={user ? "/chats" : "/login"}>
                 <Typography
                     as="li"
                     variant="paragraph"
@@ -122,15 +127,20 @@ function Header() {
                             </div>
                         </>
                         : <div className="flex items-center gap-x-1">
-                            <Button onClick={handleOpenLogin} variant="text" size="sm" className="hidden lg:inline-block rounded-full">
-                                <span>Đăng nhập</span>
-                            </Button>
-                            <Login open={openLogin} handleOpen={handleOpenLogin} />
+                            <NavLink to={`/login`}>
 
-                            <Button onClick={handleOpenSignup} size="sm" className="hidden lg:inline-block bg-blue-800 rounded-full">
-                                <span>Đăng ký</span>
-                            </Button>
-                            <Signup open={openSignup} handleOpen={handleOpenSignup} />
+                                <Button variant="text" size="sm" className="hidden lg:inline-block rounded-full">
+                                    <span>Đăng nhập</span>
+                                </Button>
+                            </NavLink>
+                            {/* <Login open={openLogin} handleOpen={handleOpenLogin} /> */}
+                            <NavLink to={`/signup`}>
+
+                                <Button size="sm" className="hidden lg:inline-block bg-blue-800 rounded-full">
+                                    <span>Đăng ký</span>
+                                </Button>
+                            </NavLink>
+                            {/* <Signup open={openSignup} handleOpen={handleOpenSignup} /> */}
                         </div>}
 
                     <IconButton
