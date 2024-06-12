@@ -4,10 +4,10 @@ import {
 } from "@material-tailwind/react";
 import { PowerIcon } from '@heroicons/react/24/solid';
 
-const UserBox = () => {
+const UserBox = ({ chatData, handleClick }) => {
     return (
         <div>
-            <ListItem>
+            <ListItem onClick={console.log("chatData")}> 
                 <ListItemPrefix>
                     <div className="flex items-center gap-4">
                         <Badge placement="top-end" overlap="circular" color="green" withBorder>

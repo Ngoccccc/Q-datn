@@ -1,15 +1,15 @@
-import { Badge, Avatar } from '@material-tailwind/react'
+import { Badge, Avatar, Card, Typography } from '@material-tailwind/react'
 import React from 'react'
 
 const UserListItem = ({ user, handleFunction }) => {
   return (
-    <div className='flex flex-row' onClick={handleFunction}>
-          <Avatar src="https://docs.material-tailwind.com/img/face-2.jpg" alt="avatar" />
-          <div className='flex flex-col'>
-              <span>{user.name}</span>
-              <span>{user.email}</span>
-          </div>
-    </div>
+    <Card className='flex flex-row gap-2' onClick={handleFunction}>
+      <Avatar src="https://docs.material-tailwind.com/img/face-2.jpg" alt="avatar" />
+      <div className='flex flex-col'>
+        <Typography variant="h6">{user.name}</Typography>
+        <Typography color="gray" className="text-sm">{user.email}</Typography>
+      </div>
+    </Card>
   )
 }
 
