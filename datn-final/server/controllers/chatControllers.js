@@ -32,11 +32,13 @@ const accessChat = asyncHandler(async (req, res) => {
     select: "name pic email",
   });
 
+  const sender = await User.findById(userId);
+
   if (isChat.length > 0) {
     res.send(isChat[0]);
   } else {
     var chatData = {
-      chatName: "sender",
+      chatName: sender.name,
       isGroupChat: false,
       users: [req.user._id, userId],
     };

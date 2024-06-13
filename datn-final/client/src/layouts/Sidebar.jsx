@@ -13,12 +13,13 @@ import { ChatState } from "../Context/ChatProvider";
 import { toast } from "react-toastify";
 import ChatLoading from "../components/Sketeton/ChatLoading";
 import axios from "axios";
-import { getSender, getSenderFull } from "../components/config/ChatLogics";
+import { getSender, getChatAvatar } from "../components/config/ChatLogics";
 
 function Sidebar({ fetchAgain }) {
   const [loggedUser, setLoggedUser] = useState();
   const [searchResult, setSearchResult] = useState([]);
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
+  const [search, setSearch] = useState("");
 
   const fetchChats = async () => {
     try {
@@ -42,7 +43,7 @@ function Sidebar({ fetchAgain }) {
   }, [fetchAgain]);
 
   const handleSearch = async (query) => {
-    // setSearch(query);
+    setSearch(query);
     if (!query) {
       return;
     }
@@ -62,8 +63,10 @@ function Sidebar({ fetchAgain }) {
     }
   };
 
-  const handleSetSearchResult = async (user) => {
-    const userId = user._id;
+  const handleSetSearchResult = async (selectedUser) => {
+    setSearch("");
+    setSearchResult([]);
+    const userId = selectedUser._id;
      try {
       // setLoadingChat(true);
       const config = {
@@ -101,6 +104,7 @@ function Sidebar({ fetchAgain }) {
         <Input
           icon={<MagnifyingGlassIcon className="h-5 w-5" />}
           label="Tìm kiếm"
+          value={search}
           onChange={(e) => handleSearch(e.target.value)}
         />
         <hr className="mt-2 my-2 border-blue-gray-50" />
@@ -116,7 +120,7 @@ function Sidebar({ fetchAgain }) {
               <ListItemPrefix>
                 <div className="flex items-center gap-4">
                   <Avatar
-                    // src={getSenderFull(loggedUser, chat.users)?.pic}
+                    src={user.pic}
                     alt="avatar"
                   />
                   <div>
@@ -133,7 +137,7 @@ function Sidebar({ fetchAgain }) {
               </ListItemPrefix>
             </ListItem>
           ))}
-          </div>
+        </div>
       )}
 
       {chats ? (
@@ -152,8 +156,9 @@ function Sidebar({ fetchAgain }) {
                     color="green"
                     withBorder
                   >
+                    {console.log(chat)}
                     <Avatar
-                      // src={getSenderFull(loggedUser, chat.users)?.pic}
+                      src={getChatAvatar(loggedUser, chat.users)}
                       alt="avatar"
                     />
                   </Badge>
