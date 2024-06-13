@@ -24,7 +24,7 @@ export function CreateGroup() {
     const { user } = ChatState();
     const [open, setOpen] = React.useState(false);
 
-    const [search, setSearch] = useState("");
+    // const [search, setSearch] = useState("");
     
     const [loading, setLoading] = useState(false);
     const [searchResult, setSearchResult] = useState([]);
@@ -46,8 +46,7 @@ export function CreateGroup() {
         setSelectedUsers(selectedUsers.filter((sel) => sel._id !== delUser._id));
     };
     const handleSearch = async (query) => {
-        setSearch(query);
-        console.log(query);
+        // setSearch(query);
         if (!query) {
             return;
         }
@@ -60,8 +59,6 @@ export function CreateGroup() {
                 },
             };
             const { data } = await axios.get(`/api/user?search=${query}`, config);
-            console.log(query);
-            console.log(data);
             setLoading(false);
             setSearchResult(data);
 

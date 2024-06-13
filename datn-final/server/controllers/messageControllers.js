@@ -42,7 +42,6 @@ const sendMessage = asyncHandler(async (req, res) => {
     mentionsData = await Promise.all(mentionPromises);
   }
 
-  console.log(mentionsData);
   // const { content, chatId } = req.body;
 
   if (!content || !chatId) {

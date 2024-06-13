@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import Header from './Header'
-import InputMessage from './MessageInput'
-import MessageBox from './MessageBox'
-import { ChatState } from '../../Context/ChatProvider'
-import axios from 'axios'
-import SimpleMentionEditor from '../Mention/SimpleMentionEditor'
+import Header from "./Header";
+import InputMessage from "./MessageInput";
+import MessageBox from "./MessageBox";
+import { ChatState } from "../../Context/ChatProvider";
+import axios from "axios";
+import SimpleMentionEditor from "../Mention/SimpleMentionEditor";
+import { Typography } from "@material-tailwind/react";
 
 const Conversation = () => {
   const [messages, setMessages] = useState([]);
@@ -52,15 +53,26 @@ const Conversation = () => {
     // selectedChatCompare = selectedChat;
     // eslint-disable-next-line
   }, [selectedChat]);
-
+  
 
   return (
     <div className="h-full flex flex-col">
-      <Header />
-      <MessageBox messages={messages} />
-      <SimpleMentionEditor className="bottom-0" />
+
+      {selectedChat ? (
+        <div className="h-5/6">
+          {" "}
+          <Header className="sticky top-0 h-1/6" />
+          <MessageBox messages={messages} />
+          <SimpleMentionEditor className="bottom-0" messages={messages} setMessages={setMessages} />
+        </div>
+      ) : (
+          // TODO: mybot
+        <div className="h-5/6 flex justify-center items-center w-full">
+          <Typography className="text-3xl text-blue-gray-100">Bot của tôi</Typography>
+        </div>
+      )}
     </div>
   );
-}
+};
 
-export default Conversation
+export default Conversation;

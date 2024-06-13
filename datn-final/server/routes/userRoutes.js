@@ -4,7 +4,8 @@ const {
   authUser,
   allUsers,
   createSheet,
-  getUser
+  getUser,
+  getSheetLinkOfUser,
 } = require("../controllers/userControllers");
 const { protect } = require("../middleware/authMiddleware");
 
@@ -18,5 +19,6 @@ router.route("/").post(registerUser);
 router.post("/login", authUser);
 router.post("/createfile", createSheet);
 router.get("/:id", getUser);
+router.get("/sheet/:id", getSheetLinkOfUser);
 
 module.exports = router;

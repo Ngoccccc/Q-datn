@@ -14,6 +14,8 @@ import { ChatState } from "../../Context/ChatProvider";
 
 const MessageBox = ({ messages }) => {
 
+  const { selectedChat } = ChatState();
+
   const isOwn = true;
   const image = false;
   const isLast = true;
@@ -29,7 +31,8 @@ const MessageBox = ({ messages }) => {
     image ? "rounded-md p-0" : "rounded-full py-2 px-3"
   );
   return (
-    <ScrollableFeed>
+    <>
+      {selectedChat ?  <ScrollableFeed>
       {messages &&
         messages.map((m, i) => (
           <div className={container} key={m._id}>
@@ -61,7 +64,9 @@ const MessageBox = ({ messages }) => {
           </div>
         ))}
 
-    </ScrollableFeed>
+    </ScrollableFeed>:<div className="h-3/4">Chọn một đoạn chat để bắt đầu chat</div>}
+   
+    </>
   );
 };
 

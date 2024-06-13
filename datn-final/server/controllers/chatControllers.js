@@ -1,7 +1,10 @@
 const asyncHandler = require("express-async-handler");
 const Chat = require("../models/chatModel");
 const User = require("../models/userModel");
-const { createNewSheet } = require("../googleSheet/googleSheetHandler");
+const {
+  createNewSheet,
+  createNewSheetForGroup,
+} = require("../googleSheet/googleSheetHandler");
 
 //@description     Create or fetch One to One Chat
 //@route           POST /api/chat/
@@ -79,7 +82,6 @@ const fetchChats = asyncHandler(async (req, res) => {
 //@route           POST /api/chat/group
 //@access          Protected
 const createGroupChat = asyncHandler(async (req, res) => {
-  console.log(req.body);
   if (!req.body.users || !req.body.name) {
     return res.status(400).send({ message: "Please Fill all the feilds" });
   }
@@ -94,7 +96,6 @@ const createGroupChat = asyncHandler(async (req, res) => {
 
   // users.push(req.user.id);
 
-
   // var mailUsers = []
 
   // for (const user of users) {
@@ -107,8 +108,6 @@ const createGroupChat = asyncHandler(async (req, res) => {
 
   // console.log(sheetId)
 
-
-
   try {
     const groupChat = await Chat.create({
       chatName: req.body.name,
@@ -118,15 +117,82 @@ const createGroupChat = asyncHandler(async (req, res) => {
       // sheetId
     });
 
-    const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
-      .populate("users", "-password")
-      // .populate("groupAdmin", "-password");
+    const fullGroupChat = await Chat.findOne({ _id: groupChat._id }).populate(
+      "users",
+      "-password"
+    );
+    // .populate("groupAdmin", "-password");
 
     res.status(200).json(fullGroupChat);
   } catch (error) {
     res.status(400);
     throw new Error(error.message);
   }
+});
+
+const createSheet = asyncHandler(async (req, res) => {
+  const {usersMail, chatId} = req.body;
+
+  try {
+    const sheetId = await createNewSheetForGroup(usersMail);
+
+    const updatedChat = await Chat.findByIdAndUpdate(chatId, { sheetId }, { new: true, runValidators: true });
+
+    if (!updatedChat) {
+      return res.status(404).send({ message: 'Chat not found' });
+    }
+    res.send({ sheetId });
+  } catch (error) {
+    res.status(400);
+    throw new Error(error.message);
+  }
+
+  // if (!req.body.users || !req.body.name) {
+  //   return res.status(400).send({ message: "Please Fill all the feilds" });
+  // }
+
+  // var users = JSON.parse(req.body.users);
+
+  // if (users.length < 2) {
+  //   return res
+  //     .status(400)
+  //     .send("More than 2 users are required to form a group chat");
+  // }
+
+  // // users.push(req.user.id);
+
+  // // var mailUsers = []
+
+  // // for (const user of users) {
+  // //   const userData = await User.findById(user);
+  // //   mailUsers.push(userData.email);
+  // // }
+  // // TODO tạo sheet cho mỗi nhóm chat
+
+  // // const sheetId = await createNewSheet(mailUsers)
+
+  // // console.log(sheetId)
+
+  // try {
+  //   const groupChat = await Chat.create({
+  //     chatName: req.body.name,
+  //     users: users,
+  //     isGroupChat: true,
+  //     // groupAdmin: req.user,
+  //     // sheetId
+  //   });
+
+  //   const fullGroupChat = await Chat.findOne({ _id: groupChat._id }).populate(
+  //     "users",
+  //     "-password"
+  //   );
+  //   // .populate("groupAdmin", "-password");
+
+  //   res.status(200).json(fullGroupChat);
+  // } catch (error) {
+  //   res.status(400);
+  //   throw new Error(error.message);
+  // }
 });
 
 // @desc    Rename Group
@@ -218,4 +284,5 @@ module.exports = {
   renameGroup,
   addToGroup,
   removeFromGroup,
+  createSheet,
 };

@@ -1,42 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
-  Card,
   Typography,
-  List,
   ListItem,
   ListItemPrefix,
-  ListItemSuffix,
-  Chip,
-  Accordion,
-  AccordionHeader,
-  AccordionBody,
-  Alert,
-  IconButton,
   Input,
-  Button,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
   Badge,
   Avatar,
-
 } from "@material-tailwind/react";
-import {
-  PresentationChartBarIcon,
-  ShoppingBagIcon,
-  UserCircleIcon,
-  Cog6ToothIcon,
-  InboxIcon,
-  PowerIcon,
-} from "@heroicons/react/24/solid";
-import {
-  ChevronRightIcon,
-  ChevronDownIcon,
-  CubeTransparentIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
-import UserBox from "../components/UserBox";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { CreateGroup } from "../components/Group/CreateGroup";
 import { ChatState } from "../Context/ChatProvider";
 import { toast } from "react-toastify";
@@ -45,13 +16,9 @@ import axios from "axios";
 import { getSender, getSenderFull } from "../components/config/ChatLogics";
 
 function Sidebar({ fetchAgain }) {
-  const [open, setOpen] = React.useState(false);
-  const [openAlert, setOpenAlert] = React.useState(true);
-
   const [loggedUser, setLoggedUser] = useState();
+  const [searchResult, setSearchResult] = useState([]);
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
-
-  const handleOpen = () => setOpen(!open);
 
   const fetchChats = async () => {
     try {
@@ -74,6 +41,47 @@ function Sidebar({ fetchAgain }) {
     // eslint-disable-next-line
   }, [fetchAgain]);
 
+  const handleSearch = async (query) => {
+    // setSearch(query);
+    if (!query) {
+      return;
+    }
+
+    try {
+      // setLoading(true);
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      const { data } = await axios.get(`/api/user?search=${query}`, config);
+      // setLoading(false);
+      setSearchResult(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSetSearchResult = async (user) => {
+    const userId = user._id;
+     try {
+      // setLoadingChat(true);
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.data.token}`,
+        },
+      };
+      const { data } = await axios.post(`/api/chat`, { userId }, config);
+
+      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      setSelectedChat(data);
+      // setLoadingChat(false);
+      // onClose();
+    } catch (error) {
+      console.log(error);
+    }
+   }
 
 
   return (
@@ -88,49 +96,62 @@ function Sidebar({ fetchAgain }) {
             </svg>
           </button> */}
         <CreateGroup />
-
       </div>
       <div className=" pl-4 pr-4 flex flex-col">
-        <Input icon={<MagnifyingGlassIcon className="h-5 w-5" />} label="Search" />
+        <Input
+          icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+          label="Tìm kiếm"
+          onChange={(e) => handleSearch(e.target.value)}
+        />
         <hr className="mt-2 my-2 border-blue-gray-50" />
       </div>
+      {searchResult.length > 0 && (
+        <div className="flex-1 overflow-y-auto pl-4 pr-4">
+          {searchResult.map((user) => (
+            <ListItem
+              key={user._id}
+              onClick={() => handleSetSearchResult(user)}
+              cursor="pointer"
+            >
+              <ListItemPrefix>
+                <div className="flex items-center gap-4">
+                  <Avatar
+                    // src={getSenderFull(loggedUser, chat.users)?.pic}
+                    alt="avatar"
+                  />
+                  <div>
+                    <Typography variant="h6">{user.name}</Typography>
+                    <Typography
+                      variant="small"
+                      color="gray"
+                      className="font-normal"
+                    >
+                      {`${user.email.substring(0, 15)}...`}
+                    </Typography>
+                  </div>
+                </div>
+              </ListItemPrefix>
+            </ListItem>
+          ))}
+          </div>
+      )}
 
       {chats ? (
         <div className="flex-1 overflow-y-auto pl-4 pr-4">
           {chats.map((chat) => (
-            // <Box
-            //   onClick={() => setSelectedChat(chat)}
-            //   cursor="pointer"
-            //   bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
-            //   color={selectedChat === chat ? "white" : "black"}
-            //   px={3}
-            //   py={2}
-            //   borderRadius="lg"
-            //   key={chat._id}
-            // >
-            //   <Text>
-            //     {!chat.isGroupChat
-            //       ? getSender(loggedUser, chat.users)
-            //       : chat.chatName}
-            //   </Text>
-            //   {chat.latestMessage && (
-            //     <Text fontSize="xs">
-            //       <b>{chat.latestMessage.sender.name} : </b>
-            //       {chat.latestMessage.content.length > 50
-            //         ? chat.latestMessage.content.substring(0, 51) + "..."
-            //         : chat.latestMessage.content}
-            //     </Text>
-            //   )}
-            // </Box>
-
-            <ListItem key={chat._id}
+            <ListItem
+              key={chat._id}
               onClick={() => setSelectedChat(chat)}
               cursor="pointer"
-
             >
               <ListItemPrefix>
                 <div className="flex items-center gap-4">
-                  <Badge placement="top-end" overlap="circular" color="green" withBorder>
+                  <Badge
+                    placement="top-end"
+                    overlap="circular"
+                    color="green"
+                    withBorder
+                  >
                     <Avatar
                       // src={getSenderFull(loggedUser, chat.users)?.pic}
                       alt="avatar"
@@ -143,7 +164,11 @@ function Sidebar({ fetchAgain }) {
                         : chat.chatName}
                     </Typography>
                     {chat.latestMessage && (
-                      <Typography variant="small" color="gray" className="font-normal">
+                      <Typography
+                        variant="small"
+                        color="gray"
+                        className="font-normal"
+                      >
                         <b>{chat.latestMessage.sender.name} : </b>
                         {chat.latestMessage.content.length > 50
                           ? chat.latestMessage.content.substring(0, 51) + "..."
@@ -161,11 +186,8 @@ function Sidebar({ fetchAgain }) {
           <ChatLoading />
         </div>
       )}
-
-
     </div>
-
   );
-}
+};
 
-export default Sidebar
+export default Sidebar;
