@@ -6,7 +6,8 @@ const messageSchema = mongoose.Schema(
     content: { type: String, trim: true },
     chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
     readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    isBot: { type: Boolean } //true nếu là tin nhắn của bot, false nếu không
+    isBot: { type: Boolean }, //true nếu là tin nhắn của bot, false nếu không,
+    mentions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Mention" }],
   },
   { timestamps: true }
 );

@@ -151,7 +151,7 @@ export default function SimpleMentionEditor({ fetchAgain, setFetchAgain }) {
         const contentState = editorState.getCurrentContent();
         const raw = convertToRaw(contentState);
         // console.log(raw);
-        const blocks = raw.blocks
+        const content = raw.blocks.map((block) => block.text).join("\n");
 
         const mentions = [];
 
@@ -167,49 +167,44 @@ export default function SimpleMentionEditor({ fetchAgain, setFetchAgain }) {
                 }
             });
         });
+        console.log(content);
         console.log(mentions);
 
 
         // console.log(blocks);
 
-        const texts = []
-        blocks.map(text => {
-            texts.push(text.text)
-        })
+        // const texts = []
+        // blocks.map(text => {
+        //     texts.push(text.text)
+        // })
 
-        const newMessage = texts.join("\n").replace(",", "")
+        // const newMessage = texts.join("\n").replace(",", "")
         // ok
 
         // socket.emit("stop typing", selectedChat._id);
-        // try {
-        //     const config = {
-        //         headers: {
-        //             "Content-type": "application/json",
-        //             Authorization: `Bearer ${user.token}`,
-        //         },
-        //     };
-        //     setNewMessage("");
-        //     setEditorState(EditorState.createEmpty())
-        //     const { data } = await axios.post(
-        //         "/api/message",
-        //         {
-        //             content: newMessage,
-        //             chatId: selectedChat,
-        //         },
-        //         config
-        //     );
-        //     socket.emit("new message", data);
-        //     setMessages([...messages, data]);
-        // } catch (error) {
-        //     toast({
-        //         title: "Error Occured!",
-        //         description: "Failed to send the Message",
-        //         status: "error",
-        //         duration: 5000,
-        //         isClosable: true,
-        //         position: "bottom",
-        //     });
-        // }
+        try {
+            const config = {
+                headers: {
+                    "Content-type": "application/json",
+                    Authorization: `Bearer ${user.data.token}`,
+                },
+            };
+            setNewMessage("");
+            setEditorState(EditorState.createEmpty())
+            const { data } = await axios.post(
+                "/api/message",
+                {
+                    content,
+                    mentions,
+                    chatId: selectedChat,
+                },
+                config
+            );
+            // socket.emit("new message", data);
+            setMessages([...messages, data]);
+        } catch (error) {
+            console.log(error);
+        }
 
     }
 
