@@ -13,8 +13,8 @@ import {
 import { ChatState } from "../../Context/ChatProvider";
 
 const MessageBox = ({ messages }) => {
-
   const { selectedChat } = ChatState();
+
 
   const isOwn = true;
   const image = false;
@@ -32,40 +32,71 @@ const MessageBox = ({ messages }) => {
   );
   return (
     <>
-      {selectedChat ?  <ScrollableFeed>
-      {messages &&
-        messages.map((m, i) => (
-          <div className={container} key={m._id}>
-            <div className={avatar}>
-              <Badge
-                placement="top-end"
-                overlap="circular"
-                color="green"
-                withBorder
-              >
-                <Avatar size="sm" src={m.sender.pic} alt="avatar" />
-              </Badge>
-            </div>
+      {selectedChat ? (
+        <ScrollableFeed>
+          {messages &&
+            messages.map((m, i) => {
+              const parts = [];
+              let currentIndex = 0;
+              const mentions = m.mentions;
+              const content = m.content;
 
-            <div className={body}>
-              <div className="flex items-center gap-1">
-                <div className="text-sm text-gray-500">{m.sender.name}</div>
-                <div className="text-xs text-gray-400">
-                  {format(new Date(), "p")}
-                </div>
-              </div>
-              <div className={message}>{m.content}</div>
-              {isLast && (
-                <div className="text-xs font-light text-gray-500">
-                  Seen by Quynh
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
+              mentions.forEach((mention, index) => {
+                // Push the text before the mention
+                if (mention.start > currentIndex) {
+                  parts.push(content.slice(currentIndex, mention.start));
+                }
+                // Push the mention itself
+                parts.push(
+                  <span key={index} className="text-blue-600">
+                    @{mention.name}
+                  </span>
+                );
+                // Update currentIndex to the end of the mention
+                currentIndex = mention.end;
+              });
 
-    </ScrollableFeed>:<div className="h-3/4">Chọn một đoạn chat để bắt đầu chat</div>}
-   
+              // Push any remaining text after the last mention
+              if (currentIndex < content.length) {
+                parts.push(content.slice(currentIndex));
+              }
+              return (
+                <div className={container} key={m._id}>
+                  <div className={avatar}>
+                    <Badge
+                      placement="top-end"
+                      overlap="circular"
+                      color="green"
+                      withBorder
+                    >
+                      <Avatar size="sm" src={m.sender.pic} alt="avatar" />
+                    </Badge>
+                  </div>
+
+                  <div className={body}>
+                    <div className="flex items-center gap-1">
+                      <div className="text-sm text-gray-500">
+                        {m.sender.name}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        {format(new Date(m.createdAt), "yyyy-MM-dd HH:mm")}
+                      </div>
+                    </div>
+                    {/* <div className={message}>{m.content}</div> */}
+                    <p>{parts}</p>
+                    {/* {isLast && (
+                      <div className="text-xs font-light text-gray-500">
+                        Seen by Quynh
+                      </div>
+                    )} */}
+                  </div>
+                </div>
+              );
+            })}
+        </ScrollableFeed>
+      ) : (
+        <div className="h-3/4">Chọn một đoạn chat để bắt đầu chat</div>
+      )}
     </>
   );
 };

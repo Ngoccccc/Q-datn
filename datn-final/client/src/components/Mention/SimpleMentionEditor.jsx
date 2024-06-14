@@ -176,12 +176,6 @@ export default function SimpleMentionEditor({ messages, setMessages }) {
       });
     });
 
-    // console.log(blocks);
-
-    // const texts = []
-    // blocks.map(text => {
-    //     texts.push(text.text)
-    // })
 
     // const newMessage = texts.join("\n").replace(",", "")
     // ok
@@ -206,6 +200,7 @@ export default function SimpleMentionEditor({ messages, setMessages }) {
         config
       );
       // socket.emit("new message", data);
+      console.log(data);
       setMessages([...messages, data]);
     } catch (error) {
       console.log(error);
