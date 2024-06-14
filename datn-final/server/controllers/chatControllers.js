@@ -133,15 +133,19 @@ const createGroupChat = asyncHandler(async (req, res) => {
 });
 
 const createSheet = asyncHandler(async (req, res) => {
-  const {usersMail, chatId} = req.body;
+  const { usersMail, chatId } = req.body;
 
   try {
     const sheetId = await createNewSheetForGroup(usersMail);
 
-    const updatedChat = await Chat.findByIdAndUpdate(chatId, { sheetId }, { new: true, runValidators: true });
+    const updatedChat = await Chat.findByIdAndUpdate(
+      chatId,
+      { sheetId },
+      { new: true, runValidators: true }
+    );
 
     if (!updatedChat) {
-      return res.status(404).send({ message: 'Chat not found' });
+      return res.status(404).send({ message: "Chat not found" });
     }
     res.send({ sheetId });
   } catch (error) {
@@ -279,6 +283,29 @@ const addToGroup = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    check xem chat với bản thân có chưa, có rồi thì trả về, chưa thì tạo mới chat users chỉ có bản thân mình
+// @route   get /api/chat/myself
+// @access  Protected
+const mySelfChat = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const chat = await Chat.find({
+    users: { $size: 1, $elemMatch: { $eq: userId } },
+  });
+
+  // console.log(chat);
+
+  // nếu không có chat thì tạo chat
+  if (chat.length == 0) {
+    const newChat = await Chat.create({
+      chatName: "My Self Chat",
+      users: [userId],
+      isGroupChat: false,
+    });
+    res.json(newChat);
+  } else {
+    res.json(chat);
+  }
+});
 module.exports = {
   accessChat,
   fetchChats,
@@ -287,4 +314,5 @@ module.exports = {
   addToGroup,
   removeFromGroup,
   createSheet,
+  mySelfChat,
 };

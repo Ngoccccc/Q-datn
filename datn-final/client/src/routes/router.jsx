@@ -4,9 +4,9 @@ import Home from '../pages/Home';
 import Chats from './Chats';
 import Analysis from './Analysis';
 import Landing from '../components/Landing/Landing';
-import BadgeDefault from '../nhap';
 import Login from '../components/Login';
 import Signup from '../components/Signup';
+import MyBot from './MyBot';
 
 const router = createBrowserRouter([
     {
@@ -18,11 +18,11 @@ const router = createBrowserRouter([
                 element: <Landing />
             },
             {
-                path: "/login",
+                path: "login",
                 element: <Login />
             },
             {
-                path: "/signup",
+                path: "signup",
                 element: <Signup />
             },
             {
@@ -30,12 +30,12 @@ const router = createBrowserRouter([
                 element: <Chats />
             },
             {
-                path: "analysis",
-                element: <Analysis />
+                path: "mybot",
+                element: <MyBot/>
             },
             {
-                path: "nhap",
-                element: <BadgeDefault />
+                path: "analysis",
+                element: <Analysis />
             },
 
         ]

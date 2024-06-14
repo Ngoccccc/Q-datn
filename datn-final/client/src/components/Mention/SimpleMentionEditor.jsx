@@ -6,7 +6,7 @@ import React, {
     useRef,
     useState,
 } from 'react';
-import { EditorState, convertToRaw, RichUtils, getDefaultKeyBinding } from 'draft-js';
+import { EditorState, convertToRaw,  } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import createMentionPlugin, {
     defaultSuggestionsFilter,
@@ -32,15 +32,6 @@ export default function SimpleMentionEditor({ messages, setMessages }) {
   // const ref = useRef < Editor > (null);
 
   // const toast = useToast();
-  // useEffect(() => {
-  //   socket = io(ENDPOINT);
-  //   //   socket.emit("setup", user);
-  //   //   socket.on("connected", () => setSocketConnected(true));
-  //   //   socket.on("typing", () => setIsTyping(true));
-  //   //   socket.on("stop typing", () => setIsTyping(false));
-
-  //   // eslint-disable-next-line
-  // }, []);
 
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
@@ -185,7 +176,7 @@ export default function SimpleMentionEditor({ messages, setMessages }) {
       const config = {
         headers: {
           "Content-type": "application/json",
-          Authorization: `Bearer ${user.data.token}`,
+          Authorization: `Bearer ${user?.data.token}`,
         },
       };
       setNewMessage("");

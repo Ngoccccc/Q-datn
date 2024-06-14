@@ -62,7 +62,7 @@ function Header() {
 
             {/* {user ? } */}
 
-            <NavLink to={user ? "/chats" : "/login"}>
+            <NavLink to={user ? "/mybot" : "/login"}>
                 <Typography
                     as="li"
                     variant="paragraph"
@@ -82,12 +82,12 @@ function Header() {
                         />
                     </svg>
                     <span href="#" className="flex items-center text-blue-gray-700 hover:text-blue-800 ">
-                        Chats
+                        Bot của tôi
                     </span>
                 </Typography>
             </NavLink>
 
-            <NavLink to={`/analysis`}>
+            <NavLink to={`/chats`}>
                 <Typography
                     as="li"
                     variant="paragraph"
@@ -100,7 +100,7 @@ function Header() {
                     </svg>
 
                     <span href="#" className="flex items-center">
-                        Thống kê
+                        Bạn bè
                     </span>
                 </Typography>
             </NavLink>

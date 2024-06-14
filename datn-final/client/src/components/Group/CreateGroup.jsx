@@ -85,7 +85,7 @@ export function CreateGroup() {
             // });
             return;
         }
-        selectedUsers.push(user.data);
+        selectedUsers.push(user?.data);
 
         try {
             const config = {

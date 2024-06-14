@@ -30,7 +30,7 @@ const Header = () => {
     try {
       const config = {
         headers: {
-          Authorization: `Bearer ${user.data.token}`,
+          Authorization: `Bearer ${user?.data?.token}`,
         },
       };
 
@@ -88,7 +88,7 @@ const Header = () => {
         </NavLink>
         <Badge placement="top-end" overlap="circular" color="green" withBorder>
           <Avatar
-            src={getChatAvatarHeader(user.data, selectedChat?.users)}
+            src={getChatAvatarHeader(user?.data, selectedChat?.users)}
             alt="avatar"
           />
         </Badge>

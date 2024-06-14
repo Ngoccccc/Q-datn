@@ -25,7 +25,7 @@ function Sidebar({ fetchAgain }) {
     try {
       const config = {
         headers: {
-          Authorization: `Bearer ${user.data.token}`,
+          Authorization: `Bearer ${user?.data?.token}`,
         },
       };
 
@@ -72,7 +72,7 @@ function Sidebar({ fetchAgain }) {
       const config = {
         headers: {
           "Content-type": "application/json",
-          Authorization: `Bearer ${user.data.token}`,
+          Authorization: `Bearer ${user?.data?.token}`,
         },
       };
       const { data } = await axios.post(`/api/chat`, { userId }, config);

@@ -2,7 +2,10 @@ const asyncHandler = require("express-async-handler");
 const Message = require("../models/messageModel");
 const User = require("../models/userModel");
 const Chat = require("../models/chatModel");
-const { convertStringToNumber } = require("../googleSheet/googleSheetHandler");
+const {
+  convertStringToNumber,
+  writeGGSheet,
+} = require("../googleSheet/googleSheetHandler");
 const Mention = require("../models/mentionModel");
 
 //@description     Get all Messages
@@ -29,7 +32,20 @@ const sendMessage = asyncHandler(async (req, res) => {
 
   let mentionsData = [];
 
+  // nếu có mention thì :
+  //   1. check xem chat đã có sheetLink chưa, nếu chưa có thì k mention được
+  //   2. tạo mention.
   if (mentions.length > 0) {
+    //1. check xem chat có sheetLink chưa, nếu chưa có thì k mention được
+    const chat = await Chat.findById(chatId);
+    if (!chat.sheetId) {
+        return res
+          .status(400)
+          .json({ message: "Please add sheet link to chat first" });
+    }
+
+
+    // 2. tạo mention
     const mentionPromises = mentions.map(async (mention) => {
       const newMention = {
         name: mention.username,
@@ -67,11 +83,16 @@ const sendMessage = asyncHandler(async (req, res) => {
       path: "chat.users",
       select: "name pic email",
     });
-    //   // console.log(message)
 
     await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
 
     message = await message.populate("mentions");
+
+    const chat = await Chat.findById(req.body.chatId);
+    // ghi vào file
+    if (mentions.length > 0) {
+      writeGGSheet(content, mentions[0], chat.sheetId);
+    }
 
     res.json(message);
   } catch (error) {

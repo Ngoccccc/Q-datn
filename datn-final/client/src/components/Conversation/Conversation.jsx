@@ -19,7 +19,7 @@ const Conversation = () => {
     try {
       const config = {
         headers: {
-          Authorization: `Bearer ${user.data.token}`,
+          Authorization: `Bearer ${user?.data.token}`,
         },
       };
 
@@ -68,7 +68,7 @@ const Conversation = () => {
       ) : (
           // TODO: mybot
         <div className="h-5/6 flex justify-center items-center w-full">
-          <Typography className="text-3xl text-blue-gray-100">Bot của tôi</Typography>
+          <Typography className="text-3xl text-blue-gray-100">Chọn 1 đoạn chat để bắt đầu chat</Typography>
         </div>
       )}
     </div>

@@ -39,7 +39,7 @@ const MessageBox = ({ messages }) => {
 
   return (
     <>
-      {selectedChat ? (
+     
         <ScrollableFeed>
           {messages &&
             messages.map((m, i) => {
@@ -109,9 +109,7 @@ const MessageBox = ({ messages }) => {
               );
             })}
         </ScrollableFeed>
-      ) : (
-        <div className="h-3/4">Chọn một đoạn chat để bắt đầu chat</div>
-      )}
+     
     </>
   );
 };

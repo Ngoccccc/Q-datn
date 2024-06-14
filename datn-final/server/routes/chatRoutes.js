@@ -7,6 +7,7 @@ const {
   addToGroup,
   renameGroup,
   createSheet,
+  mySelfChat,
 } = require("../controllers/chatControllers");
 const { protect } = require("../middleware/authMiddleware");
 
@@ -20,5 +21,6 @@ router.route("/rename").put(protect, renameGroup);
 router.route("/groupremove").put(protect, removeFromGroup);
 router.route("/groupadd").put(protect, addToGroup);
 router.route("/createfile").post(protect, createSheet);
+router.route("/myself").get(protect, mySelfChat);
 
 module.exports = router;

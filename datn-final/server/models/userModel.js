@@ -17,7 +17,7 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
-    sheetId: {
+    sheetLink: {
       type: String,
       // required: true,
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Navbar,
   Collapse,
@@ -33,8 +33,10 @@ function NavItem({ children }) {
 }
 
 function Landing() {
+ 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen((cur) => !cur);
+
 
   React.useEffect(() => {
     window.addEventListener(
