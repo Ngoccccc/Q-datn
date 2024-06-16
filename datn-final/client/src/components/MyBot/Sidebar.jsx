@@ -1,49 +1,31 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   Typography,
   List,
-  ListItem,
   ListItemPrefix,
-  ListItemSuffix,
-  Chip,
   Accordion,
-  AccordionHeader,
-  AccordionBody,
   Button,
   Input,
-  Popover,
-  PopoverHandler,
-  PopoverContent,
-  DialogFooter,
-  DialogHeader,
-  Dialog,
-  DialogBody,
 } from "@material-tailwind/react";
 import {
-  PresentationChartBarIcon,
-  ShoppingBagIcon,
-  UserCircleIcon,
-  Cog6ToothIcon,
   InboxIcon,
-  PowerIcon,
 } from "@heroicons/react/24/solid";
-import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 // import { ChatState } from "../../Context/ChatProvider";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import useCreateFile from "../../hooks/useCreateFile";
-import { useAuthContext } from "../../Context/AuthContext";
 import { ChatState } from "../../Context/ChatProvider";
 import { toast } from "react-toastify";
+import { useCategoryContext } from "../../Context/MyCategoryContext";
 
 export function Sidebar() {
   const { myChat } = ChatState();
   const [fileLink, setFileLink] = useState(myChat?.sheetId);
   const { loading, createFile } = useCreateFile();
   const [categoryName, setCategoryName] = useState();
-  const [categories, setCategories] = useState([]);
-  const [isEditing , setIsEditing] = useState(false)
+  // const [categories, setCategories] = useState([]);
+  const { myCategory, setMyCategory } = useCategoryContext();
 
   useEffect(() => {
     if (myChat) {
@@ -56,7 +38,7 @@ export function Sidebar() {
       axios
         .get(`/api/category/${myChat?._id}`, config)
         .then((res) => {
-          setCategories(res.data);
+          setMyCategory(res.data);
         })
         .catch((error) => {
           console.log(error);
@@ -91,7 +73,7 @@ export function Sidebar() {
           config
         )
         .then((res) => {
-          setCategories([res.data, ...categories]);
+          setMyCategory([res.data, ...myCategory]);
         })
         .catch((error) => {
           toast.error(error.response.data.message);
@@ -110,7 +92,7 @@ export function Sidebar() {
     axios
       .delete(`/api/category/delete/${id}`, config)
       .then((res) => {
-        setCategories(categories.filter((item) => item._id !== id));
+        setMyCategory(myCategory.filter((item) => item._id !== id));
       })
       .catch((error) => {
         console.log(error);
@@ -141,7 +123,6 @@ export function Sidebar() {
       </div>
       <div className="flex flex-row justify-between items-center">
         <Typography variant="h6">Các danh mục quản lý</Typography>
-
       </div>
       <div className="mb-2 p-4 pr-6 w-10 flex flex-row">
         <Input
@@ -169,15 +150,21 @@ export function Sidebar() {
       </div>
       <List className="flex-1 overflow-y-auto pl-4 pr-4 ">
         <Accordion>
-          {categories.map((category) => (
-            <div  key={category._id} className="flex flex-row items-center h-10  px-3 rounded-lg">
+          {myCategory.map((category) => (
+            <div
+              key={category._id}
+              className="flex flex-row items-center h-10  px-3 rounded-lg"
+            >
               <ListItemPrefix>
                 <InboxIcon className="h-5 w-5" />
               </ListItemPrefix>
 
-              <div className="flex-grow" onClick={() => setIsEditing(true)}>{category.name}</div>
-              
-              <button className="text-red-500 ml-auto" onClick={() => handleDeleteCategory(category._id)}>
+              <div className="flex-grow">{category.name}</div>
+
+              <button
+                className="text-red-500 ml-auto"
+                onClick={() => handleDeleteCategory(category._id)}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

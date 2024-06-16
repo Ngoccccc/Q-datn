@@ -1,8 +1,16 @@
 // src/components/MentionInput.js
 import React, { useState, useEffect } from "react";
-import { Select, Option } from "@material-tailwind/react";
+import axios from "axios";
+import { ChatState } from "../../Context/ChatProvider";
+import { useCategoryContext } from "../../Context/MyCategoryContext";
 
 const MentionInput = () => {
+  const { myChat } = ChatState();
+
+
+  const { myCategory } = useCategoryContext();
+  console.log(myCategory);
+
   const [inputValue, setInputValue] = useState("");
   const [mentions, setMentions] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
@@ -11,8 +19,18 @@ const MentionInput = () => {
   const [ca, setCa] = useState(null);
   const [sub, setSub] = useState(null);
 
+  const [subcategories, setSubcategories] = useState([])
+
   const categories = ["chi tiêu", "lập kế hoạch", "thu nhập"];
-  const subcategories = ["quần áo", "sức khỏe", "cafe"];
+
+  // const subcategories = ["quần áo", "sức khỏe", "cafe"];
+
+  useEffect(() => { 
+    if (myCategory) {
+      const categoryNames = myCategory.map((category) => category.name);
+      setSubcategories(categoryNames);
+    }
+  }, [myCategory]);
 
   useEffect(() => {
     const triggerChar = inputValue.match(/[@/][^@/]*$/);
@@ -31,6 +49,27 @@ const MentionInput = () => {
       setShowSuggestions(false);
     }
   }, [inputValue]);
+
+  useEffect(() => {
+    if (myChat) {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      axios
+        .get(`/api/category/${myChat?._id}`, config)
+        .then((res) => {
+          console.log(res.data);
+          const categoryNames = res.data.map((category) => category.name);
+          setSubcategories(categoryNames);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [myChat]);
 
   const handleChange = (event) => {
     setInputValue(event.target.value);

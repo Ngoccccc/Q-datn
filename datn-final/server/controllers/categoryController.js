@@ -66,7 +66,9 @@ const updateCategory = asyncHandler(async (req, res) => {
 const getAllCategory = asyncHandler(async (req, res) => {
   const chatId = req.params.id;
   try {
-    const categories = await Category.find({ chatId }); // Tìm tất cả các category với chatId
+    const categories = await Category.find({ chatId }).select('name');
+
+    
     res.send(categories);
   } catch (error) {
     res.status(400);
