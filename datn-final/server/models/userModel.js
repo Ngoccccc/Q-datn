@@ -17,11 +17,6 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
-    sheetLink: {
-      type: String,
-      // required: true,
-
-    }
   },
   { timestaps: true }
 );

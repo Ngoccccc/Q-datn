@@ -8,9 +8,7 @@ import {
   Button,
   Input,
 } from "@material-tailwind/react";
-import {
-  InboxIcon,
-} from "@heroicons/react/24/solid";
+import { InboxIcon } from "@heroicons/react/24/solid";
 // import { ChatState } from "../../Context/ChatProvider";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -26,6 +24,7 @@ export function Sidebar() {
   const [categoryName, setCategoryName] = useState();
   // const [categories, setCategories] = useState([]);
   const { myCategory, setMyCategory } = useCategoryContext();
+  const [visableClick, setVisableClick] = useState(true);
 
   useEffect(() => {
     if (myChat) {
@@ -60,6 +59,7 @@ export function Sidebar() {
 
   const handleCreateCategory = (e) => {
     e.preventDefault();
+    setVisableClick(false);
     if (categoryName) {
       const config = {
         headers: {
@@ -74,12 +74,13 @@ export function Sidebar() {
         )
         .then((res) => {
           setMyCategory([res.data, ...myCategory]);
+          setVisableClick(true);
         })
         .catch((error) => {
           toast.error(error.response.data.message);
+          setVisableClick(true);
         });
     }
-
     setCategoryName("");
   };
 
@@ -104,7 +105,7 @@ export function Sidebar() {
       <div className="mb-2 p-4">
         {fileLink !== "" ? (
           <Link
-            to={fileLink}
+            to={myChat?.sheetId}
             target="_blank"
             className="underline italic font-semibold text-blue-500 cursor-pointer hover:text-blue-700 transition"
           >
@@ -122,7 +123,7 @@ export function Sidebar() {
         )}
       </div>
       <div className="flex flex-row justify-between items-center">
-        <Typography variant="h6">Các danh mục quản lý</Typography>
+        <Typography variant="h6">Các hạng mục quản lý</Typography>
       </div>
       <div className="mb-2 p-4 pr-6 w-10 flex flex-row">
         <Input
@@ -131,14 +132,20 @@ export function Sidebar() {
           value={categoryName}
           onChange={(e) => setCategoryName(e.target.value)}
         />
-        <button onClick={(e) => handleCreateCategory(e)}>
+        <button
+          onClick={(e) => {
+            visableClick && handleCreateCategory(e);
+          }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="size-6 text-green-400"
+            className={
+              visableClick ? "size-6 text-green-700" : "size-6 text-green-100"
+            }
           >
             <path
               strokeLinecap="round"

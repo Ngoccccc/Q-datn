@@ -7,9 +7,7 @@ import { useCategoryContext } from "../../Context/MyCategoryContext";
 const MentionInput = () => {
   const { myChat } = ChatState();
 
-
   const { myCategory } = useCategoryContext();
-  console.log(myCategory);
 
   const [inputValue, setInputValue] = useState("");
   const [mentions, setMentions] = useState([]);
@@ -19,13 +17,13 @@ const MentionInput = () => {
   const [ca, setCa] = useState(null);
   const [sub, setSub] = useState(null);
 
-  const [subcategories, setSubcategories] = useState([])
+  const [subcategories, setSubcategories] = useState([]);
 
   const categories = ["chi tiêu", "lập kế hoạch", "thu nhập"];
 
   // const subcategories = ["quần áo", "sức khỏe", "cafe"];
 
-  useEffect(() => { 
+  useEffect(() => {
     if (myCategory) {
       const categoryNames = myCategory.map((category) => category.name);
       setSubcategories(categoryNames);
@@ -61,7 +59,6 @@ const MentionInput = () => {
       axios
         .get(`/api/category/${myChat?._id}`, config)
         .then((res) => {
-          console.log(res.data);
           const categoryNames = res.data.map((category) => category.name);
           setSubcategories(categoryNames);
         })
@@ -75,8 +72,7 @@ const MentionInput = () => {
     setInputValue(event.target.value);
   };
 
-    const handleSuggestionClick = (suggestion) => {
-      
+  const handleSuggestionClick = (suggestion) => {
     setShowSuggestions(false);
     const newValue = inputValue.replace(
       /[@/][^@/]*$/,
@@ -88,19 +84,17 @@ const MentionInput = () => {
     } else if (trigger === "/") {
       setSub(suggestion);
     }
-    // console.log(newValue);
   };
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent default behavior of Enter key
-        handleSubmit();
-        setInputValue(""); // Call your function to handle data submission
-        setCa(null);
-        setSub(null);
+      handleSubmit();
+      setInputValue(""); // Call your function to handle data submission
+      setCa(null);
+      setSub(null);
     }
   };
-
 
   const handleSubmit = async () => {
     console.log(ca, sub);
@@ -110,8 +104,8 @@ const MentionInput = () => {
     <div className="w-full mx-auto border rounded-lg shadow-md bg-white">
       {showSuggestions && (
         <ul
-        //   role="menu"
-        //   data-popover="menu"
+          //   role="menu"
+          //   data-popover="menu"
           data-popover-placement="top"
           className=" z-10 overflow-auto rounded-md border border-blue-gray-50 bg-white p-3 font-sans text-sm font-normal text-blue-gray-800 shadow-lg shadow-blue-gray-500/10 focus:outline-none"
         >
@@ -131,12 +125,10 @@ const MentionInput = () => {
         className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
         type="text"
         value={inputValue}
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
         placeholder="Type @ for categories or / for subcategories"
       />
-
-
     </div>
   );
 };

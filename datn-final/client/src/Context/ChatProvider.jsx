@@ -25,7 +25,6 @@ const ChatProvider = ({ children }) => {
         .get(`/api/chat/myself/${authUser._id}`, config)
         .then((res) => {
           setMyChat(res.data[0]);
-          console.log("pwddsadsad", res.data[0]);
         })
         .catch((error) => {
           console.log(error);

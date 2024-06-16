@@ -5,12 +5,15 @@ const Chat = require("../models/chatModel");
 const {
   convertStringToNumber,
   writeGGSheet,
+  writeCategory,
 } = require("../googleSheet/googleSheetHandler");
 const Mention = require("../models/mentionModel");
 const Category = require("../models/categoryModel");
 
 const createCategory = asyncHandler(async (req, res) => {
   const { name, chatId } = req.body;
+
+  const chat = await Chat.findById(chatId);
 
   const category = await Category.findOne({
     name: { $regex: new RegExp(name, "i") },
@@ -21,11 +24,16 @@ const createCategory = asyncHandler(async (req, res) => {
     throw new Error("Danh mục đã tồn tại!");
   }
 
+  if (chat.sheetId) {
+    await writeCategory(name, chat.sheetId)
+  }
+
   try {
     const newCategory = await Category.create({
       name,
       chatId,
     });
+
     res.send(newCategory);
   } catch (error) {
     res.status(400);
@@ -34,7 +42,7 @@ const createCategory = asyncHandler(async (req, res) => {
 });
 
 const deleteCategory = asyncHandler(async (req, res) => {
-  const id  = req.params.id;
+  const id = req.params.id;
   try {
     const deletedCategory = await Category.findByIdAndDelete(id);
     res.send(deletedCategory);
@@ -66,9 +74,8 @@ const updateCategory = asyncHandler(async (req, res) => {
 const getAllCategory = asyncHandler(async (req, res) => {
   const chatId = req.params.id;
   try {
-    const categories = await Category.find({ chatId }).select('name');
+    const categories = await Category.find({ chatId }).select("name");
 
-    
     res.send(categories);
   } catch (error) {
     res.status(400);

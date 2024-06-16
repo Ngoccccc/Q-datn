@@ -106,7 +106,7 @@ const createNewSheetForGroup = async (userMails) => {
 };
 
 const getTime = () => {
-    var currentTime = new Date();
+  var currentTime = new Date();
   var day = currentTime.getDate();
   var month = currentTime.getMonth() + 1; // Tháng bắt đầu từ 0, nên cộng 1
   var year = currentTime.getFullYear();
@@ -114,8 +114,8 @@ const getTime = () => {
   // Định dạng ngày, tháng và năm thành chuỗi "dd/mm/yyyy"
   // var formattedDay = day < 10 ? "0" + day : day;
   var formattedDay = day;
-  // var formattedMonth = month < 10 ? "0" + month : month; 
-  var formattedMonth =  month;
+  // var formattedMonth = month < 10 ? "0" + month : month;
+  var formattedMonth = month;
   var formattedYear = year;
 
   // Lấy giờ, phút và giây từ đối tượng Date
@@ -165,54 +165,6 @@ const convertStringToNumber = (input) => {
   }
 };
 
-const handleGGSheet = async (message, sheetID) => {
-  message.map(async (message) => {
-    const keywords = ["chi tiêu", "thu nhập", "lập kế hoạch"];
-    const messageHandledSpace = message.replace(/\s+/g, " "); // loại bỏ khoảng trống thừa
-    const pattern = new RegExp(`(\\b(?:${keywords.join("|")})\\b)`, "gi");
-    // pattern = pattern.filter(element => element !== ''); // loại bỏ ''
-    const segments = messageHandledSpace.split(pattern);
-
-    var message = "";
-    var format =
-      "@chi tiêu/Lập kế hoạch/Thu nhập [tên chi tiêu/kế hoạch/thu nhập]:[số tiền]";
-
-    const type = segments[1];
-    var [item, money] = segments[2].split(/ ?: ?/);
-
-    if (item == "" || money == "" || !item || !money) {
-      message = "Cú pháp không đúng định dạng. ";
-    }
-
-    money = convertStringToNumber(money);
-
-    // mở file sheet
-    const file = new GoogleSpreadsheet(
-      "1Zqvtd0Usx6bqkEOOsZb26h-bDMMhpqxuwJjwMUKIFf0",
-      jwt
-    );
-    await file.loadInfo();
-    var sheet = file.sheetsByIndex[2];
-    if (type == "Chi tiêu") {
-      sheet = file.sheetsByIndex[2];
-    } else if (type == "Lập kế hoạch") {
-      sheet = file.sheetsByIndex[3];
-    } else if (type == "Thu nhập") {
-      sheet = file.sheetsByIndex[4];
-    } else {
-      sheet = file.sheetsByIndex[5];
-    }
-
-    const timeDayMonthYear = getTime();
-
-    await sheet.addRow({
-      "Thời gian": timeDayMonthYear,
-      "Loại thu nhập": item,
-      "Số tiền": money,
-    });
-  });
-};
-
 const writeGGSheet = async (content, mention, sheetLink) => {
   const message = content.slice(mention.endOffset, content.length);
   var type = mention.username;
@@ -236,12 +188,8 @@ const writeGGSheet = async (content, mention, sheetLink) => {
     sheetId = matches[1];
   }
 
-
   // mở file sheet
-  const file = new GoogleSpreadsheet(
-    sheetId,
-    jwt
-  );
+  const file = new GoogleSpreadsheet(sheetId, jwt);
   await file.loadInfo();
   var sheet = file.sheetsByIndex[2];
   if (type == "chi tiêu") {
@@ -262,8 +210,6 @@ const writeGGSheet = async (content, mention, sheetLink) => {
     "Số tiền": money,
   });
 
-  
-
   const rows = await sheet.getRows({
     offset: 10,
   });
@@ -271,18 +217,45 @@ const writeGGSheet = async (content, mention, sheetLink) => {
     console.log(timeDayMonthYear);
     console.log(row.get("Thời gian"));
     if (row.get("Thời gian") == timeDayMonthYear) {
-      console.log("true"); 
+      console.log("true");
     }
   });
 
   console.log(row1);
+};
 
+const writeCategory = async (categoryName, sheetLink) => {
+  const name = categoryName.trim();
+  // mở file sheet
+  // lấy sheetId
+  let sheetId = "";
+  const regex = /\/d\/([a-zA-Z0-9-_]+)(?:\/|$)/;
+  const matches = sheetLink.match(regex);
+  if (matches && matches[1]) {
+    sheetId = matches[1];
+  }
+
+  // mở file sheet
+  const file = new GoogleSpreadsheet(sheetId, jwt);
+  await file.loadInfo();
+  const sheet = file.sheetsByIndex[1];
+
+  await sheet
+    .addRow({
+      "Thiết yếu": name,
+    })
+    .then(() => {
+      return 1;
+    })
+    .catch((error) => {
+      return error;
+    });
 };
 
 module.exports = {
   createNewSheet,
   createNewSheetForGroup,
-  handleGGSheet,
   convertStringToNumber,
   writeGGSheet,
+  writeCategory,
 };
