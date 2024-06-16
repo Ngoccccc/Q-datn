@@ -9,11 +9,38 @@ import {
   isSameSenderMargin,
   isSameUser,
 } from "../config/ChatLogics";
-
+import useGetMessages from "../../hooks/useGetMessages";
+import useConversation from "../../zustand/useConversation";
 import { ChatState } from "../../Context/ChatProvider";
+import { useAuthContext } from "../../Context/AuthContext";
+import axios from "axios";
 
-const MessageBox = ({ messages }) => {
-  const { user, selectedChat } = ChatState();
+// import { ChatState } from "../../Context/ChatProvider";
+
+const MessageBox = () => {
+  const { authUser } = useAuthContext();
+
+  const [chatDataId, setChatDataId] = useState(null);
+
+   useEffect(() => {
+     const config = {
+       headers: {
+         "Content-type": "application/json",
+       },
+     };
+     axios
+       .get(`/api/chat/myself/${authUser._id}`, config)
+       .then((res) => {
+         setChatDataId(res.data[0]._id);
+       })
+       .catch((error) => {
+         console.log(error);
+       });
+   }, []);
+  
+
+  const { messages } = useGetMessages(chatDataId);
+
 
   const [isOwn, setIsOwn] = useState(false);
   const image = false;
@@ -39,10 +66,9 @@ const MessageBox = ({ messages }) => {
 
   return (
     <>
-     
-        <ScrollableFeed>
+          <ScrollableFeed>
           {messages &&
-            messages.map((m, i) => {
+            messages.map((m) => {
               const parts = [];
               let currentIndex = 0;
               const mentions = m.mentions;
@@ -76,39 +102,33 @@ const MessageBox = ({ messages }) => {
                       color="green"
                       withBorder
                     >
-                      <Avatar size="sm" src={m.sender.pic} alt="avatar" />
+                      <Avatar size="sm" src={m.sender.avatar} alt="avatar" />
                     </Badge>
                   </div>
 
                   <div className={body}>
                     <div className="flex items-center gap-1">
                       <div className="text-sm text-gray-500">
-                        {m.sender.name}
+                        {m.sender.username}
                       </div>
                       <div className="text-xs text-gray-400">
                         {format(new Date(m.createdAt), "yyyy-MM-dd HH:mm")}
                       </div>
                     </div>
-                    {/* <div className={message}>{m.content}</div> */}
-                    <p
+                     <p
                       className={
-                        user?.data?._id == m.sender._id
+                        authUser?._id == m.sender._id
                           ? messageNotOwn
                           : messageOwn
                       }
                     >
                       {parts}
-                    </p>
-                    {/* {isLast && (
-                      <div className="text-xs font-light text-gray-500">
-                        Seen by Quynh
-                      </div>
-                    )} */}
-                  </div>
+                    </p> 
+                   </div>
                 </div>
               );
             })}
-        </ScrollableFeed>
+        </ScrollableFeed> 
      
     </>
   );

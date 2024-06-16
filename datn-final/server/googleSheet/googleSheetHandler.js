@@ -112,8 +112,10 @@ const getTime = () => {
   var year = currentTime.getFullYear();
 
   // Định dạng ngày, tháng và năm thành chuỗi "dd/mm/yyyy"
-  var formattedDay = day < 10 ? "0" + day : day;
-  var formattedMonth = month < 10 ? "0" + month : month;
+  // var formattedDay = day < 10 ? "0" + day : day;
+  var formattedDay = day;
+  // var formattedMonth = month < 10 ? "0" + month : month; 
+  var formattedMonth =  month;
   var formattedYear = year;
 
   // Lấy giờ, phút và giây từ đối tượng Date
@@ -254,11 +256,27 @@ const writeGGSheet = async (content, mention, sheetLink) => {
 
   const timeDayMonthYear = getTime();
 
-  await sheet.addRow({
+  const row = await sheet.addRow({
     "Thời gian": timeDayMonthYear,
     "Loại thu nhập": item,
     "Số tiền": money,
   });
+
+  
+
+  const rows = await sheet.getRows({
+    offset: 10,
+  });
+  const row1 = rows.find((row) => {
+    console.log(timeDayMonthYear);
+    console.log(row.get("Thời gian"));
+    if (row.get("Thời gian") == timeDayMonthYear) {
+      console.log("true"); 
+    }
+  });
+
+  console.log(row1);
+
 };
 
 module.exports = {

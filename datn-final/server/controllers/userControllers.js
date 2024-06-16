@@ -28,7 +28,6 @@ const allUsers = asyncHandler(async (req, res) => {
 //@access          Public
 const createSheet = asyncHandler(async (req, res) => {
   const userId = req.body.userId;
-  const email = req.body.email;
 
   // tao sheet moi cho user
 

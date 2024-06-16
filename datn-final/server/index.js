@@ -1,10 +1,13 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
+const authRouter = require("./routes/authRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const path = require("path");
 
@@ -13,23 +16,25 @@ connectDB();
 const app = express();
 
 app.use(express.json()); // to accept json data
+app.use(cookieParser());
+
+const corsOptions = {
+  origin: "http://your-client-domain.com",
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 // app.get("/", (req, res) => {
 //   res.send("API Running!");
 // });
-app.use(
-  cors({
-    origin: "http://127.0.0.1:5173", // URL của frontend
-    // methods: ["GET", "POST"],
-    // allowedHeaders: ["my-custom-header"],
-    // credentials: true,
-  })
-);
+
 
 
 app.use("/api/user", userRoutes);
+app.use("/api/auth", authRouter);
 app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/category", categoryRoutes);
 
 // // --------------------------deployment------------------------------
 

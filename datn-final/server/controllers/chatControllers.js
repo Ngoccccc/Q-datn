@@ -80,6 +80,11 @@ const fetchChats = asyncHandler(async (req, res) => {
   }
 });
 
+const fetchChat = asyncHandler(async (req, res) => {
+  // console.log(req.params.id);
+  // console.log("czcxz");
+});
+
 //@description     Create New Group Chat
 //@route           POST /api/chat/group
 //@access          Protected
@@ -133,73 +138,71 @@ const createGroupChat = asyncHandler(async (req, res) => {
 });
 
 const createSheet = asyncHandler(async (req, res) => {
-  const { usersMail, chatId } = req.body;
+  const { chatId } = req.body;
+  const usersMail = req.user.email;
 
-  try {
-    const sheetId = await createNewSheetForGroup(usersMail);
+  const sheetId = await createNewSheet(usersMail);
+  console.log(sheetId);
 
-    const updatedChat = await Chat.findByIdAndUpdate(
-      chatId,
-      { sheetId },
-      { new: true, runValidators: true }
-    );
+  const updatedChat = await Chat.findByIdAndUpdate(
+    chatId,
+    { sheetId },
+    { new: true, runValidators: true }
+  );
 
-    if (!updatedChat) {
-      return res.status(404).send({ message: "Chat not found" });
-    }
-    res.send({ sheetId });
-  } catch (error) {
-    res.status(400);
-    throw new Error(error.message);
+  if (!updatedChat) {
+    return res.status(404).send({ message: "Chat not found" });
   }
-
-  // if (!req.body.users || !req.body.name) {
-  //   return res.status(400).send({ message: "Please Fill all the feilds" });
-  // }
-
-  // var users = JSON.parse(req.body.users);
-
-  // if (users.length < 2) {
-  //   return res
-  //     .status(400)
-  //     .send("More than 2 users are required to form a group chat");
-  // }
-
-  // // users.push(req.user.id);
-
-  // // var mailUsers = []
-
-  // // for (const user of users) {
-  // //   const userData = await User.findById(user);
-  // //   mailUsers.push(userData.email);
-  // // }
-  // // TODO tạo sheet cho mỗi nhóm chat
-
-  // // const sheetId = await createNewSheet(mailUsers)
-
-  // // console.log(sheetId)
-
-  // try {
-  //   const groupChat = await Chat.create({
-  //     chatName: req.body.name,
-  //     users: users,
-  //     isGroupChat: true,
-  //     // groupAdmin: req.user,
-  //     // sheetId
-  //   });
-
-  //   const fullGroupChat = await Chat.findOne({ _id: groupChat._id }).populate(
-  //     "users",
-  //     "-password"
-  //   );
-  //   // .populate("groupAdmin", "-password");
-
-  //   res.status(200).json(fullGroupChat);
-  // } catch (error) {
-  //   res.status(400);
-  //   throw new Error(error.message);
-  // }
+  res.send({ sheetId });
 });
+
+// if (!req.body.users || !req.body.name) {
+//   return res.status(400).send({ message: "Please Fill all the feilds" });
+// }
+
+// var users = JSON.parse(req.body.users);
+
+// if (users.length < 2) {
+//   return res
+//     .status(400)
+//     .send("More than 2 users are required to form a group chat");
+// }
+
+// // users.push(req.user.id);
+
+// // var mailUsers = []
+
+// // for (const user of users) {
+// //   const userData = await User.findById(user);
+// //   mailUsers.push(userData.email);
+// // }
+// // TODO tạo sheet cho mỗi nhóm chat
+
+// // const sheetId = await createNewSheet(mailUsers)
+
+// // console.log(sheetId)
+
+// try {
+//   const groupChat = await Chat.create({
+//     chatName: req.body.name,
+//     users: users,
+//     isGroupChat: true,
+//     // groupAdmin: req.user,
+//     // sheetId
+//   });
+
+//   const fullGroupChat = await Chat.findOne({ _id: groupChat._id }).populate(
+//     "users",
+//     "-password"
+//   );
+//   // .populate("groupAdmin", "-password");
+
+//   res.status(200).json(fullGroupChat);
+// } catch (error) {
+//   res.status(400);
+//   throw new Error(error.message);
+// }
+// });
 
 // @desc    Rename Group
 // @route   PUT /api/chat/rename
@@ -287,7 +290,7 @@ const addToGroup = asyncHandler(async (req, res) => {
 // @route   get /api/chat/myself
 // @access  Protected
 const mySelfChat = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.params.id;
   const chat = await Chat.find({
     users: { $size: 1, $elemMatch: { $eq: userId } },
   });
@@ -315,4 +318,5 @@ module.exports = {
   removeFromGroup,
   createSheet,
   mySelfChat,
+  fetchChat,
 };

@@ -8,59 +8,59 @@ import {
   Tooltip,
 } from "@material-tailwind/react";
 import { toast } from "react-toastify";
-import { ChatState } from "../../Context/ChatProvider";
+// import { ChatState } from "../../Context/ChatProvider";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { getChatAvatarHeader } from "../config/ChatLogics";
 
 const Header = () => {
-  const { user, selectedChat } = ChatState();
-  const [loading, setLoading] = useState(false);
-  const [usersMail, setUsersMail] = useState();
+  // const { user, selectedChat } = ChatState();
+  // const [loading, setLoading] = useState(false);
+  // const [usersMail, setUsersMail] = useState();
 
-  const [sheetId, setSheetId] = useState();
+  // const [sheetId, setSheetId] = useState();
 
-  useEffect(() => {
-    setSheetId(selectedChat?.sheetId);
-    setUsersMail(selectedChat?.users?.map((user) => user.email));
-  }, [selectedChat]);
+  // useEffect(() => {
+  //   setSheetId(selectedChat?.sheetId);
+  //   setUsersMail(selectedChat?.users?.map((user) => user.email));
+  // }, [selectedChat]);
 
-  const handerCreateFile = async () => {
-    setLoading(true);
-    try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user?.data?.token}`,
-        },
-      };
+  // const handerCreateFile = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const config = {
+  //       headers: {
+  //         Authorization: `Bearer ${user?.data?.token}`,
+  //       },
+  //     };
 
-      await axios
-        .post(
-          "/api/chat/createfile",
-          { usersMail, chatId: selectedChat?._id },
-          config
-        )
-        .then((res) => {
-          // setLoading(false);
-          // toast.success("Tao file thành công !", {
-          //   position: "top-center",
-          // });
-          //   console.log(res.data.);
-          setLoading(false);
-          setSheetId(res.data.sheetId);
-        })
-        .catch((error) => {
-          // toast
-          console.log(error);
-          setLoading(false);
-        });
+  //     await axios
+  //       .post(
+  //         "/api/chat/createfile",
+  //         { usersMail, chatId: selectedChat?._id },
+  //         config
+  //       )
+  //       .then((res) => {
+  //         // setLoading(false);
+  //         // toast.success("Tao file thành công !", {
+  //         //   position: "top-center",
+  //         // });
+  //         //   console.log(res.data.);
+  //         setLoading(false);
+  //         setSheetId(res.data.sheetId);
+  //       })
+  //       .catch((error) => {
+  //         // toast
+  //         console.log(error);
+  //         setLoading(false);
+  //       });
 
-      // toast
-    } catch (error) {
-      // toast
-      console.log(error);
-    }
-  };
+  //     // toast
+  //   } catch (error) {
+  //     // toast
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <div className="bg-white w-full flex border-b-[1px] sm:px-4 py-3 px-4 lg:px-6 justify-between items-center shadow-sm">
@@ -88,16 +88,16 @@ const Header = () => {
         </NavLink>
         <Badge placement="top-end" overlap="circular" color="green" withBorder>
           <Avatar
-            src={getChatAvatarHeader(user?.data, selectedChat?.users)}
+            // src={getChatAvatarHeader(user?.data, selectedChat?.users)}
             alt="avatar"
           />
         </Badge>
         <div className="flex flex-col pr-5">
-          <Typography variant="h6">{selectedChat?.chatName}</Typography>
+          {/* <Typography variant="h6">{selectedChat?.chatName}</Typography> */}
 
           <div className="text-sm font-light text-neutral-500">Active</div>
         </div>
-        {sheetId ? (
+        {/* {sheetId ? (
           <Link
             to={sheetId}
             target="_blank"
@@ -131,7 +131,7 @@ const Header = () => {
               <span className="text-sx">Tạo file Google Sheet mới</span>
             </Button>
           </Tooltip>
-        )}
+        )} */}
 
         {/* link file google sheet nếu có */}
       </div>

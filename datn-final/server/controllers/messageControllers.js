@@ -14,7 +14,7 @@ const Mention = require("../models/mentionModel");
 const allMessages = asyncHandler(async (req, res) => {
   try {
     const messages = await Message.find({ chat: req.params.chatId })
-      .populate("sender", "name pic email")
+      .populate("sender", "username avatar email")
       .populate("chat")
       .populate("mentions");
     res.json(messages);
@@ -37,12 +37,12 @@ const sendMessage = asyncHandler(async (req, res) => {
   //   2. tạo mention.
   if (mentions.length > 0) {
     //1. check xem chat có sheetLink chưa, nếu chưa có thì k mention được
-    const chat = await Chat.findById(chatId);
-    if (!chat.sheetId) {
-        return res
-          .status(400)
-          .json({ message: "Please add sheet link to chat first" });
-    }
+    // const chat = await Chat.findById(chatId);
+    // if (!chat.sheetId) {
+    //     return res
+    //       .sendStatus(400)
+    //       .json({ message: "Please add sheet link to chat first" });
+    // }
 
 
     // 2. tạo mention
@@ -76,12 +76,12 @@ const sendMessage = asyncHandler(async (req, res) => {
   // console.log(newMessage);
   try {
     var message = await Message.create(newMessage);
-    message = await message.populate("sender", "name pic");
+    message = await message.populate("sender", "username avatar");
     message = await message.populate("chat");
 
     message = await User.populate(message, {
       path: "chat.users",
-      select: "name pic email",
+      select: "username avatar email",
     });
 
     await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
@@ -129,64 +129,6 @@ const sendMessageToBot = asyncHandler(async (req, res) => {
     money = convertStringToNumber(money);
   });
 
-  // money = convertStringToNumber(money)
-
-  // mở file sheet
-  // const file = new GoogleSpreadsheet("1Zqvtd0Usx6bqkEOOsZb26h-bDMMhpqxuwJjwMUKIFf0", jwt);
-  // await file.loadInfo();
-  // var sheet = file.sheetsByIndex[2];
-  // if (type == "Chi tiêu") {
-  //   sheet = file.sheetsByIndex[2];
-  // }
-  // else if (type == "Lập kế hoạch") {
-  //   sheet = file.sheetsByIndex[3];
-  // }
-  // else if (type == "Thu nhập") {
-  //   sheet = file.sheetsByIndex[4];
-  // }
-  // else {
-  //   sheet = file.sheetsByIndex[5];
-  // }
-
-  // const timeDayMonthYear = getTime();
-
-  // await sheet.addRow({
-  //   "Thời gian": timeDayMonthYear,
-  //   "Loại thu nhập": item,
-  //   "Số tiền": money,
-  // });
-
-  // })
-
-  // if (!content || !chatId) {
-  //   console.log("Invalid data passed into request");
-  //   return res.sendStatus(400);
-  // }
-
-  // var newMessage = {
-  //   sender: req.user._id,
-  //   content: content,
-  //   chat: chatId,
-  // };
-
-  //   try {
-  //     // var message = await Message.create(newMessage);
-  //     // message = await message.populate("sender", "name pic")
-  //     // message = await message.populate("chat");
-
-  //     // message = await User.populate(message, {
-  //     //   path: "chat.users",
-  //     //   select: "name pic email",
-  //     // });
-  //     console.log("message")
-
-  //     // await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
-
-  //     // res.json(message);
-  //   } catch (error) {
-  //     res.status(400);
-  //     throw new Error(error.message);
-  //   }
 });
 
 module.exports = { allMessages, sendMessage, sendMessageToBot };

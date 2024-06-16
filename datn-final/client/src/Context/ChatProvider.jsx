@@ -1,36 +1,54 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import useGetMySelfChat from "../hooks/useGetMySelfChat";
+import { useAuthContext } from "../Context/AuthContext";
+import axios from "axios";
 // import { useHistory } from "react-router-dom";
-import { redirect } from "react-router-dom";
 
 const ChatContext = createContext();
 
 const ChatProvider = ({ children }) => {
-  const [selectedChat, setSelectedChat] = useState();
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("userInfo")) || null);
+  const [selectedChat, setSelectedChat] = useState(null);
   const [notification, setNotification] = useState([]);
   const [chats, setChats] = useState();
+  const [myChat, setMyChat] = useState();
+  const {authUser} = useAuthContext();
 
-  // const history = useHistory();
+  useEffect(() => {
+    const getDataMyChat = async () => {
+      
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      await axios
+        .get(`/api/chat/myself/${authUser._id}`, config)
+        .then((res) => {
+          setMyChat(res.data[0]);
+          console.log("pwddsadsad", res.data[0]);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    getDataMyChat();
+  }, []);
 
-  // useEffect(() => {
-  //   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  //   setUser(userInfo);
+  
 
-  //   // if (!userInfo) return redirect("/");
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+
 
   return (
     <ChatContext.Provider
       value={{
         selectedChat,
         setSelectedChat,
-        user,
-        setUser,
         notification,
         setNotification,
         chats,
         setChats,
+        myChat,
+        setMyChat,
       }}
     >
       {children}

@@ -33,10 +33,7 @@ const router = createBrowserRouter([
                 path: "mybot",
                 element: <MyBot/>
             },
-            {
-                path: "analysis",
-                element: <Analysis />
-            },
+            
 
         ]
     },

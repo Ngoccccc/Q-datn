@@ -12,4 +12,18 @@ const mentions = [
     
 ];
 
-export default mentions;
+const mention1 = [
+  {
+    name: "qq",
+  },
+  {
+    name: "thu",
+  },
+  {
+    name: "lập",
+  },
+];
+
+
+
+export default { mentions, mention1 };

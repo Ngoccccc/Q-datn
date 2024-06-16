@@ -31,13 +31,13 @@ const Slider = () => {
       slidesPerView={3}
       navigation
       pagination={{ clickable: true }}
-      autoplay={{
-        delay: 2000,
-        disableOnInteraction: false,
-      }}
+      // autoplay={{
+      //   delay: 2000,
+      //   disableOnInteraction: false,
+      // }}
     >
       {videos.map((video) => (
-        <SwiperSlide>
+        <SwiperSlide key={video.video_embed_url}>
           <iframe
             style={{ borderRadius: "10px" }}
             width="100%"
