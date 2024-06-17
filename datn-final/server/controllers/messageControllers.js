@@ -16,7 +16,8 @@ const allMessages = asyncHandler(async (req, res) => {
     const messages = await Message.find({ chat: req.params.chatId })
       .populate("sender", "username avatar email")
       .populate("chat")
-      .populate("mentions");
+      .populate("mention")
+      .populate("category");
     res.json(messages);
   } catch (error) {
     res.status(400);
@@ -28,52 +29,20 @@ const allMessages = asyncHandler(async (req, res) => {
 //@route           POST /api/Message/
 //@access          Protected
 const sendMessage = asyncHandler(async (req, res) => {
-  const { content, mentions, chatId } = req.body;
-
-  let mentionsData = [];
-
-  // nếu có mention thì :
-  //   1. check xem chat đã có sheetLink chưa, nếu chưa có thì k mention được
-  //   2. tạo mention.
-  if (mentions.length > 0) {
-    //1. check xem chat có sheetLink chưa, nếu chưa có thì k mention được
-    // const chat = await Chat.findById(chatId);
-    // if (!chat.sheetId) {
-    //     return res
-    //       .sendStatus(400)
-    //       .json({ message: "Please add sheet link to chat first" });
-    // }
-
-
-    // 2. tạo mention
-    const mentionPromises = mentions.map(async (mention) => {
-      const newMention = {
-        name: mention.username,
-        start: mention.startOffset,
-        end: mention.endOffset,
-      };
-      const saveMention = await Mention.create(newMention);
-      return saveMention._id;
-    });
-
-    mentionsData = await Promise.all(mentionPromises);
-  }
-
-  // const { content, chatId } = req.body;
+  const { mention, category, content, chatId } = req.body;
 
   if (!content || !chatId) {
-    console.log("Invalid data passed into request");
-    return res.sendStatus(400);
+    return res.sendStatus(405);
   }
 
   var newMessage = {
     sender: req.user._id,
-    content: content,
+    content,
     chat: chatId,
-    mentions: mentionsData,
+    mention: mention ? mention : {},
+    category: category ? category : {},
   };
 
-  // console.log(newMessage);
   try {
     var message = await Message.create(newMessage);
     message = await message.populate("sender", "username avatar");
@@ -84,25 +53,34 @@ const sendMessage = asyncHandler(async (req, res) => {
       select: "username avatar email",
     });
 
+    
     await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
-
-    message = await message.populate("mentions");
+    
+    message = await message.populate("mention category");
+    // console.log("ok");
 
     const chat = await Chat.findById(req.body.chatId);
     // ghi vào file
-    if (mentions.length > 0) {
-      writeGGSheet(content, mentions[0], chat.sheetId);
+    if (mention) {
+      
+      const sliceRemainingData = content.slice(
+        mention.position,
+        category.value.length + category.position + 1
+      );
+      const remainingData = content.replace(sliceRemainingData, "").trim();
+      // if (mentions.length > 0) {
+      writeGGSheet(mention.value, category.value, remainingData, chat.sheetId);
+      // }
     }
 
     res.json(message);
   } catch (error) {
-    res.status(400);
+    res.status(401);
     throw new Error(error.message);
   }
 });
 
 const sendMessageToBot = asyncHandler(async (req, res) => {
-  console.log(req.body);
   const { messages, chatId } = req.body;
 
   // check cú pháp đúng chưa
@@ -128,7 +106,6 @@ const sendMessageToBot = asyncHandler(async (req, res) => {
 
     money = convertStringToNumber(money);
   });
-
 });
 
 module.exports = { allMessages, sendMessage, sendMessageToBot };

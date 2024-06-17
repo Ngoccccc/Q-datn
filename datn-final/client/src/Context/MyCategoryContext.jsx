@@ -9,9 +9,12 @@ export const useCategoryContext = () => {
 
 export const MyCategoryProvider = ({ children }) => {
   const [myCategory, setMyCategory] = useState([]);
+  const [messages, setMessages] = useState([]);
 
   return (
-    <CategoryContext.Provider value={{ myCategory, setMyCategory }}>
+    <CategoryContext.Provider
+      value={{ myCategory, setMyCategory, messages, setMessages }}
+    >
       {children}
     </CategoryContext.Provider>
   );

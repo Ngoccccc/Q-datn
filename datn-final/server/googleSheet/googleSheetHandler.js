@@ -28,7 +28,7 @@ var templateSheetsAmount = 0;
 info()
   .then(() => {
     templateSheetsAmount = template.sheetCount;
-    console.log("Số lượng sheet:", templateSheetsAmount);
+    // console.log("Số lượng sheet:", templateSheetsAmount);
   })
   .catch((error) => {
     console.log("Đã xảy ra lỗi:", error);
@@ -161,25 +161,16 @@ const convertStringToNumber = (input) => {
 
     return numberPart;
   } else {
-    throw new Error("Invalid input format");
+    console.log("Invalid input format");
   }
 };
 
-const writeGGSheet = async (content, mention, sheetLink) => {
-  const message = content.slice(mention.endOffset, content.length);
-  var type = mention.username;
-  const messageHandledSpace = message.replace(/\s+/g, " "); // loại bỏ khoảng trọng thừa
-  var [item, money] = messageHandledSpace.split(/ ?: ?/);
-  type = type?.trim();
-  item = item?.trim();
-  money = money?.trim();
+const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
+  // Bước 2: Tách chuỗi thành hai phần dựa trên khoảng trắng đầu tiên
+  const firstSpaceIndex = remainingData.indexOf(" ");
+  const part1 = remainingData.substring(0, firstSpaceIndex);
+  const part2 = remainingData.substring(firstSpaceIndex + 1);
 
-  if (item == "" || money == "" || !item || !money) {
-    return "Cú pháp không đúng định dạng. ";
-  }
-  money = convertStringToNumber(money);
-
-  // mở file sheet
   // lấy sheetId
   let sheetId = "";
   const regex = /\/d\/([a-zA-Z0-9-_]+)(?:\/|$)/;
@@ -192,36 +183,34 @@ const writeGGSheet = async (content, mention, sheetLink) => {
   const file = new GoogleSpreadsheet(sheetId, jwt);
   await file.loadInfo();
   var sheet = file.sheetsByIndex[2];
-  if (type == "chi tiêu") {
-    sheet = file.sheetsByIndex[2];
-  } else if (type == "lập kế hoạch") {
+  const timeDayMonthYear = getTime();
+
+  const money = convertStringToNumber(part1);
+
+  if (mention == "chi tiêu") {
+    console.log("chi tiêu");
+    console.log(timeDayMonthYear);
+
+    await sheet
+      .addRow({
+        "Thời gian": timeDayMonthYear,
+        "Hạng mục": category,
+        "Số tiền": money,
+        "Ghi chú": part2,
+      })
+      .then(() => {
+        console.log("ok");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  } else if (mention == "lập kế hoạch") {
     sheet = file.sheetsByIndex[3];
-  } else if (type == "thu nhập") {
+  } else if (mention == "thu nhập") {
     sheet = file.sheetsByIndex[4];
   } else {
     sheet = file.sheetsByIndex[5];
   }
-
-  const timeDayMonthYear = getTime();
-
-  const row = await sheet.addRow({
-    "Thời gian": timeDayMonthYear,
-    "Loại thu nhập": item,
-    "Số tiền": money,
-  });
-
-  const rows = await sheet.getRows({
-    offset: 10,
-  });
-  const row1 = rows.find((row) => {
-    console.log(timeDayMonthYear);
-    console.log(row.get("Thời gian"));
-    if (row.get("Thời gian") == timeDayMonthYear) {
-      console.log("true");
-    }
-  });
-
-  console.log(row1);
 };
 
 const writeCategory = async (categoryName, sheetLink) => {
@@ -252,10 +241,37 @@ const writeCategory = async (categoryName, sheetLink) => {
     });
 };
 
+const readTotalSpending = async (type, sheetLink) => {
+  // lấy sheetId
+  let sheetId = "";
+  const regex = /\/d\/([a-zA-Z0-9-_]+)(?:\/|$)/;
+  const matches = sheetLink.match(regex);
+  if (matches && matches[1]) {
+    sheetId = matches[1];
+  }
+
+  // mở file sheet
+  const file = new GoogleSpreadsheet(sheetId, jwt);
+  await file.loadInfo();
+  const sheet = file.sheetsByIndex[2];
+
+  let cell;
+
+  if (type == "day") {
+     cell = sheet.getCellByA1("L2");
+  } else if (type == "week") {
+    cell = sheet.getCellByA1("M2");
+  } else if (type == "month") {
+    cell = sheet.getCellByA1("N2");
+  }
+  return cell;
+};
+
 module.exports = {
   createNewSheet,
   createNewSheetForGroup,
   convertStringToNumber,
   writeGGSheet,
   writeCategory,
+  readTotalSpending,
 };

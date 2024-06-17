@@ -3,9 +3,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
 import { useCategoryContext } from "../../Context/MyCategoryContext";
+import { toast } from "react-toastify";
+import useConversation from "../../zustand/useConversation";
 
 const MentionInput = () => {
   const { myChat } = ChatState();
+  const { messages, setMessages } = useConversation();
 
   const { myCategory } = useCategoryContext();
 
@@ -14,8 +17,8 @@ const MentionInput = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [trigger, setTrigger] = useState(null);
-  const [ca, setCa] = useState(null);
-  const [sub, setSub] = useState(null);
+  const [mention, setMention] = useState(null);
+  const [category, setCategory] = useState(null);
 
   const [subcategories, setSubcategories] = useState([]);
 
@@ -74,15 +77,16 @@ const MentionInput = () => {
 
   const handleSuggestionClick = (suggestion) => {
     setShowSuggestions(false);
+    const cursorPosition = inputValue.search(/[@/][^@/]*$/);
     const newValue = inputValue.replace(
       /[@/][^@/]*$/,
       `${trigger}${suggestion} `
     );
     setInputValue(newValue);
     if (trigger === "@") {
-      setCa(suggestion);
+      setMention({ value: suggestion, position: cursorPosition });
     } else if (trigger === "/") {
-      setSub(suggestion);
+      setCategory({ value: suggestion, position: cursorPosition });
     }
   };
 
@@ -91,13 +95,38 @@ const MentionInput = () => {
       event.preventDefault(); // Prevent default behavior of Enter key
       handleSubmit();
       setInputValue(""); // Call your function to handle data submission
-      setCa(null);
-      setSub(null);
+      setMention(null);
+      setCategory(null);
     }
   };
 
   const handleSubmit = async () => {
-    console.log(ca, sub);
+    console.log(mention, category, inputValue);
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const { data } = await axios.post(
+        `/api/message`,
+        {
+          mention: mention,
+          category: category,
+          content: inputValue,
+          chatId: myChat?._id,
+        },
+        config
+      );
+
+      setMessages([...messages, data]);
+      console.log(data);
+      toast.success("Message sent successfully");
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
   };
 
   return (

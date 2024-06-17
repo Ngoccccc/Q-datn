@@ -19,26 +19,15 @@ import axios from "axios";
 
 const MessageBox = () => {
   const { authUser } = useAuthContext();
+  const { myChat } = ChatState();
 
   const [chatDataId, setChatDataId] = useState(null);
 
-   useEffect(() => {
-     const config = {
-       headers: {
-         "Content-type": "application/json",
-       },
-     };
-     axios
-       .get(`/api/chat/myself/${authUser._id}`, config)
-       .then((res) => {
-         setChatDataId(res.data[0]._id);
-       })
-       .catch((error) => {
-         console.log(error);
-       });
-   }, []);
-  
-
+  useEffect(() => {
+    if (myChat) {
+      setChatDataId(myChat?._id);
+    }
+  }, [myChat]);
   const { messages } = useGetMessages(chatDataId);
 
 
@@ -66,70 +55,78 @@ const MessageBox = () => {
 
   return (
     <>
-          <ScrollableFeed>
-          {messages &&
-            messages.map((m) => {
-              const parts = [];
-              let currentIndex = 0;
-              const mentions = m.mentions;
-              const content = m.content;
+      <ScrollableFeed>
+        {messages &&
+          messages.map((m) => {
+            const parts = [];
+            let currentIndex = 0;
+            const mention = m.mention;
+            const content = m.content;
+            const category = m.category;
 
-              mentions.forEach((mention, index) => {
-                // Push the text before the mention
-                if (mention.start > currentIndex) {
-                  parts.push(content.slice(currentIndex, mention.start));
-                }
-                // Push the mention itself
-                parts.push(
-                  <span key={index} className="text-blue-600">
-                    @{mention.name}
-                  </span>
-                );
-                // Update currentIndex to the end of the mention
-                currentIndex = mention.end;
-              });
-
-              // Push any remaining text after the last mention
-              if (currentIndex < content.length) {
-                parts.push(content.slice(currentIndex));
+            if (mention) {
+              if (mention.position > currentIndex) {
+                parts.push(content.slice(currentIndex, mention.position));
               }
-              return (
-                <div className={container} key={m._id}>
-                  <div className={avatar}>
-                    <Badge
-                      placement="top-end"
-                      overlap="circular"
-                      color="green"
-                      withBorder
-                    >
-                      <Avatar size="sm" src={m.sender.avatar} alt="avatar" />
-                    </Badge>
-                  </div>
 
-                  <div className={body}>
-                    <div className="flex items-center gap-1">
-                      <div className="text-sm text-gray-500">
-                        {m.sender.username}
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {format(new Date(m.createdAt), "yyyy-MM-dd HH:mm")}
-                      </div>
-                    </div>
-                     <p
-                      className={
-                        authUser?._id == m.sender._id
-                          ? messageNotOwn
-                          : messageOwn
-                      }
-                    >
-                      {parts}
-                    </p> 
-                   </div>
-                </div>
+              parts.push(
+                <span className="text-blue-600">@{mention.value}</span>
               );
-            })}
-        </ScrollableFeed> 
-     
+              currentIndex = mention.position + mention.value.length + 1; // Update currentIndex correctly
+            }
+
+            if (category) {
+              if (category.position > currentIndex) {
+                parts.push(content.slice(currentIndex, category.position));
+              }
+              parts.push(
+                <span className="text-gray-600 font-bold bg-blue-gray-100 rounded-full p-1 px-2 mx-2">
+                  /{category.value}
+                </span>
+              );
+              currentIndex = category.position + category.value.length + 1; // Update currentIndex correctly
+            }
+
+            // Push any remaining text after the last mention
+            if (currentIndex < content.length) {
+              parts.push(content.slice(currentIndex));
+            }
+
+
+            return (
+              <div className={container} key={m._id}>
+                <div className={avatar}>
+                  <Badge
+                    placement="top-end"
+                    overlap="circular"
+                    color="green"
+                    withBorder
+                  >
+                    <Avatar size="sm" src={m.sender.avatar} alt="avatar" />
+                  </Badge>
+                </div>
+
+                <div className={body}>
+                  <div className="flex items-center gap-1">
+                    <div className="text-sm text-gray-500">
+                      {m.sender.username}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      {format(new Date(m.createdAt), "yyyy-MM-dd HH:mm")}
+                    </div>
+                  </div>
+                  <p
+                    className={
+                      authUser?._id == m.sender._id ? messageNotOwn : messageOwn
+                    }
+                  >
+                    {parts}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+      </ScrollableFeed>
     </>
   );
 };

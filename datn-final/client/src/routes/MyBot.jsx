@@ -4,6 +4,7 @@ import MessageBox from "../components/MyBot/MessageBox";
 import SimpleMentionEditor from "../components/MyBot/SimpleMentionEditor";
 import MentionInput from "../components/MyBot/test";
 import { MyCategoryProvider } from "../Context/MyCategoryContext";
+import Header from "../components/MyBot/Header";
 
 const MyBot = () => {
   return (
@@ -14,6 +15,7 @@ const MyBot = () => {
         </div>
 
         <div className="flex-1 rounded-xl shadow-md h-full flex flex-col">
+          <Header  />
           <MessageBox className="flex-1" />
 
           <div className="mt-auto">

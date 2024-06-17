@@ -6,6 +6,7 @@ import axios from "axios";
 const useGetMessages = () => {
   const [loading, setLoading] = useState(false);
   const { messages, setMessages, selectedConversation } = useConversation();
+  
 
   useEffect(() => {
     const getMessages = async () => {
@@ -20,6 +21,8 @@ const useGetMessages = () => {
           `/api/message/${selectedConversation?._id}`,
           config
         );
+
+        console.log(data);
         setMessages(data);
       } catch (error) {
         toast.error(error.message);

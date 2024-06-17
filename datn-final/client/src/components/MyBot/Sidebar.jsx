@@ -45,9 +45,6 @@ export function Sidebar() {
     }
   }, [myChat]);
 
-  // const handleOpen = (value) => {
-  //   setOpen(open === value ? 0 : value);
-  // };
 
   const handerCreateFile = async () => {
     await createFile({ chatId: myChat?.id, setFileLink });

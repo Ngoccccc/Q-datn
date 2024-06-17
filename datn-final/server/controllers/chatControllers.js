@@ -4,6 +4,7 @@ const User = require("../models/userModel");
 const {
   createNewSheet,
   createNewSheetForGroup,
+  readTotalSpending,
 } = require("../googleSheet/googleSheetHandler");
 
 //@description     Create or fetch One to One Chat
@@ -309,6 +310,20 @@ const mySelfChat = asyncHandler(async (req, res) => {
     res.json(chat);
   }
 });
+
+const getSpending = asyncHandler(async (req, res) => {
+  const {type, chatId} = req.body;
+
+  const chat = await Chat.findById(chatId);
+  if (!chat) {
+    res.status(404);
+    throw new Error("Chat Not Found");
+  } else {
+    const spending = await readTotalSpending(type, chat.sheetId);
+    res.json(spending);
+    
+  }
+})
 module.exports = {
   accessChat,
   fetchChats,
@@ -319,4 +334,5 @@ module.exports = {
   createSheet,
   mySelfChat,
   fetchChat,
+  getSpending,
 };
