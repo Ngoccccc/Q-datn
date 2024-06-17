@@ -1,13 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Popover,
-  Button,
   PopoverHandler,
   PopoverContent,
 } from "@material-tailwind/react";
+import { ChatState } from "../../Context/ChatProvider";
+import axios from "axios";
+import { toast } from "react-toastify";
+import useConversation from "../../zustand/useConversation";
 
 const Header = () => {
+  const { myChat } = ChatState();
+  const [spending, setSpending] = useState(null);
+  const { messages } = useConversation();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+        const { data } = await axios.get(
+          `/api/chat/spending/${myChat._id}`,
+          config
+        );
+        setSpending(data);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+
+    if (myChat) {
+      fetchData();
+    }
+  }, [myChat, messages]);
+
   return (
     <div className="flex ml-auto p-2">
       <svg
@@ -37,7 +67,12 @@ const Header = () => {
               <Typography variant="h6" className="mr-2">
                 Hôm nay:
               </Typography>
-              <span className="mr-2 text-red-500">200đ</span>
+              <span className="mr-2 text-red-500">
+                {spending?.day?.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </span>
             </div>
           </PopoverContent>
         </Popover>
@@ -52,7 +87,12 @@ const Header = () => {
               <Typography variant="h6" className="mr-2">
                 Tuần này:
               </Typography>
-              <span className="mr-2 text-red-500">200đ</span>
+              <span className="mr-2 text-red-500">
+                {spending?.week?.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </span>
             </div>
           </PopoverContent>
         </Popover>
@@ -67,7 +107,12 @@ const Header = () => {
               <Typography variant="h6" className="mr-2">
                 Tháng này:
               </Typography>
-              <span className="mr-2 text-red-500">200đ</span>
+              <span className="mr-2 text-red-500">
+                {spending?.month?.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </span>
             </div>
           </PopoverContent>
         </Popover>

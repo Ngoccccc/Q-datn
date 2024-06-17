@@ -312,14 +312,14 @@ const mySelfChat = asyncHandler(async (req, res) => {
 });
 
 const getSpending = asyncHandler(async (req, res) => {
-  const {type, chatId} = req.body;
+  const chatId = req.params.id;
 
   const chat = await Chat.findById(chatId);
   if (!chat) {
     res.status(404);
     throw new Error("Chat Not Found");
   } else {
-    const spending = await readTotalSpending(type, chat.sheetId);
+    const spending = await readTotalSpending(chat.sheetId);
     res.json(spending);
     
   }

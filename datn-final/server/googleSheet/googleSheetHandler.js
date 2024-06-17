@@ -166,10 +166,19 @@ const convertStringToNumber = (input) => {
 };
 
 const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
+  let money;
+  let note = "";
   // Bước 2: Tách chuỗi thành hai phần dựa trên khoảng trắng đầu tiên
+
   const firstSpaceIndex = remainingData.indexOf(" ");
-  const part1 = remainingData.substring(0, firstSpaceIndex);
-  const part2 = remainingData.substring(firstSpaceIndex + 1);
+  if (firstSpaceIndex === -1) {
+    money = convertStringToNumber(remainingData);
+    note = "";
+  }
+  else {
+    money = convertStringToNumber(remainingData.substring(0, firstSpaceIndex));
+    note = remainingData.substring(firstSpaceIndex + 1);
+  }
 
   // lấy sheetId
   let sheetId = "";
@@ -185,7 +194,6 @@ const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
   var sheet = file.sheetsByIndex[2];
   const timeDayMonthYear = getTime();
 
-  const money = convertStringToNumber(part1);
 
   if (mention == "chi tiêu") {
     console.log("chi tiêu");
@@ -196,10 +204,10 @@ const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
         "Thời gian": timeDayMonthYear,
         "Hạng mục": category,
         "Số tiền": money,
-        "Ghi chú": part2,
+        "Ghi chú": note,
       })
       .then(() => {
-        console.log("ok");
+        console.log("đã được ghi vào sheet");
       })
       .catch((error) => {
         console.log(error);
@@ -241,7 +249,7 @@ const writeCategory = async (categoryName, sheetLink) => {
     });
 };
 
-const readTotalSpending = async (type, sheetLink) => {
+const readTotalSpending = async (sheetLink) => {
   // lấy sheetId
   let sheetId = "";
   const regex = /\/d\/([a-zA-Z0-9-_]+)(?:\/|$)/;
@@ -254,17 +262,14 @@ const readTotalSpending = async (type, sheetLink) => {
   const file = new GoogleSpreadsheet(sheetId, jwt);
   await file.loadInfo();
   const sheet = file.sheetsByIndex[2];
+  await sheet.loadCells("L2:N2");
 
-  let cell;
+  
 
-  if (type == "day") {
-     cell = sheet.getCellByA1("L2");
-  } else if (type == "week") {
-    cell = sheet.getCellByA1("M2");
-  } else if (type == "month") {
-    cell = sheet.getCellByA1("N2");
-  }
-  return cell;
+  const day = sheet.getCellByA1("L2").value;
+  const week = sheet.getCellByA1("M2").value;
+  const month = sheet.getCellByA1("N2").value;
+  return {day, week, month};
 };
 
 module.exports = {

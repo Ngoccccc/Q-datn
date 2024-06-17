@@ -62,14 +62,18 @@ const sendMessage = asyncHandler(async (req, res) => {
     const chat = await Chat.findById(req.body.chatId);
     // ghi vào file
     if (mention) {
-      
       const sliceRemainingData = content.slice(
         mention.position,
         category.value.length + category.position + 1
       );
       const remainingData = content.replace(sliceRemainingData, "").trim();
+      console.log(remainingData);
       // if (mentions.length > 0) {
-      writeGGSheet(mention.value, category.value, remainingData, chat.sheetId);
+      await writeGGSheet(mention.value, category.value, remainingData, chat.sheetId).then(() => {
+        
+      }).catch((error) => {
+        console.log(error);
+      });
       // }
     }
 
