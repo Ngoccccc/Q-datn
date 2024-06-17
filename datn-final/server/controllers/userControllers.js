@@ -19,7 +19,7 @@ const allUsers = asyncHandler(async (req, res) => {
   //   : {};
 
   // const users = await User.find(key).find({ _id: { $ne: req.user._id } });
-  const users = await User.find({ name: { $regex: key, $options: 'i' } });
+  const users = await User.find({ username: { $regex: key, $options: 'i' } });
   res.send(users);
 });
 

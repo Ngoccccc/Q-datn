@@ -12,11 +12,15 @@ const userSchema = mongoose.Schema(
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
-    isAdmin: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
+
+    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    friend_requests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+
+    // isAdmin: {
+    //   type: Boolean,
+    //   required: true,
+    //   default: false,
+    // },
   },
   { timestaps: true }
 );

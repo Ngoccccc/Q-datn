@@ -1,8 +1,6 @@
-import React from 'react'
 import { createBrowserRouter } from "react-router-dom";
 import Home from '../pages/Home';
 import Chats from './Chats';
-import Analysis from './Analysis';
 import Landing from '../components/Landing/Landing';
 import Login from '../components/Login';
 import Signup from '../components/Signup';
