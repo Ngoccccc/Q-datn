@@ -19,7 +19,7 @@ import { useCategoryContext } from "../../Context/MyCategoryContext";
 
 export function Sidebar() {
   const { myChat } = ChatState();
-  const [fileLink, setFileLink] = useState(myChat?.sheetId);
+  const [fileLink, setFileLink] = useState();
   const { loading, createFile } = useCreateFile();
   const [categoryName, setCategoryName] = useState();
   // const [categories, setCategories] = useState([]);
@@ -100,9 +100,9 @@ export function Sidebar() {
   return (
     <Card className=" w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
       <div className="mb-2 p-4">
-        {fileLink !== "" ? (
+        {fileLink  ? (
           <Link
-            to={myChat?.sheetId}
+            to={fileLink}
             target="_blank"
             className="underline italic font-semibold text-blue-500 cursor-pointer hover:text-blue-700 transition"
           >

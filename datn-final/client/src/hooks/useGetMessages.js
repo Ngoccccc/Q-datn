@@ -22,7 +22,6 @@ const useGetMessages = () => {
           config
         );
 
-        console.log(data);
         setMessages(data);
       } catch (error) {
         toast.error(error.message);

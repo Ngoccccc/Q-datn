@@ -67,7 +67,6 @@ const sendMessage = asyncHandler(async (req, res) => {
         category.value.length + category.position + 1
       );
       const remainingData = content.replace(sliceRemainingData, "").trim();
-      console.log(remainingData);
       // if (mentions.length > 0) {
       await writeGGSheet(mention.value, category.value, remainingData, chat.sheetId).then(() => {
         

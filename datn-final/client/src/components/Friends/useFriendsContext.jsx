@@ -26,7 +26,6 @@ export const FriendsProvider = ({ children }) => {
       await axios
         .get(`/api/friend/get/${authUser._id}`, config)
         .then((response) => {
-          console.log(response.data);
           setFriends(response.data);
         })
         .catch((error) => {

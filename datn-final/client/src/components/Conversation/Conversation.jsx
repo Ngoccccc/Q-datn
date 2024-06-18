@@ -7,11 +7,12 @@ import axios from "axios";
 import SimpleMentionEditor from "../Mention/SimpleMentionEditor";
 import { Typography } from "@material-tailwind/react";
 
-const Conversation = () => {
+const Conversation = ({ setOpen }) => {
   const [messages, setMessages] = useState([]);
 
-  const { selectedChat, setSelectedChat, notification, setNotification } =
-    ChatState();
+  const { selectedChat } = ChatState();
+
+  
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -29,7 +30,6 @@ const Conversation = () => {
         `/api/message/${selectedChat._id}`,
         config
       );
-      console.log(data);
       setMessages(data);
       // setLoading(false);
 
@@ -56,11 +56,11 @@ const Conversation = () => {
   }, [selectedChat]);
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col w-full">
       {selectedChat ? (
         <div className="h-5/6">
           {" "}
-          <Header className="sticky top-0 h-1/6" />
+          <Header className="sticky top-0 h-1/6" setOpen={setOpen} />
           <MessageBox messages={messages} />
           <SimpleMentionEditor
             className="bottom-0"

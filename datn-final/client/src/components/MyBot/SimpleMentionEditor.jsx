@@ -98,7 +98,6 @@ export default function SimpleMentionEditor() {
         },
         config
       );
-      console.log(data);
       setMessages([...messages, data]);
     } catch (error) {
       toast.error(error);

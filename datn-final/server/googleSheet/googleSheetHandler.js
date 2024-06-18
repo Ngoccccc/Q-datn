@@ -196,8 +196,6 @@ const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
 
 
   if (mention == "chi tiêu") {
-    console.log("chi tiêu");
-    console.log(timeDayMonthYear);
 
     await sheet
       .addRow({
@@ -207,7 +205,6 @@ const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
         "Ghi chú": note,
       })
       .then(() => {
-        console.log("đã được ghi vào sheet");
       })
       .catch((error) => {
         console.log(error);

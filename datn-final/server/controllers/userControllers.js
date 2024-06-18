@@ -28,7 +28,6 @@ const allUsers = asyncHandler(async (req, res) => {
     const friends = currentUser.friends;
 
     const friendIds = friends.map((friend) => friend._id.toString());
-    console.log(friendIds);
     
     // Tạo danh sách kết quả với thông tin đã kết bạn
     const searchResults = users.map((user) => {
@@ -62,7 +61,6 @@ const createSheet = asyncHandler(async (req, res) => {
 
   try {
     const user = await User.findById(userId);
-    console.log(user.sheetId);
     if (!user) {
       return res.status(404).send({ message: "User not found" });
     }

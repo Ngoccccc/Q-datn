@@ -10,7 +10,6 @@ const useLogin = () => {
 	const { setAuthUser } = useAuthContext();
 
 	const login = async (email, password) => {
-		console.log(email, password);
 		setLoading(true);
 		try {
 			const config = {
@@ -20,7 +19,6 @@ const useLogin = () => {
 			};
 
 			const { data } = await axios.post("/api/auth/login", { email, password }, config);
-			console.log(data);
 			localStorage.setItem("chat-user", JSON.stringify(data));
 			setAuthUser(data);
 			navigate("/");

@@ -12,92 +12,61 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { getChatAvatarHeader } from "../config/ChatLogics";
+import { ChatState } from "../../Context/ChatProvider";
+import { useAuthContext } from "../../Context/AuthContext";
 
-const Header = () => {
-  // const { user, selectedChat } = ChatState();
-  // const [loading, setLoading] = useState(false);
-  // const [usersMail, setUsersMail] = useState();
-
-  // const [sheetId, setSheetId] = useState();
-
-  // useEffect(() => {
-  //   setSheetId(selectedChat?.sheetId);
-  //   setUsersMail(selectedChat?.users?.map((user) => user.email));
-  // }, [selectedChat]);
-
-  // const handerCreateFile = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const config = {
-  //       headers: {
-  //         Authorization: `Bearer ${user?.data?.token}`,
-  //       },
-  //     };
-
-  //     await axios
-  //       .post(
-  //         "/api/chat/createfile",
-  //         { usersMail, chatId: selectedChat?._id },
-  //         config
-  //       )
-  //       .then((res) => {
-  //         // setLoading(false);
-  //         // toast.success("Tao file thành công !", {
-  //         //   position: "top-center",
-  //         // });
-  //         //   console.log(res.data.);
-  //         setLoading(false);
-  //         setSheetId(res.data.sheetId);
-  //       })
-  //       .catch((error) => {
-  //         // toast
-  //         console.log(error);
-  //         setLoading(false);
-  //       });
-
-  //     // toast
-  //   } catch (error) {
-  //     // toast
-  //     console.log(error);
-  //   }
-  // };
+const Header = ({ setOpen }) => {
+  const { selectedChat, setSelectedChat } = ChatState();
+  const { authUser } = useAuthContext();
 
   return (
-    <div className="bg-white w-full flex border-b-[1px] sm:px-4 py-3 px-4 lg:px-6 justify-between items-center shadow-sm">
-      <div className="flex gap-3 items-center">
-        <NavLink
-          to={`/chats`}
-          className={
-            "lg:hidden block text-blue-gray-600 hover:text-blue-gray-800 transition cursor-pointer"
-          }
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="size-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
-            />
-          </svg>
-        </NavLink>
-        <Badge placement="top-end" overlap="circular" color="green" withBorder>
-          <Avatar
-            // src={getChatAvatarHeader(user?.data, selectedChat?.users)}
-            alt="avatar"
-          />
-        </Badge>
-        <div className="flex flex-col pr-5">
-          {/* <Typography variant="h6">{selectedChat?.chatName}</Typography> */}
+    <>
+      {selectedChat && authUser && (
+        <div className="bg-white w-full flex border-b-[1px] sm:px-4 py-3 px-4 lg:px-6 justify-between items-center shadow-sm">
+          <div className="flex gap-3 items-center">
+            {/* <NavLink
+              to={`/chats`}
+              className={
+                "lg:hidden block text-blue-gray-600 hover:text-blue-gray-800 transition cursor-pointer"
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+                />
+              </svg>
+            </NavLink> */}
+            <Badge
+              placement="top-end"
+              overlap="circular"
+              color="green"
+              withBorder
+            >
+              <Avatar
+                // src={getChatAvatarHeader(user?.data, selectedChat?.users)}
+                alt="avatar"
+              />
+            </Badge>
+            <div className="flex flex-col pr-5">
+              <Typography variant="h6">
+                {selectedChat.chatName
+                  ? selectedChat.chatName
+                  : selectedChat.users[0].username === authUser.username
+                  ? selectedChat.users[1].username
+                  : selectedChat.users[0].username}
+              </Typography>
 
-          <div className="text-sm font-light text-neutral-500">Active</div>
-        </div>
-        {/* {sheetId ? (
+            </div>
+            {/* {sheetId ? (
           <Link
             to={sheetId}
             target="_blank"
@@ -133,25 +102,27 @@ const Header = () => {
           </Tooltip>
         )} */}
 
-        {/* link file google sheet nếu có */}
-      </div>
-      <div className="text-blue-500 cursor-pointer hover:text-blue-gray-700 transition">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="size-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-          />
-        </svg>
-      </div>
-    </div>
+            {/* link file google sheet nếu có */}
+          </div>
+          <div onClick={() => setOpen(cur => !cur)} className="text-blue-500 cursor-pointer hover:text-blue-gray-700 transition">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+              />
+            </svg>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

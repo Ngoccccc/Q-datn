@@ -68,7 +68,6 @@ const sendFriendRequest = asyncHandler(async (req, res) => {
 
 const acceptFriendRequest = asyncHandler(async (req, res) => {
   const { userId, accepterId } = req.body; // userId là ID của người gửi yêu cầu kết bạn
-  console.log(userId, accepterId);
   try {
     // Tìm yêu cầu kết bạn và cập nhật trạng thái
     const friendship = await Friendship.findOneAndUpdate(

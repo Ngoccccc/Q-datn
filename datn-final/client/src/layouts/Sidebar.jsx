@@ -34,8 +34,6 @@ function Sidebar() {
       };
 
       const { data } = await axios.get(`/api/chat/`, config);
-      console.log(authUser._id);
-      console.log(data);
       setChats(data);
     } catch (error) {
       toast.error(error.message);
@@ -86,7 +84,6 @@ function Sidebar() {
     //     `/api/chat/find/${authId}/${userId}`,
     //     config
     //   );
-    //   console.log(data);
 
     //   if (data._id) {
     //     if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);

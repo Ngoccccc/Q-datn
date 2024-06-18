@@ -10,10 +10,10 @@ import {
   isSameUser,
 } from "../config/ChatLogics";
 
-// import { ChatState } from "../../Context/ChatProvider";
+import { ChatState } from "../../Context/ChatProvider";
 
 const MessageBox = ({ messages }) => {
-  // const { user, selectedChat } = ChatState();
+  const { selectedChat } = ChatState();
 
   const [isOwn, setIsOwn] = useState(false);
   const image = false;
@@ -39,34 +39,44 @@ const MessageBox = ({ messages }) => {
 
   return (
     <>
-      {/* {selectedChat ? (
+      {selectedChat ? (
         <ScrollableFeed>
           {messages &&
-            messages.map((m, i) => {
+            messages.map((m) => {
               const parts = [];
               let currentIndex = 0;
-              const mentions = m.mentions;
+              const mention = m.mention;
               const content = m.content;
+              const category = m.category;
 
-              mentions.forEach((mention, index) => {
-                // Push the text before the mention
-                if (mention.start > currentIndex) {
-                  parts.push(content.slice(currentIndex, mention.start));
+              if (mention) {
+                if (mention.position > currentIndex) {
+                  parts.push(content.slice(currentIndex, mention.position));
                 }
-                // Push the mention itself
+
                 parts.push(
-                  <span key={index} className="text-blue-600">
-                    @{mention.name}
+                  <span className="text-blue-600">@{mention.value}</span>
+                );
+                currentIndex = mention.position + mention.value.length + 1; // Update currentIndex correctly
+              }
+
+              if (category) {
+                if (category.position > currentIndex) {
+                  parts.push(content.slice(currentIndex, category.position));
+                }
+                parts.push(
+                  <span className="text-gray-600 font-bold bg-blue-gray-100 rounded-full p-1 px-2 mx-2">
+                    /{category.value}
                   </span>
                 );
-                // Update currentIndex to the end of the mention
-                currentIndex = mention.end;
-              });
+                currentIndex = category.position + category.value.length + 1; // Update currentIndex correctly
+              }
 
               // Push any remaining text after the last mention
               if (currentIndex < content.length) {
                 parts.push(content.slice(currentIndex));
               }
+
               return (
                 <div className={container} key={m._id}>
                   <div className={avatar}>
@@ -76,42 +86,36 @@ const MessageBox = ({ messages }) => {
                       color="green"
                       withBorder
                     >
-                      <Avatar size="sm" src={m.sender.pic} alt="avatar" />
+                      <Avatar size="sm" src={m.sender.avatar} alt="avatar" />
                     </Badge>
                   </div>
 
                   <div className={body}>
                     <div className="flex items-center gap-1">
                       <div className="text-sm text-gray-500">
-                        {m.sender.name}
+                        {m.sender.username}
                       </div>
                       <div className="text-xs text-gray-400">
                         {format(new Date(m.createdAt), "yyyy-MM-dd HH:mm")}
                       </div>
                     </div>
-                    {/* <div className={message}>{m.content}</div> */}
                     <p
-                    //   className={
-                    //     user?.data?._id == m.sender._id
-                    //       ? messageNotOwn
-                    //       : messageOwn
-                    //   }
-                    > nhap
-                    {/* //   {parts} */}
+                      className={
+                        authUser?._id == m.sender._id
+                          ? messageNotOwn
+                          : messageOwn
+                      }
+                    >
+                      {parts}
                     </p>
-                    {/* {isLast && (
-                      <div className="text-xs font-light text-gray-500">
-                        Seen by Quynh
-                      </div>
-                    )} */}
-                  {/* </div>
+                  </div>
                 </div>
-              ); */}
-            {/* // })} */}
-        {/* </ScrollableFeed> */}
-      {/* ) : (
+              );
+            })}
+        </ScrollableFeed>
+      ) : (
         <div className="h-3/4">Chọn một đoạn chat để bắt đầu chat</div>
-      )} */} 
+      )}
     </>
   );
 };

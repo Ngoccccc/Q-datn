@@ -7,34 +7,33 @@ const {
   readTotalSpending,
 } = require("../googleSheet/googleSheetHandler");
 
-
 const getChat = asyncHandler(async (req, res) => {
   const { userID, authID } = req.params;
 
-   try {
-     // Tìm đoạn chat có users chỉ chứa đúng [userID, authID]
-     const chat = await Chat.findOne({
-       users: { $all: [userID, authID], $size: 2 },
-     });
+  try {
+    // Tìm đoạn chat có users chỉ chứa đúng [userID, authID]
+    const chat = await Chat.findOne({
+      users: { $all: [userID, authID], $size: 2 },
+    });
 
-     if (!chat) {
-       return res
-         .status(404)
-         .json({ message: "No chat found with the specified users" });
-     }
+    if (!chat) {
+      return res
+        .status(404)
+        .json({ message: "No chat found with the specified users" });
+    }
 
-     res.status(200).json(chat);
-   } catch (error) {
-     console.error("Error finding chat:", error);
-     res.status(500).json({ message: "Internal server error" });
-   }
+    res.status(200).json(chat);
+  } catch (error) {
+    console.error("Error finding chat:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 //@description     Create or fetch One to One Chat
 //@route           POST /api/chat/
 //@access          Protected
 const accessChat = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
+  const { myId, userId } = req.body;
 
   if (!userId) {
     console.log("UserId param not sent with request");
@@ -44,16 +43,16 @@ const accessChat = asyncHandler(async (req, res) => {
   var isChat = await Chat.find({
     isGroupChat: false,
     $and: [
-      { users: { $elemMatch: { $eq: req.user._id } } },
+      { users: { $elemMatch: { $eq: myId } } },
       { users: { $elemMatch: { $eq: userId } } },
     ],
   })
-    .populate("users", "-password")
+    .populate("users chatName", "-password")
     .populate("latestMessage");
 
   isChat = await User.populate(isChat, {
     path: "latestMessage.sender",
-    select: "name pic email",
+    select: "username avatar email",
   });
 
   const sender = await User.findById(userId);
@@ -64,13 +63,14 @@ const accessChat = asyncHandler(async (req, res) => {
     var chatData = {
       chatName: sender.name,
       isGroupChat: false,
-      users: [req.user._id, userId],
+      users: [myId, userId],
     };
 
     try {
       const createdChat = await Chat.create(chatData);
       const FullChat = await Chat.findOne({ _id: createdChat._id }).populate(
         "users",
+        "chatName",
         "-password"
       );
       res.status(200).json(FullChat);
@@ -85,7 +85,6 @@ const accessChat = asyncHandler(async (req, res) => {
 //@route           GET /api/chat/
 //@access          Protected
 const fetchChats = asyncHandler(async (req, res) => {
-  
   try {
     Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
       .populate("users", "-password")
@@ -167,7 +166,6 @@ const createSheet = asyncHandler(async (req, res) => {
   const usersMail = req.user.email;
 
   const sheetId = await createNewSheet(usersMail);
-  console.log(sheetId);
 
   const updatedChat = await Chat.findByIdAndUpdate(
     chatId,
@@ -343,11 +341,15 @@ const getSpending = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Chat Not Found");
   } else {
-    const spending = await readTotalSpending(chat.sheetId);
-    res.json(spending);
-    
+    if (chat.sheetId) {
+      const spending = await readTotalSpending(chat.sheetId);
+      res.json(spending);
+    }
+    else {
+      res.json(0);
+    }
   }
-})
+});
 module.exports = {
   accessChat,
   fetchChats,

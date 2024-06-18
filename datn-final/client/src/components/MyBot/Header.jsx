@@ -27,7 +27,11 @@ const Header = () => {
           `/api/chat/spending/${myChat._id}`,
           config
         );
-        setSpending(data);
+        if (data == 0) {
+          setSpending({ day: 0, week: 0, month: 0 });
+        } else {
+          setSpending(data);
+        }
       } catch (error) {
         toast.error(error.message);
       }
@@ -54,7 +58,7 @@ const Header = () => {
         />
       </svg>
       <Typography variant="h6" className="mr-2">
-        Tổng chi tiêu:{" "}
+        Tổng chi tiêu:
       </Typography>
       <div className="flex gap-4">
         {/* ngày */}
