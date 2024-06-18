@@ -191,7 +191,6 @@ export default function SimpleMentionEditor({ messages, setMessages }) {
         config
       );
       // socket.emit("new message", data);
-      console.log(data);
       setMessages([...messages, data]);
     } catch (error) {
       console.log(error);

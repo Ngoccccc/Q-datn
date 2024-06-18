@@ -9,6 +9,7 @@ const {
   createSheet,
   mySelfChat,
   getSpending,
+  getChat,
 } = require("../controllers/chatControllers");
 const { protect } = require("../middleware/authMiddleware");
 const { protectRoute } = require("../middleware/protectRoute");
@@ -17,6 +18,7 @@ const router = express.Router();
 
 router.route("/").post(protectRoute, accessChat);
 router.route("/").get(protectRoute, fetchChats);
+router.route("/find/:userID/:authID").get(protectRoute, getChat);
 router.route("/myself/:id").get(protectRoute, mySelfChat);
 router.route("/createfile").post(protectRoute, createSheet);
 router.route("/spending/:id").get(protectRoute, getSpending);

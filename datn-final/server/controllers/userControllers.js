@@ -1,26 +1,55 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const generateToken = require("../config/generateToken");
-const { createNewSheet } = require("../googleSheet/googleSheetHandler")
+const { createNewSheet } = require("../googleSheet/googleSheetHandler");
 
 //@description     Get or Search all users
 //@route           GET /api/user?search=
 //@access          Public
 const allUsers = asyncHandler(async (req, res) => {
-  const key = req.query.search
-  console.log(key);
-  // const keyword = req.query.search
-  //   ? {
-  //       $or: [
-  //         { name: { $regex: req.query.search, $options: "i" } },
-  //         { email: { $regex: req.query.search, $options: "i" } },
-  //       ],
-  //     }
-  //   : {};
+  const loggedInUserId = req.params.id;
+  const keyword = req.query.search;
 
-  // const users = await User.find(key).find({ _id: { $ne: req.user._id } });
-  const users = await User.find({ username: { $regex: key, $options: 'i' } });
-  res.send(users);
+  try {
+    // Tìm kiếm người dùng theo username và loại bỏ người dùng hiện tại
+    const users = await User.find({
+      username: { $regex: keyword, $options: "i" }, // Tìm kiếm không phân biệt hoa thường
+      _id: { $ne: loggedInUserId }, // Loại bỏ người dùng hiện tại
+    })
+
+    // Lấy danh sách bạn bè của người dùng hiện tại
+    const currentUser = await User.findById(loggedInUserId).populate(
+      "friends",
+      "username"
+    );
+
+    // if (currentUser.friends.length === 0) return res.json([]);
+
+    const friends = currentUser.friends;
+
+    const friendIds = friends.map((friend) => friend._id.toString());
+    console.log(friendIds);
+    
+    // Tạo danh sách kết quả với thông tin đã kết bạn
+    const searchResults = users.map((user) => {
+      const request = user.friend_requests.map((request) => {
+        return request._id.toString();
+      })
+      return {
+        id: user._id,
+        username: user.username,
+        avatar: user.avatar,
+        email: user.email,
+        isFriend: friendIds.includes(user._id.toString()), // Kiểm tra xem có phải là bạn bè không
+        sentRequest: request.includes(currentUser._id.toString()),
+      };});
+
+    // console.log(searchResults);
+    res.json(searchResults);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: "Server error" });
+  }
 });
 
 //@description     create new file sheet for myself
@@ -35,12 +64,11 @@ const createSheet = asyncHandler(async (req, res) => {
     const user = await User.findById(userId);
     console.log(user.sheetId);
     if (!user) {
-      return res.status(404).send({ message: 'User not found' });
+      return res.status(404).send({ message: "User not found" });
     }
     if (user.sheetId) {
-      return res.send({ message: 'User already has a sheet' });
-    }
-    else {
+      return res.send({ message: "User already has a sheet" });
+    } else {
       const sheetId = await createNewSheet(req.body.email);
       user.sheetId = sheetId;
       const updatedUser = await user.save();
@@ -121,8 +149,6 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 //@description     Get user profile
 //@route           GET /api/users/profile
 //@access          Private
@@ -147,7 +173,7 @@ const getSheetLinkOfUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   if (user) {
     res.json({
-      sheetId: user.sheetId
+      sheetId: user.sheetId,
     });
   } else {
     res.status(404);

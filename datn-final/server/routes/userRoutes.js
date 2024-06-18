@@ -14,7 +14,7 @@ const router = express.Router();
 
 // todo sửa protect
 // router.route("/").get(protect, allUsers);
-router.route("/").get( allUsers);
+router.route("/:id").get( allUsers);
 router.route("/").post(registerUser);
 router.post("/login", authUser);
 router.post("/createfile", createSheet);

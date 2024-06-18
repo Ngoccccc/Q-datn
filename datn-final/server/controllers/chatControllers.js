@@ -7,6 +7,29 @@ const {
   readTotalSpending,
 } = require("../googleSheet/googleSheetHandler");
 
+
+const getChat = asyncHandler(async (req, res) => {
+  const { userID, authID } = req.params;
+
+   try {
+     // Tìm đoạn chat có users chỉ chứa đúng [userID, authID]
+     const chat = await Chat.findOne({
+       users: { $all: [userID, authID], $size: 2 },
+     });
+
+     if (!chat) {
+       return res
+         .status(404)
+         .json({ message: "No chat found with the specified users" });
+     }
+
+     res.status(200).json(chat);
+   } catch (error) {
+     console.error("Error finding chat:", error);
+     res.status(500).json({ message: "Internal server error" });
+   }
+});
+
 //@description     Create or fetch One to One Chat
 //@route           POST /api/chat/
 //@access          Protected
@@ -62,6 +85,7 @@ const accessChat = asyncHandler(async (req, res) => {
 //@route           GET /api/chat/
 //@access          Protected
 const fetchChats = asyncHandler(async (req, res) => {
+  
   try {
     Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
       .populate("users", "-password")
@@ -335,4 +359,5 @@ module.exports = {
   mySelfChat,
   fetchChat,
   getSpending,
+  getChat,
 };

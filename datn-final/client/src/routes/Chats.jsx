@@ -1,5 +1,5 @@
-import React from 'react'
 import Conversation from '../components/Conversation/Conversation'
+import Friends from '../components/Friends/index';
 import Sidebar from '../layouts/Sidebar'
 
 const Chats = () => {
@@ -11,6 +11,9 @@ const Chats = () => {
 
       <div className="flex-1  rounded-xl shadow-md bg-white">
         <Conversation className="flex-1" />
+      </div>
+      <div className="w-1/5 rounded-xl shadow-md bg-white hidden lg:flex mr-4 justify-center">
+        <Friends />
       </div>
     </div>
   );

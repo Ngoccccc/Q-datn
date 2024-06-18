@@ -8,69 +8,74 @@ import SimpleMentionEditor from "../Mention/SimpleMentionEditor";
 import { Typography } from "@material-tailwind/react";
 
 const Conversation = () => {
-  // const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([]);
 
-  // const { selectedChat, setSelectedChat, user, notification, setNotification } =
-  //   ChatState();
+  const { selectedChat, setSelectedChat, notification, setNotification } =
+    ChatState();
 
-  // const fetchMessages = async () => {
-  //   if (!selectedChat) return;
+  const fetchMessages = async () => {
+    if (!selectedChat) return;
 
-  //   try {
-  //     const config = {
-  //       headers: {
-  //         Authorization: `Bearer ${user?.data.token}`,
-  //       },
-  //     };
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
 
-  //     // setLoading(true);
+      // setLoading(true);
 
-  //     const { data } = await axios.get(
-  //       `/api/message/${selectedChat._id}`,
-  //       config
-  //     );
-  //     setMessages(data);
-  //     console.log(data);
-  //     // setLoading(false);
+      const { data } = await axios.get(
+        `/api/message/${selectedChat._id}`,
+        config
+      );
+      console.log(data);
+      setMessages(data);
+      // setLoading(false);
 
-  //     // socket.emit("join chat", selectedChat._id);
-  //   } catch (error) {
-  //     console.log(error);
-  //     // toast({
-  //     //   title: "Error Occured!",
-  //     //   description: "Failed to Load the Messages",
-  //     //   status: "error",
-  //     //   duration: 5000,
-  //     //   isClosable: true,
-  //     //   position: "bottom",
-  //     // });
-  //   }
-  // };
+      // socket.emit("join chat", selectedChat._id);
+    } catch (error) {
+      console.log(error);
+      // toast({
+      //   title: "Error Occured!",
+      //   description: "Failed to Load the Messages",
+      //   status: "error",
+      //   duration: 5000,
+      //   isClosable: true,
+      //   position: "bottom",
+      // });
+    }
+  };
 
-  // useEffect(() => {
-  //   fetchMessages();
+  useEffect(() => {
+    if (!selectedChat) return;
+    fetchMessages();
 
-  //   // selectedChatCompare = selectedChat;
-  //   // eslint-disable-next-line
-  // }, [selectedChat]);
-  
+    // selectedChatCompare = selectedChat;
+    // eslint-disable-next-line
+  }, [selectedChat]);
 
   return (
     <div className="h-full flex flex-col">
-
-      {/* {selectedChat ? (
+      {selectedChat ? (
         <div className="h-5/6">
           {" "}
           <Header className="sticky top-0 h-1/6" />
           <MessageBox messages={messages} />
-          <SimpleMentionEditor className="bottom-0" messages={messages} setMessages={setMessages} />
+          <SimpleMentionEditor
+            className="bottom-0"
+            messages={messages}
+            setMessages={setMessages}
+          />
         </div>
       ) : (
-          // TODO: mybot
+        // TODO: mybot
         <div className="h-5/6 flex justify-center items-center w-full">
-          <Typography className="text-3xl text-blue-gray-100">Chọn 1 đoạn chat để bắt đầu chat</Typography>
+          <Typography className="text-3xl text-blue-gray-100">
+            Chọn 1 đoạn chat để bắt đầu chat
+          </Typography>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

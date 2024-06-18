@@ -6,6 +6,7 @@ import {
   Input,
   Badge,
   Avatar,
+  Button,
 } from "@material-tailwind/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { CreateGroup } from "../components/Group/CreateGroup";
@@ -20,10 +21,9 @@ function Sidebar() {
   const { authUser } = useAuthContext();
   // const [loggedUser, setLoggedUser] = useState();
   const [searchResult, setSearchResult] = useState([]);
-  // const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
+  const { selectedChat, setSelectedChat, chats, setChats } = ChatState();
   const [search, setSearch] = useState("");
-  const [chats, setChats] = useState([]);
-  const [selectedChat, setSelectedChat] = useState();
+
 
   const fetchChats = async () => {
     try {
@@ -33,7 +33,9 @@ function Sidebar() {
         },
       };
 
-      const { data } = await axios.get("/api/chat", config);
+      const { data } = await axios.get(`/api/chat/`, config);
+      console.log(authUser._id);
+      console.log(data);
       setChats(data);
     } catch (error) {
       toast.error(error.message);
@@ -59,7 +61,7 @@ function Sidebar() {
           "Content-type": "application/json",
         },
       };
-      const { data } = await axios.get(`/api/user?search=${query}`, config);
+      const { data } = await axios.get(`/api/user/${authUser._id}?search=${query}`, config);
       // setLoading(false);
       console.log(data);
       setSearchResult(data);
@@ -72,23 +74,51 @@ function Sidebar() {
     setSearch("");
     setSearchResult([]);
     const userId = selectedUser._id;
-     try {
-      // setLoadingChat(true);
+    const authId = authUser._id;
+    // try {
+    //   // setLoadingChat(true);
+    //   const config = {
+    //     headers: {
+    //       "Content-type": "application/json",
+    //     },
+    //   };
+    //   const { data } = await axios.get(
+    //     `/api/chat/find/${authId}/${userId}`,
+    //     config
+    //   );
+    //   console.log(data);
+
+    //   if (data._id) {
+    //     if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+    //     setSelectedChat(data);
+    //   }
+      
+    //   // setLoadingChat(false);
+    //   // onClose();
+    // } catch (error) {
+    //   console.log(error);
+    //   setSelectedChat()
+    // }
+  };
+
+  const handleSendRequestFriend = async (selectedUser) => {
+    const userId = selectedUser.id;
+    const authId = authUser._id;
+    try {
       const config = {
         headers: {
           "Content-type": "application/json",
         },
       };
-      const { data } = await axios.post(`/api/chat`, { userId }, config);
-
-      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
-      setSelectedChat(data);
-      // setLoadingChat(false);
-      // onClose();
+      const { data } = await axios.post(
+        `/api/friend/request`, {authId, userId},
+        config
+      );
+      toast.success(data.message);
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
-   }
+  };
 
   return (
     <div className="h-full flex flex-col">
@@ -110,17 +140,14 @@ function Sidebar() {
       {searchResult.length > 0 && (
         <div className="flex-1 overflow-y-auto pl-4 pr-4">
           {searchResult.map((user) => (
-            <ListItem
+            <div
               key={user._id}
               onClick={() => handleSetSearchResult(user)}
               cursor="pointer"
             >
-              <ListItemPrefix>
+              <div className="hover:bg-blue-gray-50 cursor-pointer p-4 rounded-lg">
                 <div className="flex items-center gap-4">
-                  <Avatar
-                    src={user.avatar}
-                    alt="avatar"
-                  />
+                  <Avatar src={user.avatar} alt="avatar" />
                   <div>
                     <Typography variant="h6">{user.username}</Typography>
                     <Typography
@@ -130,10 +157,22 @@ function Sidebar() {
                     >
                       {`${user.email.substring(0, 15)}...`}
                     </Typography>
+                    {user.isFriend ? (
+                      <span>Bạn bè</span>
+                    ) : user.sentRequest ? (
+                      <span className="text-xs bg-orange-500 text-white font-bold py-1 px-2 rounded">Đang yêu cầu</span>
+                    ) : (
+                      <button
+                        onClick={() => handleSendRequestFriend(user)}
+                        className="text-xs bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                      >
+                        Kết bạn
+                      </button>
+                    )}
                   </div>
                 </div>
-              </ListItemPrefix>
-            </ListItem>
+              </div>
+            </div>
           ))}
         </div>
       )}
@@ -143,7 +182,10 @@ function Sidebar() {
           {chats.map((chat) => (
             <ListItem
               key={chat._id}
-              onClick={() => setSelectedChat(chat)}
+              onClick={() => {
+                console.log(chat);
+                setSelectedChat(chat);
+              }}
               cursor="pointer"
             >
               <ListItemPrefix>
@@ -154,7 +196,6 @@ function Sidebar() {
                     color="green"
                     withBorder
                   >
-                    {console.log(chat)}
                     <Avatar
                       // src={getChatAvatar(loggedUser, chat.users)}
                       alt="avatar"

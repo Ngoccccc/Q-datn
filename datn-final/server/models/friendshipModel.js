@@ -3,8 +3,8 @@ const bcrypt = require("bcryptjs");
 
 const friendshipSchema = mongoose.Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    friend: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    user1_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    user2_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     status: { type: Boolean, default: false },
   },
   { timestaps: true }

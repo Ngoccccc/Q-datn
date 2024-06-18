@@ -8,7 +8,7 @@ import { AuthContextProvider } from "./Context/AuthContext";
 import  ChatProvider  from "./Context/ChatProvider";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <ThemeProvider>
       <AuthContextProvider>
         <ChatProvider>
@@ -16,5 +16,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </ChatProvider>
       </AuthContextProvider>
     </ThemeProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );

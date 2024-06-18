@@ -91,13 +91,13 @@ const MessageBox = ({ messages }) => {
                     </div>
                     {/* <div className={message}>{m.content}</div> */}
                     <p
-                      className={
-                        user?.data?._id == m.sender._id
-                          ? messageNotOwn
-                          : messageOwn
-                      }
-                    >
-                      {parts}
+                    //   className={
+                    //     user?.data?._id == m.sender._id
+                    //       ? messageNotOwn
+                    //       : messageOwn
+                    //   }
+                    > nhap
+                    {/* //   {parts} */}
                     </p>
                     {/* {isLast && (
                       <div className="text-xs font-light text-gray-500">
