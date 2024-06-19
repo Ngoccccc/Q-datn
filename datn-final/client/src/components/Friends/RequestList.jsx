@@ -29,9 +29,9 @@ const RequestList = () => {
     fetchData();
   }, [friends]);
 
-  const handleAcceptRequest = async (request) => {
+  const handleAcceptRequest = async (requestId) => {
     const accepterId = authUser._id;
-    const userId = request;
+    const userId = requestId;
     const config = {
       headers: {
         "Content-type": "application/json",
@@ -43,7 +43,8 @@ const RequestList = () => {
         accepterId,
       }, config)
       .then((response) => {
-        setFriends(response.data);
+        console.log(response.data);
+        setFriends(response.data.friends);
       })
       .catch((error) => {
         console.log(error);

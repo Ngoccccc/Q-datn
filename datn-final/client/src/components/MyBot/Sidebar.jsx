@@ -26,6 +26,12 @@ export function Sidebar() {
   const { myCategory, setMyCategory } = useCategoryContext();
   const [visableClick, setVisableClick] = useState(true);
 
+  useEffect(() => { 
+    if (myChat) {
+      setFileLink(myChat?.sheetId);
+    }
+  }, [myChat])
+
   useEffect(() => {
     if (myChat) {
       const config = {
@@ -47,7 +53,29 @@ export function Sidebar() {
 
 
   const handerCreateFile = async () => {
-    await createFile({ chatId: myChat?.id, setFileLink });
+    if (!myChat) {
+      return;
+    }
+    const chatId = myChat._id;
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const { data } = await axios.post(
+        "/api/chat/createfile",
+        { chatId },
+        config
+      );
+      setFileLink(data.sheetLink);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    } finally {
+      toast.success("Tạo file thành công")
+    }
   };
 
   if (!myChat) {

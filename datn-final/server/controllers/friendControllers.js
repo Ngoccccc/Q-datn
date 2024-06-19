@@ -76,7 +76,6 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    
     if (!friendship) {
       return res
         .status(400)
@@ -90,7 +89,20 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
     });
     await User.findByIdAndUpdate(userId, { $push: { friends: accepterId } });
 
-    res.status(200).json({ msg: "Friend request accepted" });
+    // Lấy danh sách bạn bè của accepterId
+    const accepter = await User.findById(accepterId).populate(
+      "friends",
+      "username avatar"
+    );
+    const friendsList = accepter.friends.map((friend) => ({
+      id: friend._id,
+      username: friend.username,
+      avatar: friend.avatar,
+    }));
+
+    res
+      .status(200)
+      .json({ msg: "Friend request accepted", friends: friendsList });
   } catch (err) {
     res.status(500).json({ msg: "Server error" });
   }

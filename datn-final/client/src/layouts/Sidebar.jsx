@@ -34,6 +34,7 @@ function Sidebar() {
       };
 
       const { data } = await axios.get(`/api/chat/`, config);
+      console.log(data);
       setChats(data);
     } catch (error) {
       toast.error(error.message);
@@ -157,7 +158,9 @@ function Sidebar() {
                     {user.isFriend ? (
                       <span>Bạn bè</span>
                     ) : user.sentRequest ? (
-                      <span className="text-xs bg-orange-500 text-white font-bold py-1 px-2 rounded">Đang yêu cầu</span>
+                      <span className="text-xs bg-orange-500 text-white font-bold py-1 px-2 rounded">
+                        Đang yêu cầu
+                      </span>
                     ) : (
                       <button
                         onClick={() => handleSendRequestFriend(user)}
@@ -176,51 +179,63 @@ function Sidebar() {
 
       {chats ? (
         <div className="flex-1 overflow-y-auto pl-4 pr-4">
-          {chats.map((chat) => (
-            <ListItem
-              key={chat._id}
-              onClick={() => {
-                console.log(chat);
-                setSelectedChat(chat);
-              }}
-              cursor="pointer"
-            >
-              <ListItemPrefix>
-                <div className="flex items-center gap-4">
-                  <Badge
-                    placement="top-end"
-                    overlap="circular"
-                    color="green"
-                    withBorder
-                  >
-                    <Avatar
-                      // src={getChatAvatar(loggedUser, chat.users)}
-                      alt="avatar"
-                    />
-                  </Badge>
-                  <div>
-                    <Typography variant="h6">
-                      {/* {!chat.isGroupChat
+          {chats.map((chat) => {
+            if (chat.users.length != 1)
+              return (
+                <ListItem
+                  key={chat._id}
+                  onClick={() => {
+                    console.log(chat);
+                    setSelectedChat(chat);
+                  }}
+                  cursor="pointer"
+                >
+                  <ListItemPrefix>
+                    <div className="flex items-center gap-4">
+                      <Badge
+                        placement="top-end"
+                        overlap="circular"
+                        color="green"
+                        withBorder
+                      >
+                        <Avatar
+                          src={
+                            chat.users.length == 2
+                              ? chat.users[0]._id == authUser._id
+                                ? chat.users[1].avatar
+                                : chat.users[0].avatar
+                              : null
+                          }
+                          alt="avatar"
+                        />
+                      </Badge>
+                      <div>
+                        <Typography variant="h6">
+                          {/* {!chat.isGroupChat
                         ? getSender(loggedUser, chat.users)
                         : chat.chatName} */}
-                    </Typography>
-                    {chat.latestMessage && (
-                      <Typography
-                        variant="small"
-                        color="gray"
-                        className="font-normal"
-                      >
-                        <b>{chat.latestMessage.sender.name} : </b>
-                        {chat.latestMessage.content.length > 50
-                          ? chat.latestMessage.content.substring(0, 51) + "..."
-                          : chat.latestMessage.content}
-                      </Typography>
-                    )}
-                  </div>
-                </div>
-              </ListItemPrefix>
-            </ListItem>
-          ))}
+                          {chat.chatName}
+                        </Typography>
+                        {chat.latestMessage && (
+                          <Typography
+                            variant="small"
+                            color="gray"
+                            className="font-normal"
+                          >
+                            <b>{chat.latestMessage.sender.name} : </b>
+                            {chat.latestMessage.content.length > 50
+                              ? chat.latestMessage.content.substring(0, 51) +
+                                "..."
+                              : chat.latestMessage.content}
+                          </Typography>
+                        )}
+                      </div>
+                    </div>
+                  </ListItemPrefix>
+                </ListItem>
+              );
+          }
+          )}
         </div>
       ) : (
         <div className="flex-1 overflow-y-auto pl-4 pr-4">

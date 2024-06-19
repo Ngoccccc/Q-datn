@@ -41,7 +41,7 @@ const FriendList = () => {
         </Typography>
         {friends && friends.length > 0 ? (
           friends.map((friend) => (
-            <div onClick={() => handleSelectedChat(friend)} key={friend._id} className="flex items-center gap-3 p-2 hover:bg-blue-gray-50 rounded-lg">
+            <div key={friend.id} onClick={() => handleSelectedChat(friend)} className="flex items-center gap-3 p-2 hover:bg-blue-gray-50 rounded-lg">
               <Avatar src={friend.avatar} alt="avatar" className="w-10 h-10" />
               <Typography className="ml-2">{friend.username}</Typography>
             </div>

@@ -94,7 +94,7 @@ const fetchChats = asyncHandler(async (req, res) => {
       .then(async (results) => {
         results = await User.populate(results, {
           path: "latestMessage.sender",
-          select: "name pic email",
+          select: "username avatar email",
         });
         res.status(200).send(results);
       });
@@ -163,69 +163,47 @@ const createGroupChat = asyncHandler(async (req, res) => {
 
 const createSheet = asyncHandler(async (req, res) => {
   const { chatId } = req.body;
-  const usersMail = req.user.email;
 
-  const sheetId = await createNewSheet(usersMail);
+  try {
+    // Tìm chat theo chatId
+    const chat = await Chat.findById(chatId);
 
-  const updatedChat = await Chat.findByIdAndUpdate(
-    chatId,
-    { sheetId },
-    { new: true, runValidators: true }
-  );
+    // Lấy danh sách user IDs từ chat
+    const users = chat.users;
 
-  if (!updatedChat) {
-    return res.status(404).send({ message: "Chat not found" });
+    // Sử dụng Promise.all để chờ tất cả các truy vấn findById hoàn thành
+    const userEmails = await Promise.all(
+      users.map(async (userId) => {
+        const user = await User.findById(userId).select("email");
+        return user.email;
+      })
+    );
+
+    const sheetId = await createNewSheet(userEmails);
+
+    const updatedChat = await Chat.findByIdAndUpdate(
+      chatId,
+      { sheetId },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedChat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
+    // res.send({ sheetId });
+
+    // Trả về danh sách email
+    res.status(200).json({ sheetLink: sheetId });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: "Server error" });
   }
-  res.send({ sheetId });
+
+
+
+  
 });
 
-// if (!req.body.users || !req.body.name) {
-//   return res.status(400).send({ message: "Please Fill all the feilds" });
-// }
-
-// var users = JSON.parse(req.body.users);
-
-// if (users.length < 2) {
-//   return res
-//     .status(400)
-//     .send("More than 2 users are required to form a group chat");
-// }
-
-// // users.push(req.user.id);
-
-// // var mailUsers = []
-
-// // for (const user of users) {
-// //   const userData = await User.findById(user);
-// //   mailUsers.push(userData.email);
-// // }
-// // TODO tạo sheet cho mỗi nhóm chat
-
-// // const sheetId = await createNewSheet(mailUsers)
-
-// // console.log(sheetId)
-
-// try {
-//   const groupChat = await Chat.create({
-//     chatName: req.body.name,
-//     users: users,
-//     isGroupChat: true,
-//     // groupAdmin: req.user,
-//     // sheetId
-//   });
-
-//   const fullGroupChat = await Chat.findOne({ _id: groupChat._id }).populate(
-//     "users",
-//     "-password"
-//   );
-//   // .populate("groupAdmin", "-password");
-
-//   res.status(200).json(fullGroupChat);
-// } catch (error) {
-//   res.status(400);
-//   throw new Error(error.message);
-// }
-// });
 
 // @desc    Rename Group
 // @route   PUT /api/chat/rename

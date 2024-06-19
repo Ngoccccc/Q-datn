@@ -15,7 +15,8 @@ const jwt = new JWT({
 
 // sheet template
 const template = new GoogleSpreadsheet(
-  "1Zqvtd0Usx6bqkEOOsZb26h-bDMMhpqxuwJjwMUKIFf0",
+  // "1Zqvtd0Usx6bqkEOOsZb26h-bDMMhpqxuwJjwMUKIFf0",
+  "1lEj9UZX96G8JENi4vySsYid-wbIfiX5Z1ZraHnd7hQ8",
   jwt
 );
 // template.loadInfo()
@@ -35,6 +36,7 @@ info()
   });
 // tạo file cho 1 người dùng
 const createNewSheet = async (userMails) => {
+  console.log("userMails", userMails);
   // tạo file mới
   const newDoc = await GoogleSpreadsheet.createNewSpreadsheetDocument(jwt, {
     title: "Quan ly chi tieu",
@@ -48,7 +50,7 @@ const createNewSheet = async (userMails) => {
     );
   }
 
-  // rename sheet từ "bản sao của ..." -> "..."
+  // // rename sheet từ "bản sao của ..." -> "..."
   const duplicatedDoc = new GoogleSpreadsheet(newDoc.spreadsheetId, jwt);
   await duplicatedDoc.loadInfo();
   for (let i = 1; i < templateSheetsAmount + 1; i++) {
@@ -62,9 +64,11 @@ const createNewSheet = async (userMails) => {
 
   // share quyền cho user
 
-  // for (const mail of userMails) {
-  await newDoc.share(userMails);
-  // }
+  await Promise.all(
+    userMails.map(async (mail) => {
+      await newDoc.share(mail);
+    })
+  );
   const link = `https://docs.google.com/spreadsheets/d/${newDoc.spreadsheetId}`;
   return link;
 };
@@ -174,8 +178,7 @@ const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
   if (firstSpaceIndex === -1) {
     money = convertStringToNumber(remainingData);
     note = "";
-  }
-  else {
+  } else {
     money = convertStringToNumber(remainingData.substring(0, firstSpaceIndex));
     note = remainingData.substring(firstSpaceIndex + 1);
   }
@@ -194,9 +197,7 @@ const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
   var sheet = file.sheetsByIndex[2];
   const timeDayMonthYear = getTime();
 
-
   if (mention == "chi tiêu") {
-
     await sheet
       .addRow({
         "Thời gian": timeDayMonthYear,
@@ -204,8 +205,7 @@ const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
         "Số tiền": money,
         "Ghi chú": note,
       })
-      .then(() => {
-      })
+      .then(() => {})
       .catch((error) => {
         console.log(error);
       });
@@ -261,12 +261,10 @@ const readTotalSpending = async (sheetLink) => {
   const sheet = file.sheetsByIndex[2];
   await sheet.loadCells("L2:N2");
 
-  
-
   const day = sheet.getCellByA1("L2").value;
   const week = sheet.getCellByA1("M2").value;
   const month = sheet.getCellByA1("N2").value;
-  return {day, week, month};
+  return { day, week, month };
 };
 
 module.exports = {
