@@ -93,6 +93,7 @@ export function Sidebar() {
         setMyCategory(myCategory.filter((item) => item._id !== id));
       })
       .catch((error) => {
+        toast.error(error.response.data.message);
         console.log(error);
       });
   };

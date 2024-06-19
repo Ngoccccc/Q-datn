@@ -10,13 +10,11 @@ import {
 import { toast } from "react-toastify";
 // import { ChatState } from "../../Context/ChatProvider";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
-import { getChatAvatarHeader } from "../config/ChatLogics";
 import { ChatState } from "../../Context/ChatProvider";
 import { useAuthContext } from "../../Context/AuthContext";
 
 const Header = ({ setOpen }) => {
-  const { selectedChat, setSelectedChat } = ChatState();
+  const { selectedChat } = ChatState();
   const { authUser } = useAuthContext();
 
   return (

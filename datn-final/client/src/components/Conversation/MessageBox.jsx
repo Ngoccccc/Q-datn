@@ -9,11 +9,51 @@ import {
   isSameSenderMargin,
   isSameUser,
 } from "../config/ChatLogics";
+import axios from "axios";
+import { toast } from "react-toastify";
+
 
 import { ChatState } from "../../Context/ChatProvider";
+import { useAuthContext } from "../../Context/AuthContext";
+import { useOurCategoriesContext } from "./useOurCategories";
 
-const MessageBox = ({ messages }) => {
+const MessageBox = () => {
+  const { authUser } = useAuthContext();
   const { selectedChat } = ChatState();
+  const { messages, setMessages } = useOurCategoriesContext();
+  const [chatDataId, setChatDataId] = useState(null);
+
+  useEffect(() => {
+    if (authUser) {
+      setChatDataId(authUser?._id);
+    }
+  }, [authUser]);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+        const { data } = await axios.get(
+          `/api/message/${selectedChat?._id}`,
+          config
+        );
+
+        setMessages(data);
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    if (selectedChat?._id) getMessages();
+  }, [selectedChat?._id, setMessages]);
+
+
 
   const [isOwn, setIsOwn] = useState(false);
   const image = false;
@@ -36,6 +76,39 @@ const MessageBox = ({ messages }) => {
     "bg-gray-100",
     image ? "rounded-md p-0" : "rounded-full py-2 px-3"
   );
+
+  const fetchMessages = async () => {
+    if (!selectedChat) return;
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      // setLoading(true);
+
+      const { data } = await axios.get(
+        `/api/message/${selectedChat._id}`,
+        config
+      );
+      setMessages(data);
+      console.log(data);
+      // setLoading(false);
+
+      // socket.emit("join chat", selectedChat._id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+   useEffect(() => {
+     if (!selectedChat) return;
+     fetchMessages();
+
+     // selectedChatCompare = selectedChat;
+     // eslint-disable-next-line
+   }, [selectedChat]);
 
   return (
     <>
