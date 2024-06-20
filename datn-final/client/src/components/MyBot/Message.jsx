@@ -7,7 +7,7 @@ import EditInput from "./EditInput";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const Message = ({ m, parts }) => {
+const Message = ({ m, messages, setMessages }) => {
   const { authUser } = useAuthContext();
   const isOwn = false;
   const container = clsx("flex gap-3 p-4 justify-start ");
@@ -29,7 +29,7 @@ const Message = ({ m, parts }) => {
     "rounded-full py-2 px-3"
   );
 
-  const handlerEditMessage = () => {
+  const handlerEditMessage = async () => {
     setEdit((cur) => !cur);
   };
 
@@ -44,15 +44,52 @@ const Message = ({ m, parts }) => {
       .delete(`/api/message/delete/${m._id}`, config)
       .then((res) => {
         console.log(res);
+        const newMessages = messages.filter((message) => message._id !== m._id);
+        setMessages(newMessages);
       })
       .catch((err) => {
         if (err.response && err.response.status === 403) {
-          toast.error("You can only delete messages within 5 minutes of sending");
+          toast.error(
+            "You can only delete messages within 5 minutes of sending"
+          );
         } else {
           console.error("There was an error editing the message!", err);
         }
       });
   };
+
+  const [mess, setMess] = React.useState(m);
+  const parts = [];
+  let currentIndex = 0;
+  const mention = mess.mention;
+  const content = mess.content;
+  const category = mess.category;
+
+  if (mention) {
+    if (mention.position > currentIndex) {
+      parts.push(content.slice(currentIndex, mention.position));
+    }
+
+    parts.push(<span className="text-blue-600">@{mention.value}</span>);
+    currentIndex = mention.position + mention.value.length + 1; // Update currentIndex correctly
+  }
+
+  if (category) {
+    if (category.position > currentIndex) {
+      parts.push(content.slice(currentIndex, category.position));
+    }
+    parts.push(
+      <span className="text-gray-600 font-bold bg-blue-gray-100 rounded-full p-1 px-2 mx-2">
+        /{category.value}
+      </span>
+    );
+    currentIndex = category.position + category.value.length + 1; // Update currentIndex correctly
+  }
+
+  // Push any remaining text after the last mention
+  if (currentIndex < content.length) {
+    parts.push(content.slice(currentIndex));
+  }
 
   return (
     <div
@@ -68,7 +105,7 @@ const Message = ({ m, parts }) => {
 
       {edit ? (
         // <input type="text" value={m.content} />
-        <EditInput m={m} />
+        <EditInput m={m} setEdit={setEdit} setMess={setMess} />
       ) : (
         <div className={body}>
           <div className="flex items-center gap-1">

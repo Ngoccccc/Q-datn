@@ -5,7 +5,7 @@ import { useCategoryContext } from "../../Context/MyCategoryContext";
 import { toast } from "react-toastify";
 import useConversation from "../../zustand/useConversation";
 
-const EditInput = ({m}) => {
+const EditInput = ({ m, setEdit, setMess }) => {
   const { myChat } = ChatState();
   const { messages, setMessages } = useConversation();
 
@@ -95,7 +95,7 @@ const EditInput = ({m}) => {
       handleSubmit();
       setInputValue(""); // Call your function to handle data submission
       setMention(null);
-          setCategory(null);
+      setCategory(null);
     }
   };
 
@@ -107,9 +107,9 @@ const EditInput = ({m}) => {
         headers: {
           "Content-type": "application/json",
         },
-        };
-        
-        console.log(mention, category, inputValue);
+      };
+
+      console.log(mention, category, inputValue);
 
       const { data } = await axios.put(
         `/api/message/update/${m._id}`,
@@ -122,15 +122,17 @@ const EditInput = ({m}) => {
         config
       );
 
-    //   setMessages([...messages, data]);
-      console.log(data);
+      //   setMessages([...messages, data]);
+      // console.log(data.mention);
+      setMess(data.message);
+      setEdit(false);
       toast.success("Message sent successfully");
     } catch (error) {
-        if (error.response && error.response.status === 403) {
-          toast.error("You can only edit messages within 5 minutes of sending");
-        } else {
-          console.error("There was an error editing the message!", error);
-        }
+      if (error.response && error.response.status === 403) {
+        toast.error("You can only edit messages within 5 minutes of sending");
+      } else {
+        console.error("There was an error editing the message!", error);
+      }
     }
     setLoading(false);
   };

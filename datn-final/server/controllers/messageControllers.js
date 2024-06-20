@@ -61,11 +61,6 @@ const sendMessage = asyncHandler(async (req, res) => {
     const chat = await Chat.findById(req.body.chatId);
     // ghi vào file
     if (mention) {
-      const sliceRemainingData = content.slice(
-        mention.position,
-        category.value.length + category.position + 1
-      );
-      const remainingData = content.replace(sliceRemainingData, "").trim();
       // await writeGGSheet(
       //   mention.value,
       //   category.value,
@@ -75,9 +70,24 @@ const sendMessage = asyncHandler(async (req, res) => {
 
       // Sau 5 phút, lưu tin nhắn vào Google Sheets
       setTimeout(async () => {
+        const messageAfter5Min = await Message.findById(message._id);
+        if (!messageAfter5Min) {
+          return;
+        }
+        const mentionAfter5Min = messageAfter5Min.mention;
+        const categoryAfter5Min = messageAfter5Min.category;
+        const contentAfter5Min = messageAfter5Min.content;
+
+        const sliceRemainingData = contentAfter5Min.slice(
+          mentionAfter5Min.position,
+          categoryAfter5Min.value.length + categoryAfter5Min.position + 1
+        );
+        const remainingData = contentAfter5Min
+          .replace(sliceRemainingData, "")
+          .trim();
         await writeGGSheet(
-          mention.value,
-          category.value,
+          mentionAfter5Min.value,
+          categoryAfter5Min.value,
           remainingData,
           chat.sheetId
         )
@@ -93,7 +103,7 @@ const sendMessage = asyncHandler(async (req, res) => {
     }
   } catch (error) {
     res.status(401);
-    throw new Error(error.message);
+    console.log(error);
   }
 });
 
@@ -115,7 +125,7 @@ const deleteMessage = asyncHandler(async (req, res) => {
       });
     }
 
-    await message.remove();
+    await Message.findByIdAndDelete(messageId);
     res.status(200).json({ msg: "Message deleted" });
   } catch (err) {
     console.error(err.message);
@@ -126,8 +136,6 @@ const deleteMessage = asyncHandler(async (req, res) => {
 const updateMessage = asyncHandler(async (req, res) => {
   const { messageId } = req.params;
   const { content, mention, category } = req.body;
-
-  console.log("updateMessage: ", messageId, content, mention, category);
 
   try {
     const message = await Message.findById(messageId);

@@ -132,9 +132,46 @@ const getFriendRequests = asyncHandler(async (req, res) => {
   }
 });
 
+
+const unFriend = asyncHandler(async (req, res) => {
+  const { userId, friendId } = req.body;
+
+  try {
+    // Kiểm tra người dùng có tồn tại không
+    const user = await User.findById(userId);
+    const friend = await User.findById(friendId);
+
+    if (!user || !friend) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    // Xóa friendId khỏi danh sách bạn bè của user
+    user.friends = user.friends.filter((id) => id.toString() !== friendId);
+    await user.save();
+
+    // Xóa userId khỏi danh sách bạn bè của friend
+    friend.friends = friend.friends.filter((id) => id.toString() !== userId);
+    await friend.save();
+
+    // Xóa bản ghi friendship trong database
+    await Friendship.findOneAndDelete({
+      $or: [
+        { user1_id: userId, user2_id: friendId },
+        { user1_id: friendId, user2_id: userId },
+      ],
+    });
+
+    res.status(200).json({ msg: "Unfriended successfully" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: "Server error" });
+  }
+ })  
+
 module.exports = {
   getFriends,
   sendFriendRequest,
   acceptFriendRequest,
   getFriendRequests,
+  unFriend,
 };
