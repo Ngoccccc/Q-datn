@@ -53,11 +53,10 @@ const sendMessage = asyncHandler(async (req, res) => {
       select: "username avatar email",
     });
 
-    
     await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
-    
+
     message = await message.populate("mention category");
-    // console.log("ok");
+    res.json(message);
 
     const chat = await Chat.findById(req.body.chatId);
     // ghi vào file
@@ -67,48 +66,93 @@ const sendMessage = asyncHandler(async (req, res) => {
         category.value.length + category.position + 1
       );
       const remainingData = content.replace(sliceRemainingData, "").trim();
-      // if (mentions.length > 0) {
-      await writeGGSheet(mention.value, category.value, remainingData, chat.sheetId).then(() => {
-        
-      }).catch((error) => {
-        console.log(error);
-      });
+      // await writeGGSheet(
+      //   mention.value,
+      //   category.value,
+      //   remainingData,
+      //   chat.sheetId
+      // );
+
+      // Sau 5 phút, lưu tin nhắn vào Google Sheets
+      setTimeout(async () => {
+        await writeGGSheet(
+          mention.value,
+          category.value,
+          remainingData,
+          chat.sheetId
+        )
+          .then(() => {
+            console.log("ghi file thanh cong");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }, 300000); // 5 phút = 300000 milliseconds
+
       // }
     }
-
-    res.json(message);
   } catch (error) {
     res.status(401);
     throw new Error(error.message);
   }
 });
 
-const sendMessageToBot = asyncHandler(async (req, res) => {
-  const { messages, chatId } = req.body;
+const deleteMessage = asyncHandler(async (req, res) => {
+  const { messageId } = req.params;
 
-  // check cú pháp đúng chưa
-  messages.map(async (message) => {
-    const keywords = ["chi tiêu", "thu nhập", "lập kế hoạch"];
-    const messageHandledSpace = message.replace(/\s+/g, " "); // loại bỏ khoảng trống thừa
-    const pattern = new RegExp(`(\\b(?:${keywords.join("|")})\\b)`, "gi");
-    // pattern = pattern.filter(element => element !== ''); // loại bỏ ''
-    const segments = messageHandledSpace.split(pattern);
-
-    var message = "";
-    var format =
-      "@chi tiêu/Lập kế hoạch/Thu nhập [tên chi tiêu/kế hoạch/thu nhập]:[số tiền]";
-
-    const type = segments[1];
-    var [item, money] = segments[2].split(/ ?: ?/);
-
-    if (item == "" || money == "" || !item || !money) {
-      message = "Cú pháp không đúng định dạng. ";
-      res.json(message);
-      return;
+  try {
+    const message = await Message.findById(messageId);
+    if (!message) {
+      return res.status(404).json({ msg: "Message not found" });
     }
 
-    money = convertStringToNumber(money);
-  });
+    const currentTime = new Date();
+    const timeDifference = (currentTime - message.createdAt) / 1000 / 60; // Thời gian chênh lệch tính bằng phút
+
+    if (timeDifference > 5) {
+      return res.status(403).json({
+        msg: "You can only delete messages within 5 minutes of sending",
+      });
+    }
+
+    await message.remove();
+    res.status(200).json({ msg: "Message deleted" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: "Server error" });
+  }
 });
 
-module.exports = { allMessages, sendMessage, sendMessageToBot };
+const updateMessage = asyncHandler(async (req, res) => {
+  const { messageId } = req.params;
+  const { content, mention, category } = req.body;
+
+  console.log("updateMessage: ", messageId, content, mention, category);
+
+  try {
+    const message = await Message.findById(messageId);
+    if (!message) {
+      return res.status(404).json({ msg: "Message not found" });
+    }
+
+    const currentTime = new Date();
+    const timeDifference = (currentTime - message.createdAt) / 1000 / 60; // Thời gian chênh lệch tính bằng phút
+
+    if (timeDifference > 5) {
+      return res.status(403).json({
+        msg: "You can only edit messages within 5 minutes of sending",
+      });
+    }
+
+    message.content = content;
+    message.mention = mention;
+    message.category = category;
+    await message.save();
+    res.status(200).json({ msg: "Message updated", message });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: "Server error" });
+  }
+});
+
+module.exports = { allMessages, sendMessage, deleteMessage, updateMessage };

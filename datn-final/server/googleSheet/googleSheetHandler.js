@@ -170,6 +170,7 @@ const convertStringToNumber = (input) => {
 };
 
 const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
+  console.log(mention, category, remainingData, sheetLink);
   let money;
   let note = "";
   // Bước 2: Tách chuỗi thành hai phần dựa trên khoảng trắng đầu tiên

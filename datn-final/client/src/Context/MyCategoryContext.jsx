@@ -10,6 +10,7 @@ export const useCategoryContext = () => {
 export const MyCategoryProvider = ({ children }) => {
   const [myCategory, setMyCategory] = useState([]);
   const [messages, setMessages] = useState([]);
+  
 
   return (
     <CategoryContext.Provider
