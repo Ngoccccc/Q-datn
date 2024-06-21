@@ -1,35 +1,39 @@
 import { useState } from "react";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import { useAuthContext } from "../Context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const useLogin = () => {
-	const navigate = useNavigate();
-	const [loading, setLoading] = useState(false);
-	const { setAuthUser } = useAuthContext();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const { setAuthUser } = useAuthContext();
 
-	const login = async (email, password) => {
-		setLoading(true);
-		try {
-			const config = {
-				headers: {
-					"Content-type": "application/json",
-				},
-			};
+  const login = async (email, password, setErrorLogin) => {
+    setLoading(true);
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
 
-			const { data } = await axios.post("/api/auth/login", { email, password }, config);
-			localStorage.setItem("chat-user", JSON.stringify(data));
-			setAuthUser(data);
-			navigate("/");
-		} catch (error) {
-			toast.error(error);
-		} finally {
-			setLoading(false);
-		}
-	};
+      const { data } = await axios.post(
+        "/api/auth/login",
+        { email, password },
+        config
+      );
+      localStorage.setItem("chat-user", JSON.stringify(data));
+      setAuthUser(data);
+      navigate("/");
+    } catch (error) {
+      setErrorLogin("Tài khoản hoặc mật khẩu không hợp lệ");
+    //   toast.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-	return { loading, login };
+  return { loading, login };
 };
 export default useLogin;
-
