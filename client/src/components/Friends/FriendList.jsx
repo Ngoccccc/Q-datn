@@ -12,7 +12,6 @@ import { useAuthContext } from "../../Context/AuthContext";
 import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
 import { toast } from "react-toastify";
-import { ProfileDialog } from "../Profile/ProfileDialog";
 import { UnfriendConfirm } from "../Unfriend/UnfriendConfirm";
 
 const FriendList = () => {

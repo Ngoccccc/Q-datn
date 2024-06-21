@@ -73,6 +73,7 @@ const login = async (req, res) => {
       _id: user._id,
       username: user.username,
       avatar: user.avatar,
+      email: user.email,
     });
   } catch (error) {
     console.log("Error in login controller", error.message);
@@ -90,4 +91,18 @@ const logout = (req, res) => {
   }
 };
 
-module.exports = { signup, login, logout };
+const editProfile = async (req, res) => {
+  try {
+    const { username, avatar } = req.body;
+    const user = await User.findById(req.user._id);
+    user.username = username; // update username
+    user.avatar = avatar; // update avatar
+    await user.save();
+    res.status(200).json({ message: "Profile updated successfully" });  
+  } catch (error) {
+    console.log("Error in editProfile controller", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = { signup, login, logout, editProfile };

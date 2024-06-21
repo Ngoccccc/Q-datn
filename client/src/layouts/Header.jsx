@@ -12,7 +12,7 @@ import ProfileMenu from "../components/Profile/ProfileMenu";
 import NotificationIcon from "../components/Notification/NotificationIcon";
 import { useAuthContext } from "../Context/AuthContext";
 
-function Header() {
+function Header({setOpen}) {
   const { authUser } = useAuthContext();
   const [openNav, setOpenNav] = React.useState(false);
 
@@ -131,7 +131,7 @@ function Header() {
             <>
               <div className="flex flex-row gap-6">
                 <NotificationIcon />
-                <ProfileMenu />
+                <ProfileMenu setOpen={setOpen} />
               </div>
             </>
           ) : (
