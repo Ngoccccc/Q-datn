@@ -212,12 +212,15 @@ const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
       });
   } else if (mention == "lập kế hoạch") {
     sheet = file.sheetsByIndex[3];
+
+    const month = `Tháng ${new Date().getMonth() + 1}`;
+
     await sheet
       .addRow({
         "Thời gian": timeDayMonthYear,
-        "Hạng mục": category,
+        "Loại thu nhập": category,
         "Số tiền": money,
-        // "Ghi chú": note,
+        "Ghi chú": note,
       })
       .then(() => {})
       .catch((error) => {
@@ -225,6 +228,17 @@ const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
       });
   } else if (mention == "thu nhập") {
     sheet = file.sheetsByIndex[4];
+    await sheet
+      .addRow({
+        "Thời gian": timeDayMonthYear,
+        "Loại thu nhập": category,
+        "Số tiền": money,
+        "Ghi chú": note,
+      })
+      .then(() => {})
+      .catch((error) => {
+        console.log(error);
+      });
   } else {
     sheet = file.sheetsByIndex[5];
   }

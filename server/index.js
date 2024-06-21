@@ -9,6 +9,7 @@ const messageRoutes = require("./routes/messageRoutes");
 const authRouter = require("./routes/authRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const friendRoutes = require("./routes/friendRoutes");
+const incomeRoutes = require("./routes/incomeRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const path = require("path");
 
@@ -37,6 +38,7 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/friend", friendRoutes);
+app.use("/api/income", incomeRoutes);
 
 // // --------------------------deployment------------------------------
 

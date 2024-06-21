@@ -16,21 +16,24 @@ import useCreateFile from "../../hooks/useCreateFile";
 import { ChatState } from "../../Context/ChatProvider";
 import { toast } from "react-toastify";
 import { useCategoryContext } from "../../Context/MyCategoryContext";
+import "../../assets/custom-scrollbar.css";
 
 export function Sidebar() {
   const { myChat } = ChatState();
   const [fileLink, setFileLink] = useState();
   const { loading, createFile } = useCreateFile();
   const [categoryName, setCategoryName] = useState();
+  const [incomeName, setIncomeName] = useState();
   // const [categories, setCategories] = useState([]);
-  const { myCategory, setMyCategory } = useCategoryContext();
+  const { myCategory, setMyCategory, myIncome, setMyIncome } =
+    useCategoryContext();
   const [visableClick, setVisableClick] = useState(true);
 
-  useEffect(() => { 
+  useEffect(() => {
     if (myChat) {
       setFileLink(myChat?.sheetId);
     }
-  }, [myChat])
+  }, [myChat]);
 
   useEffect(() => {
     if (myChat) {
@@ -51,6 +54,24 @@ export function Sidebar() {
     }
   }, [myChat]);
 
+  useEffect(() => {
+    if (myChat) {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      axios
+        .get(`/api/income/${myChat?._id}`, config)
+        .then((res) => {
+          setMyIncome(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [myChat]);
 
   const handerCreateFile = async () => {
     if (!myChat) {
@@ -74,7 +95,7 @@ export function Sidebar() {
       console.log(error);
       toast.error(error.message);
     } finally {
-      toast.success("Tạo file thành công")
+      toast.success("Tạo file thành công");
     }
   };
 
@@ -109,6 +130,30 @@ export function Sidebar() {
     setCategoryName("");
   };
 
+  const handleCreateIncome = (e) => {
+    e.preventDefault();
+    if (incomeName) {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      axios
+        .post(
+          `/api/income/create`,
+          { name: incomeName, chatId: myChat?._id },
+          config
+        )
+        .then((res) => {
+          setMyIncome([res.data, ...myIncome]);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    }
+    setIncomeName("");
+  };
+
   const handleDeleteCategory = (id) => {
     const config = {
       headers: {
@@ -118,7 +163,24 @@ export function Sidebar() {
     axios
       .delete(`/api/category/delete/${id}`, config)
       .then((res) => {
-        setMyCategory(myCategory.filter((item) => item._id !== id));
+        setMyIncome(myIncome.filter((item) => item._id !== id));
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+        console.log(error);
+      });
+  };
+
+  const handleDeleteIncome = (id) => {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    axios
+      .delete(`/api/income/delete/${id}`, config)
+      .then((res) => {
+        setMyIncome(myIncome.filter((item) => item._id !== id));
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -129,7 +191,7 @@ export function Sidebar() {
   return (
     <Card className=" w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
       <div className="mb-2 p-4">
-        {fileLink  ? (
+        {fileLink ? (
           <Link
             to={fileLink}
             target="_blank"
@@ -148,10 +210,12 @@ export function Sidebar() {
           </Button>
         )}
       </div>
+
+      {/* category */}
       <div className="flex flex-row justify-between items-center">
         <Typography variant="h6">Các hạng mục quản lý</Typography>
       </div>
-      <div className="mb-2 p-4 pr-6 w-10 flex flex-row">
+      <div className="mb-2 pr-6 w-10 flex flex-row">
         <Input
           variant="static"
           placeholder="Thêm danh mục"
@@ -181,7 +245,7 @@ export function Sidebar() {
           </svg>
         </button>
       </div>
-      <List className="flex-1 overflow-y-auto pl-4 pr-4 ">
+      <List className="flex-1 overflow-y-auto pl-4 pr-4 custom-scrollbar ">
         <Accordion>
           {myCategory.map((category) => (
             <div
@@ -197,6 +261,77 @@ export function Sidebar() {
               <button
                 className="text-red-500 ml-auto"
                 onClick={() => handleDeleteCategory(category._id)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+              </button>
+            </div>
+          ))}
+        </Accordion>
+      </List>
+
+      {/* income */}
+      <div className="flex flex-row justify-between items-center mt-3">
+        <Typography variant="h6">Các loại thu nhập</Typography>
+      </div>
+      <div className="mb-2 pr-6 w-10 flex flex-row">
+        <Input
+          variant="static"
+          placeholder="Thêm loại thu nhập"
+          value={incomeName}
+          onChange={(e) => setIncomeName(e.target.value)}
+        />
+        <button
+          onClick={(e) => {
+            visableClick && handleCreateIncome(e);
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className={
+              visableClick ? "size-6 text-green-700" : "size-6 text-green-100"
+            }
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            />
+          </svg>
+        </button>
+      </div>
+      <List className="flex-1 overflow-y-auto pl-4 pr-4 ">
+        <Accordion>
+          {myIncome.map((income) => (
+            <div
+              key={income._id}
+              className="flex flex-row items-center h-10  px-3 rounded-lg"
+            >
+              <ListItemPrefix>
+                <InboxIcon className="h-5 w-5" />
+              </ListItemPrefix>
+
+              <div className="flex-grow">{income.name}</div>
+
+              <button
+                className="text-red-500 ml-auto"
+                onClick={() => handleDeleteIncome(income._id)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

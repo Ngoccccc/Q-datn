@@ -10,11 +10,19 @@ export const useCategoryContext = () => {
 export const MyCategoryProvider = ({ children }) => {
   const [myCategory, setMyCategory] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [myIncome, setMyIncome] = useState([]);
   
 
   return (
     <CategoryContext.Provider
-      value={{ myCategory, setMyCategory, messages, setMessages }}
+      value={{
+        myCategory,
+        setMyCategory,
+        messages,
+        setMessages,
+        myIncome,
+        setMyIncome,
+      }}
     >
       {children}
     </CategoryContext.Provider>

@@ -10,7 +10,7 @@ const MentionInput = () => {
   const { myChat } = ChatState();
   const { messages, setMessages } = useConversation();
 
-  const { myCategory } = useCategoryContext();
+  const { myCategory , myIncome} = useCategoryContext();
 
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -19,7 +19,6 @@ const MentionInput = () => {
   const [mention, setMention] = useState(null);
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(false);
-
   const [subcategories, setSubcategories] = useState([]);
 
   const categories = ["chi tiêu", "lập kế hoạch", "thu nhập"];
@@ -27,11 +26,14 @@ const MentionInput = () => {
   // const subcategories = ["quần áo", "sức khỏe", "cafe"];
 
   useEffect(() => {
-    if (myCategory) {
+    if (mention?.value === "chi tiêu" || mention?.value === "lập kế hoạch") {
       const categoryNames = myCategory.map((category) => category.name);
       setSubcategories(categoryNames);
+    } else if (mention?.value === "thu nhập") {
+      const incomeNames = myIncome.map((income) => income.name);
+      setSubcategories(incomeNames);
     }
-  }, [myCategory]);
+  }, [mention, myCategory, myIncome]);
 
   useEffect(() => {
     const triggerChar = inputValue.match(/[@/][^@/]*$/);
