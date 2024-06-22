@@ -79,6 +79,7 @@ io.on("connection", (socket) => {
 
   socket.on("setup", (userData) => {
     socket.join(userData._id);
+    console.log("User joined:", userData._id);
     socket.emit("connected");
   });
 
@@ -101,6 +102,15 @@ io.on("connection", (socket) => {
       socket.in(user._id).emit("message recieved", newMessageRecieved);
     });
   });
+
+  // socket.on("new notification", (notification) => {
+  //   console.log(notification);
+  //   var senderId = notification.userId;
+
+  //   socket.in(senderId).emit("notification recieved", notification);
+  // });
+
+
 
   socket.on("disconnect", () => {
     console.log("USER DISCONNECTED");

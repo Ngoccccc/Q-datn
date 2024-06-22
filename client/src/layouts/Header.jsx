@@ -9,7 +9,7 @@ import {
 import { NavLink } from "react-router-dom";
 // import { ChatState } from "../Context/ChatProvider";
 import ProfileMenu from "../components/Profile/ProfileMenu";
-import NotificationIcon from "../components/Notification/NotificationIcon";
+import {NotificationIcon} from "../components/Notification/NotificationIcon";
 import { useAuthContext } from "../Context/AuthContext";
 
 function Header({setOpen}) {
@@ -77,7 +77,7 @@ function Header({setOpen}) {
         </Typography>
       </NavLink>
 
-      <NavLink to={`/chats`}>
+      <NavLink to={authUser ? "/chats" : "/login"}>
         <Typography
           as="li"
           variant="paragraph"
@@ -130,7 +130,7 @@ function Header({setOpen}) {
           {authUser ? (
             <>
               <div className="flex flex-row gap-6">
-                <NotificationIcon />
+                {/* <NotificationIcon /> */}
                 <ProfileMenu setOpen={setOpen} />
               </div>
             </>

@@ -15,7 +15,12 @@ import { toast } from "react-toastify";
 import ChatLoading from "../components/Sketeton/ChatLoading";
 import axios from "axios";
 import { getSender, getChatAvatar } from "../components/config/ChatLogics";
-import { useAuthContext } from "../Context/AuthContext";
+import { useAuthContext } from "../Context/AuthContext"; 
+import { io } from "socket.io-client";
+
+var socket, selectedChatCompare;
+const ENDPOINT = "http://localhost:5000";
+
 
 function Sidebar() {
   const { authUser } = useAuthContext();
@@ -23,6 +28,11 @@ function Sidebar() {
   const [searchResult, setSearchResult] = useState([]);
   const { selectedChat, setSelectedChat, chats, setChats } = ChatState();
   const [search, setSearch] = useState("");
+
+  // useEffect(() => {
+  //   socket = io(ENDPOINT);
+  //   socket.emit("setup", authUser);
+  // }, []);
 
 
   const fetchChats = async () => {
@@ -74,29 +84,6 @@ function Sidebar() {
     setSearchResult([]);
     const userId = selectedUser._id;
     const authId = authUser._id;
-    // try {
-    //   // setLoadingChat(true);
-    //   const config = {
-    //     headers: {
-    //       "Content-type": "application/json",
-    //     },
-    //   };
-    //   const { data } = await axios.get(
-    //     `/api/chat/find/${authId}/${userId}`,
-    //     config
-    //   );
-
-    //   if (data._id) {
-    //     if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
-    //     setSelectedChat(data);
-    //   }
-      
-    //   // setLoadingChat(false);
-    //   // onClose();
-    // } catch (error) {
-    //   console.log(error);
-    //   setSelectedChat()
-    // }
   };
 
   const handleSendRequestFriend = async (selectedUser) => {
@@ -112,6 +99,7 @@ function Sidebar() {
         `/api/friend/request`, {authId, userId},
         config
       );
+      // socket.emit("new notification", {userId: userId,username: selectedUser.username, avatar: selectedUser.avatar, date: new Date()});
       toast.success(data.message);
     } catch (error) {
       toast.error(error.message);

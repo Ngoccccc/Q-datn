@@ -60,6 +60,8 @@ const sendFriendRequest = asyncHandler(async (req, res) => {
       res.status(201).json({ msg: "Failed" });
     }
 
+    // const user = await User.findById(userId).populate("username");
+
     res.status(201).json({ msg: "Friend request sent" });
   } catch (err) {
     res.status(500).json({ msg: "Server error" });
@@ -92,11 +94,12 @@ const acceptFriendRequest = asyncHandler(async (req, res) => {
     // Lấy danh sách bạn bè của accepterId
     const accepter = await User.findById(accepterId).populate(
       "friends",
-      "username avatar"
+      "username avatar email"
     );
     const friendsList = accepter.friends.map((friend) => ({
       id: friend._id,
       username: friend.username,
+      email: friend.email,
       avatar: friend.avatar,
     }));
 

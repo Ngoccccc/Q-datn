@@ -21,7 +21,7 @@ export function UnfriendConfirm({ setOpen, friend }) {
       await axios
         .post(
           `/api/friend/unfiend`,
-          { userId: authUser._id, friendId: friend._id },
+          { userId: authUser._id, friendId: friend._id || friend.id },
           config
         )
         .then((response) => {

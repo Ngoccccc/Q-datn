@@ -5,12 +5,24 @@ import Sidebar from "../layouts/Sidebar";
 import { ChatState } from "../Context/ChatProvider";
 import { Categories } from "../components/Conversation/Categories";
 import { OurCategoriesProvider } from "../components/Conversation/useOurCategories";
+import { useAuthContext } from "../Context/AuthContext";
 
 const Chats = () => {
   const [open, setOpen] = useState(false);
-  const [categories, setCategories] = useState([]);
+  
+  const { authUser } = useAuthContext();
+
+  useEffect(() => {
+    // Example of useEffect usage if needed
+    if (authUser) {
+      // Perform some action if authUser exists
+    }
+  }, [authUser]);
+
+  if (!authUser) return null;
 
   return (
+    // {authUser ? }
     <OurCategoriesProvider>
       <div className="h-5/6  w-full flex flex-row gap-4 m-4">
         <div className="w-1/5 rounded-xl shadow-md bg-white hidden lg:flex ml-4 justify-center">

@@ -4,18 +4,18 @@ import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
 import { useCategoryContext } from "../../Context/MyCategoryContext";
 import { toast } from "react-toastify";
-import useConversation from "../../zustand/useConversation";
 import { useOurCategoriesContext } from "./useOurCategories";
 import io from "socket.io-client";
 import { useAuthContext } from "../../Context/AuthContext";
-const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
+
+const ENDPOINT = "http://localhost:5000"; // ""https://talk-a-tive.herokuapp.com""; -> After deployment
 var socket, selectedChatCompare;
 
 const MentionInput = () => {
   const { selectedChat } = ChatState();
-  const { messages, setMessages } = useOurCategoriesContext();
-
-  const { ourCategories } = useOurCategoriesContext();
+  const { messages, setMessages, ourCategories, ourIncomes } =
+    useOurCategoriesContext();
+  const { authUser } = useAuthContext();
 
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -24,48 +24,30 @@ const MentionInput = () => {
   const [mention, setMention] = useState(null);
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [socketConnected, setSocketConnected] = useState(false);
-
-  const {authUser} = useAuthContext();
-
   const [subcategories, setSubcategories] = useState([]);
 
   const categories = ["chi tiêu", "lập kế hoạch", "thu nhập"];
 
-  // const subcategories = ["quần áo", "sức khỏe", "cafe"];
-
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", authUser);
-    socket.on("connected", () => setSocketConnected(true));
-    // socket.on("typing", () => setIsTyping(true));
-    // socket.on("stop typing", () => setIsTyping(false));
-
-    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
-      // if (
-      //   !selectedChatCompare || // if chat is not selected or doesn't match current chat
-      //   selectedChatCompare._id !== newMessageRecieved.chat._id
-      // ) {
-      //   if (!notification.includes(newMessageRecieved)) {
-      //     setNotification([newMessageRecieved, ...notification]);
-      //     setFetchAgain(!fetchAgain);
-      //   }
-      // } else {
-        setMessages([...messages, newMessageRecieved]);
-      // }
+      setMessages([...messages, newMessageRecieved]);
     });
   });
 
   useEffect(() => {
-    if (ourCategories) {
+    if (mention?.value === "chi tiêu" || mention?.value === "lập kế hoạch") {
       const categoryNames = ourCategories.map((category) => category.name);
       setSubcategories(categoryNames);
+    } else if (mention?.value === "thu nhập") {
+      const incomeNames = ourIncomes.map((income) => income.name);
+      setSubcategories(incomeNames);
     }
-  }, [ourCategories]);
+  }, [mention, ourCategories, ourIncomes]);
 
   useEffect(() => {
     const triggerChar = inputValue.match(/[@/][^@/]*$/);
@@ -154,7 +136,9 @@ const MentionInput = () => {
         },
         config
       );
+
       socket.emit("new message", data);
+
       setMessages([...messages, data]);
       console.log(data);
       toast.success("Message sent successfully");
@@ -168,8 +152,6 @@ const MentionInput = () => {
     <div className="w-full mx-auto border rounded-lg shadow-md bg-white">
       {showSuggestions && (
         <ul
-          //   role="menu"
-          //   data-popover="menu"
           data-popover-placement="top"
           className=" z-10 overflow-auto rounded-md border border-blue-gray-50 bg-white p-3 font-sans text-sm font-normal text-blue-gray-800 shadow-lg shadow-blue-gray-500/10 focus:outline-none"
         >
