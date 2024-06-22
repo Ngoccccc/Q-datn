@@ -187,7 +187,11 @@ const MessageBox = () => {
             })}
         </ScrollableFeed>
       ) : (
-        <div className="h-3/4">Chọn một đoạn chat để bắt đầu chat</div>
+        <div className="h-full bg-white text-gray-500 p-6 rounded-lg shadow-lg flex items-center justify-center">
+          <span className="text-2xl font-semibold">
+            Chọn một đoạn chat để bắt đầu chat
+          </span>
+        </div>
       )}
     </>
   );

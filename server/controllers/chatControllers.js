@@ -34,7 +34,6 @@ const getChat = asyncHandler(async (req, res) => {
 //@access          Protected
 const accessChat = asyncHandler(async (req, res) => {
   const { myId, userId } = req.body;
-  console.log(myId, userId);
 
   if (!userId) {
     console.log("UserId param not sent with request");
@@ -69,14 +68,15 @@ const accessChat = asyncHandler(async (req, res) => {
 
     try {
       const createdChat = await Chat.create(chatData);
-      const FullChat = await Chat.findOne({ _id: createdChat._id }).populate(
-        "users",
-        "chatName",
-        "-password"
-      );
-      res.status(200).json(FullChat);
+      // const FullChat = await Chat.findOne({ _id: createdChat._id }).populate(
+      //   "users",
+      //   "chatName",
+      //   "-password"
+      // );
+      res.status(200).json(createdChat);
     } catch (error) {
       res.status(400);
+      console.log("khung hả");
       throw new Error(error.message);
     }
   }

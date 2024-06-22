@@ -21,13 +21,16 @@ const FriendList = () => {
   const [open, setOpen] = React.useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
 
+  
+
    const handleUnfriendClick = (friend) => {
      setSelectedFriend(friend);
      setOpen(true);
    };
 
   const handleSelectedChat = async (friend) => {
-    if (!authUser) return;
+    console.log(friend.id);
+    if (!friend) return;
     const config = {
       headers: {
         "Content-type": "application/json",
@@ -35,7 +38,7 @@ const FriendList = () => {
     };
 
     await axios
-      .post(`/api/chat`, { myId: authUser._id, userId: friend._id }, config)
+      .post(`/api/chat`, { myId: authUser._id, userId: friend.id }, config)
       .then((response) => {
         setSelectedChat(response.data);
         console.log(response.data);
@@ -72,7 +75,7 @@ const FriendList = () => {
                   stroke="currentColor"
                   className="size-6 hover:text-blue-500 cursor-pointer"
                   //todo
-                  onClick={() => handleSelectedChat(friend)}
+                  onClick={() =>  handleSelectedChat(friend)}
                 >
                   <path
                     strokeLinecap="round"
