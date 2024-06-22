@@ -29,7 +29,7 @@ const FriendList = () => {
    };
 
   const handleSelectedChat = async (friend) => {
-    console.log(friend.id);
+    console.log(friend);
     if (!friend) return;
     const config = {
       headers: {
@@ -38,10 +38,9 @@ const FriendList = () => {
     };
 
     await axios
-      .post(`/api/chat`, { myId: authUser._id, userId: friend.id }, config)
+      .post(`/api/chat`, { myId: authUser._id, userId: friend.id || friend._id }, config)
       .then((response) => {
         setSelectedChat(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         toast.error(error.message);
