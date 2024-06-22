@@ -1,17 +1,17 @@
-// ProfileDialog.js
-
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../../Context/AuthContext";
+import axios from "axios";
 
 const ProfileDialog = ({ setOpen }) => {
-  const { authUser } = useAuthContext();
+  const { authUser, setAuthUser } = useAuthContext();
   const [isEditing, setIsEditing] = useState(false);
-  const [email, setEmail] = useState();
-  const [avatar, setAvatar] = useState();
-  const [username, setUsername] = useState();
+  const [email, setEmail] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [username, setUsername] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [avatarFile, setAvatarFile] = useState(null);
+  const [picLoading, setPicLoading] = useState(false);
+  const [picError, setPicError] = useState("");
 
   useEffect(() => {
     if (authUser) {
@@ -21,24 +21,46 @@ const ProfileDialog = ({ setOpen }) => {
     }
   }, [authUser]);
 
+  const postDetails = (pics) => {
+    setPicLoading(true);
+    if (!pics) {
+      setPicError("Không có hình ảnh nào được chọn");
+      setPicLoading(false);
+      return;
+    }
+
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "chat-app");
+      data.append("cloud_name", "piyushproj");
+
+      fetch("https://api.cloudinary.com/v1_1/piyushproj/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setAvatar(data.url.toString());
+          setPicLoading(false);
+          setPicError("");
+        })
+        .catch((err) => {
+          console.error(err);
+          setPicLoading(false);
+        });
+    } else {
+      setPicError("Vui lòng chọn tệp ảnh (jpeg hoặc png)");
+      setPicLoading(false);
+    }
+  };
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
-  };
-
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatar(reader.result);
-      };
-      reader.readAsDataURL(file);
-      setAvatarFile(file);
-    }
   };
 
   const handleCurrentPasswordChange = (e) => {
@@ -49,16 +71,41 @@ const ProfileDialog = ({ setOpen }) => {
     setNewPassword(e.target.value);
   };
 
-  const handleSave = () => {
-    // Thực hiện lưu thông tin sau khi chỉnh sửa
-    // Ví dụ: có thể gọi API để lưu dữ liệu, bao gồm cả avatarFile, email, username, password
-    console.log("Saved:", {
+  const handleEditProfile = async () => {
+    console.log({
+      id: authUser._id,
       email,
-      avatarFile,
+      avatar,
       username,
       currentPassword,
       newPassword,
     });
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const { data } = await axios.post(
+        "/api/auth/editprofile",
+        {
+          id: authUser._id,
+          email,
+          avatar,
+          username,
+          currentPassword,
+          newPassword,
+        },
+        config
+      );
+
+      console.log("Profile updated successfully:", data);
+      localStorage.setItem("chat-user", JSON.stringify(data));
+      setAuthUser(data);
+    } catch (error) {
+      console.error("Error in handleEditProfile:", error.message);
+    }
     setIsEditing(false);
   };
 
@@ -82,12 +129,6 @@ const ProfileDialog = ({ setOpen }) => {
               d="M6 18 18 6M6 6l12 12"
             />
           </svg>
-          {/* <button
-            className="text-gray-500 hover:text-gray-700"
-            onClick={() => setIsEditing(!isEditing)}
-          >
-            {isEditing ? "Cancel" : "Edit"}
-          </button> */}
         </div>
         <div className="flex items-center mb-4">
           <div className="relative">
@@ -101,7 +142,7 @@ const ProfileDialog = ({ setOpen }) => {
                 type="file"
                 accept="image/*"
                 className="absolute top-0 left-0 w-16 h-16 opacity-0 cursor-pointer"
-                onChange={handleAvatarChange}
+                onChange={(e) => postDetails(e.target.files[0])}
               />
             )}
           </div>
@@ -114,7 +155,7 @@ const ProfileDialog = ({ setOpen }) => {
           className="text-gray-500 hover:text-gray-700"
           onClick={() => setIsEditing(!isEditing)}
         >
-          {isEditing ? "Hủy" : "Sửa"}
+          {/* {isEditing ? "Hủy" : "Sửa"} */}
         </button>
         {isEditing && (
           <div className="mb-4">
@@ -158,12 +199,14 @@ const ProfileDialog = ({ setOpen }) => {
         )}
         {isEditing && (
           <button
-            onClick={handleSave}
+            onClick={handleEditProfile}
             className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
+            disabled={picLoading}
           >
-            Lưu
+            {picLoading ? "Đang tải..." : "Lưu"}
           </button>
         )}
+        {picError && <p className="text-red-500 text-sm mt-2">{picError}</p>}
       </div>
     </div>
   );

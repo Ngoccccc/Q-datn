@@ -1,7 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
-const cors = require("cors");
 const dotenv = require("dotenv");
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
@@ -12,26 +11,28 @@ const friendRoutes = require("./routes/friendRoutes");
 const incomeRoutes = require("./routes/incomeRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const path = require("path");
+const cors = require("cors");
+const http = require("http");
+
+const app = express();
+const server = http.createServer(app);
 
 dotenv.config();
 connectDB();
-const app = express();
+
+// Cấu hình CORS cho Express
+app.use(
+  cors({
+    origin: "*", // Thay đổi thành domain của bạn
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 app.use(express.json()); // to accept json data
 app.use(cookieParser());
 
-const corsOptions = {
-  origin: "http://your-client-domain.com",
-  credentials: true,
-};
-app.use(cors(corsOptions));
-
-// app.get("/", (req, res) => {
-//   res.send("API Running!");
-// });
-
-
-
+// Routes
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRouter);
 app.use("/api/chat", chatRoutes);
@@ -40,8 +41,7 @@ app.use("/api/category", categoryRoutes);
 app.use("/api/friend", friendRoutes);
 app.use("/api/income", incomeRoutes);
 
-// // --------------------------deployment------------------------------
-
+// Deployment
 const __dirname1 = path.resolve();
 
 if (process.env.NODE_ENV === "production") {
@@ -56,31 +56,27 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// // --------------------------deployment------------------------------
-
 // Error Handling middlewares
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
-const server = app.listen(
-  PORT,
-  console.log(`Server running on PORT ${PORT}...`.yellow.bold)
-);
+server.listen(PORT, () => {
+  console.log(`Server running on PORT ${PORT}...`.yellow.bold);
+});
 
+// Cấu hình Socket.io
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://127.0.0.1:5173/",
-    // methods: ["GET", "POST"],
-    // allowedHeaders: ["my-custom-header"],
-    // credentials: true,
+    origin: "*", // Thay đổi thành domain của bạn
   },
 });
 
 io.on("connection", (socket) => {
   console.log("Connected to socket.io");
+
   socket.on("setup", (userData) => {
     socket.join(userData._id);
     socket.emit("connected");
@@ -90,6 +86,7 @@ io.on("connection", (socket) => {
     socket.join(room);
     console.log("User Joined Room: " + room);
   });
+
   socket.on("typing", (room) => socket.in(room).emit("typing"));
   socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
@@ -105,8 +102,8 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.off("setup", () => {
+  socket.on("disconnect", () => {
     console.log("USER DISCONNECTED");
-    socket.leave(userData._id);
+    // socket.leave(userData._id);
   });
 });

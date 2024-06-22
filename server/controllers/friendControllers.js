@@ -14,7 +14,7 @@ const getFriends = asyncHandler(async (req, res) => {
   try {
     const user = await User.findById(userId).populate(
       "friends",
-      "username avatar"
+      "username avatar email"
     );
     if (!user) return res.status(404).json({ msg: "User not found" });
     res.json(user.friends);
@@ -125,7 +125,6 @@ const getFriendRequests = asyncHandler(async (req, res) => {
       avatar: request.avatar,
     }));
 
-    console.log(friendRequests);
     res.json(friendRequests);
   } catch (err) {
     res.status(500).json({ msg: "Server error" });

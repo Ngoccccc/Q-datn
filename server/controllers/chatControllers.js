@@ -34,6 +34,7 @@ const getChat = asyncHandler(async (req, res) => {
 //@access          Protected
 const accessChat = asyncHandler(async (req, res) => {
   const { myId, userId } = req.body;
+  console.log(myId, userId);
 
   if (!userId) {
     console.log("UserId param not sent with request");

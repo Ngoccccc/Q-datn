@@ -71,6 +71,8 @@ const FriendList = () => {
                   strokeWidth={1.5}
                   stroke="currentColor"
                   className="size-6 hover:text-blue-500 cursor-pointer"
+                  //todo
+                  onClick={() => handleSelectedChat(friend)}
                 >
                   <path
                     strokeLinecap="round"

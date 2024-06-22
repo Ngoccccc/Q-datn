@@ -36,7 +36,6 @@ info()
   });
 // tạo file cho 1 người dùng
 const createNewSheet = async (userMails) => {
-  console.log("userMails", userMails);
   // tạo file mới
   const newDoc = await GoogleSpreadsheet.createNewSpreadsheetDocument(jwt, {
     title: "Quan ly chi tieu",
@@ -170,7 +169,6 @@ const convertStringToNumber = (input) => {
 };
 
 const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
-  console.log(mention, category, remainingData, sheetLink);
   let money;
   let note = "";
   // Bước 2: Tách chuỗi thành hai phần dựa trên khoảng trắng đầu tiên

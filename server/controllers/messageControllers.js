@@ -92,7 +92,6 @@ const sendMessage = asyncHandler(async (req, res) => {
           chat.sheetId
         )
           .then(() => {
-            console.log("ghi file thanh cong");
           })
           .catch((error) => {
             console.log(error);

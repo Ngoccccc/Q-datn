@@ -6,6 +6,10 @@ import { useCategoryContext } from "../../Context/MyCategoryContext";
 import { toast } from "react-toastify";
 import useConversation from "../../zustand/useConversation";
 import { useOurCategoriesContext } from "./useOurCategories";
+import io from "socket.io-client";
+import { useAuthContext } from "../../Context/AuthContext";
+const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
+var socket, selectedChatCompare;
 
 const MentionInput = () => {
   const { selectedChat } = ChatState();
@@ -20,12 +24,41 @@ const MentionInput = () => {
   const [mention, setMention] = useState(null);
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [socketConnected, setSocketConnected] = useState(false);
+
+  const {authUser} = useAuthContext();
 
   const [subcategories, setSubcategories] = useState([]);
 
   const categories = ["chi tiêu", "lập kế hoạch", "thu nhập"];
 
   // const subcategories = ["quần áo", "sức khỏe", "cafe"];
+
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", authUser);
+    socket.on("connected", () => setSocketConnected(true));
+    // socket.on("typing", () => setIsTyping(true));
+    // socket.on("stop typing", () => setIsTyping(false));
+
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    socket.on("message recieved", (newMessageRecieved) => {
+      // if (
+      //   !selectedChatCompare || // if chat is not selected or doesn't match current chat
+      //   selectedChatCompare._id !== newMessageRecieved.chat._id
+      // ) {
+      //   if (!notification.includes(newMessageRecieved)) {
+      //     setNotification([newMessageRecieved, ...notification]);
+      //     setFetchAgain(!fetchAgain);
+      //   }
+      // } else {
+        setMessages([...messages, newMessageRecieved]);
+      // }
+    });
+  });
 
   useEffect(() => {
     if (ourCategories) {
@@ -121,7 +154,7 @@ const MentionInput = () => {
         },
         config
       );
-
+      socket.emit("new message", data);
       setMessages([...messages, data]);
       console.log(data);
       toast.success("Message sent successfully");

@@ -40,6 +40,7 @@ const signup = async (req, res) => {
         _id: newUser._id,
         username: newUser.username,
         avatar: newUser.avatar,
+        email: newUser.email,
       });
     } else {
       res.status(400).json({ error: "Invalid user data" });
@@ -61,7 +62,6 @@ const login = async (req, res) => {
 
     const isPasswordCorrect = await user.matchPassword(password);
     // const isPasswordCorrect = bcrypt.compareSync(password, user.password);
-
 
     if (!isPasswordCorrect) {
       return res.status(400).json({ error: "Invalid username or password" });
@@ -91,18 +91,6 @@ const logout = (req, res) => {
   }
 };
 
-const editProfile = async (req, res) => {
-  try {
-    const { username, avatar } = req.body;
-    const user = await User.findById(req.user._id);
-    user.username = username; // update username
-    user.avatar = avatar; // update avatar
-    await user.save();
-    res.status(200).json({ message: "Profile updated successfully" });  
-  } catch (error) {
-    console.log("Error in editProfile controller", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
 
-module.exports = { signup, login, logout, editProfile };
+
+module.exports = { signup, login, logout };
