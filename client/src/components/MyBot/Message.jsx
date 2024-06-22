@@ -43,7 +43,6 @@ const Message = ({ m, messages, setMessages }) => {
     await axios
       .delete(`/api/message/delete/${m._id}`, config)
       .then((res) => {
-        console.log(res);
         const newMessages = messages.filter((message) => message._id !== m._id);
         setMessages(newMessages);
       })

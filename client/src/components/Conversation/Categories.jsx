@@ -42,7 +42,6 @@ export const Categories = () => {
       axios
         .get(`/api/income/${selectedChat?._id}`, config)
         .then((res) => {
-          console.log(res.data);
           setOurIncomes(res.data);
         })
         .catch((error) => {
@@ -72,7 +71,6 @@ export const Categories = () => {
         )
         .then((res) => {
           setOurCategories([res.data, ...ourCategories]);
-          console.log(res.data);
           setVisableClick(true);
         })
         .catch((error) => {

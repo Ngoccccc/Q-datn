@@ -1,12 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-  Avatar,
-  Popover,
-  Typography,
-  PopoverHandler,
-  Button,
-  PopoverContent,
-} from "@material-tailwind/react";
+import React, { useState } from "react";
+import { Avatar, Typography } from "@material-tailwind/react";
 import { useFriendsContext } from "./useFriendsContext";
 import { useAuthContext } from "../../Context/AuthContext";
 import axios from "axios";
@@ -17,19 +10,16 @@ import { UnfriendConfirm } from "../Unfriend/UnfriendConfirm";
 const FriendList = () => {
   const { friends } = useFriendsContext();
   const { authUser } = useAuthContext();
-  const { selected, setSelectedChat } = ChatState();
+  const { setSelectedChat } = ChatState();
   const [open, setOpen] = React.useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
 
-  
-
-   const handleUnfriendClick = (friend) => {
-     setSelectedFriend(friend);
-     setOpen(true);
-   };
+  const handleUnfriendClick = (friend) => {
+    setSelectedFriend(friend);
+    setOpen(true);
+  };
 
   const handleSelectedChat = async (friend) => {
-    console.log(friend);
     if (!friend) return;
     const config = {
       headers: {
@@ -38,7 +28,11 @@ const FriendList = () => {
     };
 
     await axios
-      .post(`/api/chat`, { myId: authUser._id, userId: friend.id || friend._id }, config)
+      .post(
+        `/api/chat`,
+        { myId: authUser._id, userId: friend.id || friend._id },
+        config
+      )
       .then((response) => {
         setSelectedChat(response.data);
       })
@@ -55,7 +49,7 @@ const FriendList = () => {
         </Typography>
         {friends && friends.length > 0 ? (
           friends.map((friend) => (
-            <div key={friend.id}>
+            <div key={friend.id || friend._id}>
               <div
                 // onClick={() => handleSelectedChat(friend)}
                 className="flex items-center gap-3 p-2 hover:bg-blue-gray-50 rounded-lg"
@@ -74,7 +68,7 @@ const FriendList = () => {
                   stroke="currentColor"
                   className="size-6 hover:text-blue-500 cursor-pointer"
                   //todo
-                  onClick={() =>  handleSelectedChat(friend)}
+                  onClick={() => handleSelectedChat(friend)}
                 >
                   <path
                     strokeLinecap="round"

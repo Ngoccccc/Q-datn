@@ -140,7 +140,6 @@ const MentionInput = () => {
       socket.emit("new message", data);
 
       setMessages([...messages, data]);
-      console.log(data);
       toast.success("Message sent successfully");
     } catch (error) {
       toast.error("Something went wrong");

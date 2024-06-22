@@ -64,7 +64,6 @@ export default function SimpleMentionEditor() {
     e.preventDefault();
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
-    // console.log(raw);
     const content = raw.blocks.map((block) => block.text).join("\n");
 
     const mentions = [];

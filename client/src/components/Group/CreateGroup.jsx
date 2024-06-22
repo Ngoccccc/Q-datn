@@ -167,7 +167,6 @@ export function CreateGroup() {
                             searchResult
                                 ?.slice(0, 4)
                                     .map((user) => {
-                                    console.log(selectedUsers);
                                     return (
                                         <UserListItem
                                             key={user._id}

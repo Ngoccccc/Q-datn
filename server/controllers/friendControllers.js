@@ -1,12 +1,6 @@
 const asyncHandler = require("express-async-handler");
-const Chat = require("../models/chatModel");
 const User = require("../models/userModel");
 const Friendship = require("../models/friendshipModel");
-const {
-  createNewSheet,
-  createNewSheetForGroup,
-  readTotalSpending,
-} = require("../googleSheet/googleSheetHandler");
 
 const getFriends = asyncHandler(async (req, res) => {
   const userId = req.params.id;
@@ -168,7 +162,37 @@ const unFriend = asyncHandler(async (req, res) => {
     console.error(err.message);
     res.status(500).json({ msg: "Server error" });
   }
- })  
+})  
+ 
+
+const cancelFriendRequest = asyncHandler(async (req, res) => {
+  const { userId, friendId } = req.body;
+  console.log(userId, friendId);
+  try {
+    const user = await User.findById(userId);
+    const friend = await User.findById(friendId);
+    if (!user || !friend) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+    user.friend_requests = user.friend_requests.filter(
+      (id) => id.toString() !== friendId
+    );
+
+    // Xóa friendShip
+    await Friendship.findOneAndDelete({
+      $or: [
+        { user1_id: userId, user2_id: friendId },
+        { user1_id: friendId, user2_id: userId },
+      ],
+    });
+
+    await user.save();
+    res.status(200).json({ msg: "Friend request canceled" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: "Server error" });
+  }
+});
 
 module.exports = {
   getFriends,
@@ -176,4 +200,5 @@ module.exports = {
   acceptFriendRequest,
   getFriendRequests,
   unFriend,
+  cancelFriendRequest,
 };

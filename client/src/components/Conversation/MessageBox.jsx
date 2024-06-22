@@ -21,13 +21,7 @@ const MessageBox = () => {
   const { authUser } = useAuthContext();
   const { selectedChat } = ChatState();
   const { messages, setMessages } = useOurCategoriesContext();
-  const [chatDataId, setChatDataId] = useState(null);
 
-  useEffect(() => {
-    if (authUser) {
-      setChatDataId(authUser?._id);
-    }
-  }, [authUser]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -94,7 +88,6 @@ const MessageBox = () => {
         config
       );
       setMessages(data);
-      console.log(data);
       // setLoading(false);
 
       // socket.emit("join chat", selectedChat._id);

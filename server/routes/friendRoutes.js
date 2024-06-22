@@ -6,6 +6,7 @@ const {
   acceptFriendRequest,
   getFriendRequests,
   unFriend,
+  cancelFriendRequest,
 } = require("../controllers/friendControllers.js");
 
 const router = express.Router();
@@ -17,5 +18,6 @@ router.get("/getrequest/:id", getFriendRequests);
 
 router.post("/accept", acceptFriendRequest);
 router.post("/unfiend", unFriend);
+router.post("/cancelFriendRequest", cancelFriendRequest);
 
 module.exports = router;

@@ -130,7 +130,7 @@ function Header({setOpen}) {
           {authUser ? (
             <>
               <div className="flex flex-row gap-6">
-                {/* <NotificationIcon /> */}
+                <NotificationIcon />
                 <ProfileMenu setOpen={setOpen} />
               </div>
             </>

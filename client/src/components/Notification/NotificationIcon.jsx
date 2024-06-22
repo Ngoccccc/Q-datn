@@ -42,22 +42,18 @@ export function NotificationIcon() {
   const [requests, setRequests] = useState([]);
   const { notification, setNotification } = ChatState();
 
-//   useEffect(() => {
-//     socket = io(ENDPOINT);
-//     socket.emit("setup", authUser);
-//     //   socket.on("connected", () => setSocketConnected(true));
-//     // socket.on("typing", () => setIsTyping(true));
-//     // socket.on("stop typing", () => setIsTyping(false));
 
-//     // eslint-disable-next-line
-//   }, []);
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", authUser);
+  }, [authUser]);
 
-//   useEffect(() => {
-//     socket.on("notification recieved", (newNotificationRecieved) => {
-//       // console.log("oooooooooooooo",newNotificationRecieved);
-//       setRequests([newNotificationRecieved, ...requests]);
-//     });
-//   });
+  useEffect(() => {
+    socket.on("notification recieved", (newNotificationRecieved) => {
+      // console.log("oooooooooooooo", newNotificationRecieved);
+      setRequests([newNotificationRecieved, ...requests]);
+    });
+  }, [socket]);
 
   useEffect(() => {
     if (!authUser) return;

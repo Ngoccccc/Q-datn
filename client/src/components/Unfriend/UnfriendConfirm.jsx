@@ -27,7 +27,6 @@ export function UnfriendConfirm({ setOpen, friend }) {
         .then((response) => {
             setOpen(false);
             setFriends((prev) => prev.filter((f) => f._id !== friend._id));
-          console.log(response.data);
         })
         .catch((error) => {
           toast.error(error.message);

@@ -15,25 +15,22 @@ import { toast } from "react-toastify";
 import ChatLoading from "../components/Sketeton/ChatLoading";
 import axios from "axios";
 import { getSender, getChatAvatar } from "../components/config/ChatLogics";
-import { useAuthContext } from "../Context/AuthContext"; 
+import { useAuthContext } from "../Context/AuthContext";
 import { io } from "socket.io-client";
 
 var socket, selectedChatCompare;
 const ENDPOINT = "http://localhost:5000";
 
-
 function Sidebar() {
   const { authUser } = useAuthContext();
-  // const [loggedUser, setLoggedUser] = useState();
   const [searchResult, setSearchResult] = useState([]);
   const { selectedChat, setSelectedChat, chats, setChats } = ChatState();
   const [search, setSearch] = useState("");
 
-  // useEffect(() => {
-  //   socket = io(ENDPOINT);
-  //   socket.emit("setup", authUser);
-  // }, []);
-
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", authUser);
+  }, [authUser]);
 
   const fetchChats = async () => {
     try {
@@ -44,7 +41,6 @@ function Sidebar() {
       };
 
       const { data } = await axios.get(`/api/chat/`, config);
-      console.log(data);
       setChats(data);
     } catch (error) {
       toast.error(error.message);
@@ -70,9 +66,11 @@ function Sidebar() {
           "Content-type": "application/json",
         },
       };
-      const { data } = await axios.get(`/api/user/${authUser._id}?search=${query}`, config);
+      const { data } = await axios.get(
+        `/api/user/${authUser._id}?search=${query}`,
+        config
+      );
       // setLoading(false);
-      console.log(data);
       setSearchResult(data);
     } catch (error) {
       toast.error(error.message);
@@ -96,10 +94,11 @@ function Sidebar() {
         },
       };
       const { data } = await axios.post(
-        `/api/friend/request`, {authId, userId},
+        `/api/friend/request`,
+        { authId, userId },
         config
       );
-      // socket.emit("new notification", {userId: userId,username: selectedUser.username, avatar: selectedUser.avatar, date: new Date()});
+      socket.emit("new notification", {sendId: userId, id: authId,username: authUser.username, avatar: authUser.avatar});
       toast.success(data.message);
     } catch (error) {
       toast.error(error.message);
@@ -114,7 +113,7 @@ function Sidebar() {
         </Typography>
         <CreateGroup />
       </div>
-      <div className=" pl-4 pr-4 flex flex-col">
+      <div className="pl-4 pr-4 flex flex-col">
         <Input
           icon={<MagnifyingGlassIcon className="h-5 w-5" />}
           label="Tìm kiếm"
@@ -127,7 +126,7 @@ function Sidebar() {
         <div className="flex-1 overflow-y-auto pl-4 pr-4">
           {searchResult.map((user) => (
             <div
-              key={user._id}
+              key={user._id || user.id}
               onClick={() => handleSetSearchResult(user)}
               cursor="pointer"
             >
@@ -171,9 +170,8 @@ function Sidebar() {
             if (chat.users.length != 1)
               return (
                 <ListItem
-                  key={chat._id}
+                  key={chat._id || chat.id}
                   onClick={() => {
-                    console.log(chat);
                     setSelectedChat(chat);
                   }}
                   cursor="pointer"
@@ -198,12 +196,7 @@ function Sidebar() {
                         />
                       </Badge>
                       <div>
-                        <Typography variant="h6">
-                          {/* {!chat.isGroupChat
-                        ? getSender(loggedUser, chat.users)
-                        : chat.chatName} */}
-                          {chat.chatName}
-                        </Typography>
+                        <Typography variant="h6">{chat.chatName}</Typography>
                         {chat.latestMessage && (
                           <Typography
                             variant="small"
@@ -222,8 +215,7 @@ function Sidebar() {
                   </ListItemPrefix>
                 </ListItem>
               );
-          }
-          )}
+          })}
         </div>
       ) : (
         <div className="flex-1 overflow-y-auto pl-4 pr-4">

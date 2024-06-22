@@ -179,7 +179,7 @@ const ProfileDialog = ({ setOpen }) => {
               className="block w-full px-3 py-2 mb-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Current Password: <span className="text-red-500">*</span>
+              Mật khẩu hiện tại: <span className="text-red-500">*</span>
             </label>
             <input
               type="password"
@@ -193,7 +193,7 @@ const ProfileDialog = ({ setOpen }) => {
               </p>
             )}
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              New Password:
+             Mật khẩu mới:
             </label>
             <input
               type="password"
@@ -209,7 +209,7 @@ const ProfileDialog = ({ setOpen }) => {
             className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
             disabled={picLoading}
           >
-            {picLoading ? "Loading..." : "Save"}
+            {picLoading ? "Loading..." : "Lưu"}
           </button>
         )}
         {picError && <p className="text-red-500 text-sm mt-2">{picError}</p>}
