@@ -16,9 +16,6 @@ const signup = async (req, res) => {
       return res.status(400).json({ error: "Username already exists" });
     }
 
-    // HASH PASSWORD HERE
-    // const saltRounds = 10;
-    // const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
     // https://avatar-placeholder.iran.liara.run/
     const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
