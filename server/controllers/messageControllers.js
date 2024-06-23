@@ -67,6 +67,22 @@ const sendMessage = asyncHandler(async (req, res) => {
     }
     // ghi vào file
     if (mention) {
+      // nếu không có sheetId
+      if (!chat.sheetId) {
+        res.status(200).json({
+          message,
+          msg: "Vui lòng tạo file quản lý để có thể ghi thông tin vào file",
+        });
+      }
+
+      if (!category) {
+        res.status(200).json({
+          message,
+          msg: "Nhập đầy đủ hạng mục chi tiêu",
+        });
+      }
+
+
       if (mention.value === "chi tiêu") {
         const sliceRemaining = content.slice(
           mention.position,
@@ -85,6 +101,13 @@ const sendMessage = asyncHandler(async (req, res) => {
           money = convertStringToNumber(remain.substring(0, firstSpaceIndex));
           note = remain.substring(firstSpaceIndex + 1);
         }
+
+        if (!money) {
+          res.status(200).json({
+            message,
+            msg: `Vui lòng nhập số tiền bạn ${mention.value} `,
+          })
+        };
         const remaining = await readRemaining(chat.sheetId);
         if (remaining - money < 0) {
           res.status(200).json({

@@ -143,12 +143,12 @@ const MentionInput = () => {
 
       setMessages([...messages, data.message]);
       if (data.msg) {
-        toast.warning("Chi tiêu vượt quá mức lập kế hoạch");
+        toast.warning(data.msg);
       }
 
       setInputValue("");
     } catch (error) {
-      toast.error("Something went wrong");
+        toast.error("Đã xảy ra lỗi");
     }
     setLoading(false);
   };

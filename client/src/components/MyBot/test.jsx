@@ -125,11 +125,12 @@ const MentionInput = () => {
 
       setMessages([...messages, data.message]);
       if (data.msg) {
-        toast.warning("Chi tiêu với quá mục lập kế hoạch");
+        toast.warning(data.msg);
       }
-      toast.success("Message sent successfully");
+      // toast.success("Message sent successfully");
     } catch (error) {
-      toast.error("Something went wrong");
+        
+        toast.error("Đã xảy ra lỗi");
     }
     setLoading(false);
   };

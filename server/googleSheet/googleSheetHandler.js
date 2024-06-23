@@ -164,7 +164,7 @@ const convertStringToNumber = (input) => {
 
     return numberPart;
   } else {
-    console.log("Invalid input format");
+    return null;
   }
 };
 
