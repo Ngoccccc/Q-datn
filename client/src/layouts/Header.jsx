@@ -24,7 +24,7 @@ function Header({setOpen}) {
   }, []);
 
   const navList = (
-    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+    <ul className="w-[40rem] mt-2 mb-4 flex flex-col gap-2 justify-center lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <NavLink to={`/`}>
         <Typography
           as="li"

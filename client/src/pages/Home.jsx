@@ -7,11 +7,9 @@ import { useState } from "react";
 function Home() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="h-screen flex flex-col items-center">
+    <div className="h-screen flex flex-col items-center w-full">
       <ToastContainer />
-      <div className="w-full max-w-screen-xl">
-        <Header setOpen={setOpen} />
-      </div>
+      <Header setOpen={setOpen} />
       <Outlet />
       {open && <ProfileDialog setOpen={setOpen} />}
     </div>

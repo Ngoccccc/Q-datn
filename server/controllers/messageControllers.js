@@ -30,7 +30,7 @@ const allMessages = asyncHandler(async (req, res) => {
 //@route           POST /api/Message/
 //@access          Protected
 const sendMessage = asyncHandler(async (req, res) => {
-  const { mention, category, content, chatId } = req.body;
+  const { mention, category, content, chatId, writedUserEmail } = req.body;
 
   if (!content || !chatId) {
     return res.sendStatus(405);
@@ -143,7 +143,8 @@ const sendMessage = asyncHandler(async (req, res) => {
           mentionAfter5Min.value,
           categoryAfter5Min.value,
           remainingData,
-          chat.sheetId
+          chat.sheetId,
+          writedUserEmail
         )
           .then(() => {})
           .catch((error) => {

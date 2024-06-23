@@ -5,8 +5,10 @@ import { ChatState } from "../../Context/ChatProvider";
 import { useCategoryContext } from "../../Context/MyCategoryContext";
 import { toast } from "react-toastify";
 import useConversation from "../../zustand/useConversation";
+import { useAuthContext } from "../../Context/AuthContext";
 
 const MentionInput = () => {
+  const {authUser} = useAuthContext();
   const { myChat } = ChatState();
   const { messages, setMessages } = useConversation();
 
@@ -119,6 +121,7 @@ const MentionInput = () => {
           category: category,
           content: inputValue,
           chatId: myChat?._id,
+          writedUserEmail: authUser.email,
         },
         config
       );

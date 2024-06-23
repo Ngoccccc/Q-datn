@@ -168,7 +168,13 @@ const convertStringToNumber = (input) => {
   }
 };
 
-const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
+const writeGGSheet = async (
+  mention,
+  category,
+  remainingData,
+  sheetLink,
+  writedUserEmail
+) => {
   let money;
   let note = "";
   // Bước 2: Tách chuỗi thành hai phần dựa trên khoảng trắng đầu tiên
@@ -207,6 +213,7 @@ const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
         "Hạng mục": category,
         "Số tiền": money,
         "Ghi chú": note,
+        "Người ghi": writedUserEmail,
       })
       .then(() => {})
       .catch((error) => {
@@ -217,7 +224,6 @@ const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
     // await sheet.loadCells("G6:AN6");
     // const remaining = sheet.getCellByA1("V6").value;
     // return remaining;
-
   } else if (mention == "lập kế hoạch") {
     await sheet
       .addRow({
@@ -288,11 +294,11 @@ const readTotalSpending = async (sheetLink) => {
   const file = new GoogleSpreadsheet(sheetId, jwt);
   await file.loadInfo();
   const sheet = file.sheetsByIndex[2];
-  await sheet.loadCells("L2:N2");
+  await sheet.loadCells("J2:L2");
 
-  const day = sheet.getCellByA1("L2").value;
-  const week = sheet.getCellByA1("M2").value;
-  const month = sheet.getCellByA1("N2").value;
+  const day = sheet.getCellByA1("J2").value;
+  const week = sheet.getCellByA1("K2").value;
+  const month = sheet.getCellByA1("L2").value;
   return { day, week, month };
 };
 
