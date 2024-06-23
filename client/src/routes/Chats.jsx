@@ -38,7 +38,7 @@ const Chats = () => {
           />
           {/* <categories/> */}
           {open && (
-            <div className="w-1/4 rounded-xl shadow-md bg-white">
+            <div className="w-1/3 rounded-xl shadow-md bg-white">
               <Categories
               />
             </div>

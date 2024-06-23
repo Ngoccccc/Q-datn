@@ -50,7 +50,6 @@ export function NotificationIcon() {
 
   useEffect(() => {
     socket.on("notification recieved", (newNotificationRecieved) => {
-      // console.log("oooooooooooooo", newNotificationRecieved);
       setRequests([newNotificationRecieved, ...requests]);
     });
   }, [socket]);
@@ -75,6 +74,15 @@ export function NotificationIcon() {
     };
     fetchData();
   }, [authUser]);
+
+  const handleClickNoti = (request) => {
+    //delete request
+
+    setRequests(requests.filter((r) => r._id !== request._id));
+    redirect("/chats")
+    // console.log("hi em");
+    // navigate("/notifications");
+  };
   return (
     <Menu>
       <MenuHandler>
@@ -98,13 +106,14 @@ export function NotificationIcon() {
       </MenuHandler>
       <MenuList
         className="flex flex-col gap-2"
-        onClick={() => navigate("/chats")}
+        
       >
         {requests && requests.length > 0 ? (
           requests.map((request) => (
             <MenuItem
               className="flex items-center gap-4 py-2 pl-2 pr-8"
               key={request._id}
+              onClick={() => handleClickNoti(request)}
             >
               <Avatar
                 variant="circular"

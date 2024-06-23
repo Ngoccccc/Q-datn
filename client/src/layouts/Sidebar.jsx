@@ -6,7 +6,6 @@ import {
   Input,
   Badge,
   Avatar,
-  Button,
 } from "@material-tailwind/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { CreateGroup } from "../components/Group/CreateGroup";
@@ -14,17 +13,16 @@ import { ChatState } from "../Context/ChatProvider";
 import { toast } from "react-toastify";
 import ChatLoading from "../components/Sketeton/ChatLoading";
 import axios from "axios";
-import { getSender, getChatAvatar } from "../components/config/ChatLogics";
 import { useAuthContext } from "../Context/AuthContext";
 import { io } from "socket.io-client";
 
-var socket, selectedChatCompare;
+var socket;
 const ENDPOINT = "http://localhost:5000";
 
 function Sidebar() {
   const { authUser } = useAuthContext();
   const [searchResult, setSearchResult] = useState([]);
-  const { selectedChat, setSelectedChat, chats, setChats } = ChatState();
+  const { setSelectedChat, chats, setChats } = ChatState();
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -80,8 +78,6 @@ function Sidebar() {
   const handleSetSearchResult = async (selectedUser) => {
     setSearch("");
     setSearchResult([]);
-    const userId = selectedUser._id;
-    const authId = authUser._id;
   };
 
   const handleSendRequestFriend = async (selectedUser) => {
@@ -98,7 +94,12 @@ function Sidebar() {
         { authId, userId },
         config
       );
-      socket.emit("new notification", {sendId: userId, id: authId,username: authUser.username, avatar: authUser.avatar});
+      socket.emit("new notification", {
+        sendId: userId,
+        id: authId,
+        username: authUser.username,
+        avatar: authUser.avatar,
+      });
       toast.success(data.message);
     } catch (error) {
       toast.error(error.message);
@@ -178,15 +179,11 @@ function Sidebar() {
                 >
                   <ListItemPrefix>
                     <div className="flex items-center gap-4">
-                      <Badge
-                        placement="top-end"
-                        overlap="circular"
-                        color="green"
-                        withBorder
-                      >
                         <Avatar
                           src={
-                            chat.users.length == 2
+                            chat.isGroupChat
+                              ? chat.avatar
+                              : chat.users.length == 2
                               ? chat.users[0]._id == authUser._id
                                 ? chat.users[1].avatar
                                 : chat.users[0].avatar
@@ -194,7 +191,6 @@ function Sidebar() {
                           }
                           alt="avatar"
                         />
-                      </Badge>
                       <div>
                         <Typography variant="h6">{chat.chatName}</Typography>
                         {chat.latestMessage && (

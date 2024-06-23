@@ -11,18 +11,20 @@ import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
 import { toast } from "react-toastify";
 import { useOurCategoriesContext } from "./useOurCategories";
+import ListMembers from "./ListMembers";
 
 export const Categories = () => {
-  const {selectedChat} = ChatState();
+  const { selectedChat } = ChatState();
   const { ourCategories, setOurCategories, ourIncomes, setOurIncomes } =
     useOurCategoriesContext();
   const [visableClick, setVisableClick] = useState(true);
   const [categoryName, setCategoryName] = useState();
   const [incomeName, setIncomeName] = useState();
-
+  const [members, setMembers] = useState([]);
 
   useEffect(() => {
     if (selectedChat) {
+      setMembers(selectedChat.users);
       const config = {
         headers: {
           "Content-type": "application/json",
@@ -38,8 +40,7 @@ export const Categories = () => {
         .catch((error) => {
           console.log(error);
         });
-      
-      
+
       axios
         .get(`/api/income/${selectedChat?._id}`, config)
         .then((res) => {
@@ -48,10 +49,6 @@ export const Categories = () => {
         .catch((error) => {
           console.log(error);
         });
-      
-      
-      
-      
     }
   }, [selectedChat]);
 
@@ -140,20 +137,20 @@ export const Categories = () => {
       });
   };
   return (
-    <div className="flex flex-col justify-between items-center">
-      <Typography className="pt-2" variant="h6">
+    <div className="flex flex-col h-full overflow-y-auto">
+      <Typography variant="h6" className="p-3">
         Các hạng mục quản lý
       </Typography>
-      <div className="flex flex-row">
+      <div className="mb-2 flex flex-row px-3">
         <Input
           variant="static"
-          placeholder="Thêm danh mục"
-          value={categoryName}
+          placeholder="Thêm hạng mục"
+          value={incomeName}
           onChange={(e) => setCategoryName(e.target.value)}
         />
         <button
           onClick={(e) => {
-            visableClick && handleCreateCategory(e);
+            handleCreateCategory(e);
           }}
         >
           <svg
@@ -175,9 +172,8 @@ export const Categories = () => {
         </button>
       </div>
       <List className="flex-1 overflow-y-auto pl-4 pr-4 ">
-        {ourCategories.length > 0 &&
-          ourCategories.map((category) => (
-            //   <span key={category._id}>{category.name}</span>
+        <Accordion>
+          {ourCategories.map((category) => (
             <div
               key={category._id}
               className="flex flex-row items-center h-10  px-3 rounded-lg"
@@ -205,13 +201,14 @@ export const Categories = () => {
               </button>
             </div>
           ))}
+        </Accordion>
       </List>
 
       {/* income */}
-      <div className="flex flex-row justify-between items-center mt-3">
-        <Typography variant="h6">Các loại thu nhập</Typography>
-      </div>
-      <div className="mb-2 flex flex-row">
+      <Typography variant="h6" className="p-3">
+        Các loại thu nhập
+      </Typography>
+      <div className="mb-2 flex flex-row px-3">
         <Input
           variant="static"
           placeholder="Thêm loại thu nhập"
@@ -248,7 +245,6 @@ export const Categories = () => {
               key={income._id}
               className="flex flex-row items-center h-10  px-3 rounded-lg"
             >
-
               <div className="flex-grow">{income.name}</div>
 
               <button
@@ -274,6 +270,7 @@ export const Categories = () => {
           ))}
         </Accordion>
       </List>
+      {selectedChat.isGroupChat && <ListMembers members={members} />}
     </div>
   );
 };

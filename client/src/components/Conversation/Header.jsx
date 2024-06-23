@@ -111,16 +111,12 @@ const Header = ({ setOpen }) => {
                 />
               </svg>
             </NavLink>
-            <Badge
-              placement="top-end"
-              overlap="circular"
-              color="green"
-              withBorder
-            >
               {console.log(selectedChat.users[0].avatar)}
               <Avatar
                 src={
-                  selectedChat.users.length <= 2
+                  selectedChat.isGroupChat
+                    ? selectedChat.avatar
+                    : selectedChat.users.length == 2
                     ? selectedChat.users[0]._id == authUser._id
                       ? selectedChat.users[1].avatar
                       : selectedChat.users[0].avatar
@@ -128,7 +124,6 @@ const Header = ({ setOpen }) => {
                 }
                 alt="avatar"
               />
-            </Badge>
             <div className="flex flex-col pr-5">
               <Typography variant="h6">
                 {selectedChat.chatName

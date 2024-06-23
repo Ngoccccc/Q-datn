@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import { Sidebar } from "../components/MyBot/Sidebar";
 import MessageBox from "../components/MyBot/MessageBox";
-import SimpleMentionEditor from "../components/MyBot/SimpleMentionEditor";
 import MentionInput from "../components/MyBot/test";
 import { MyCategoryProvider } from "../Context/MyCategoryContext";
 import Header from "../components/MyBot/Header";

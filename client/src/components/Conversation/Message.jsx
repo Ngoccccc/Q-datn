@@ -97,14 +97,12 @@ const Message = ({ m, messages, setMessages }) => {
       onMouseLeave={() => setHover(false)}
     >
       <div className={avatar}>
-        <Badge placement="top-end" overlap="circular" color="green" withBorder>
-          <Avatar size="sm" src={m.sender.avatar} alt="avatar" />
-        </Badge>
+        <Avatar size="sm" src={m.sender.avatar} alt="avatar" />
       </div>
 
       {edit ? (
         // <input type="text" value={m.content} />
-        <EditInput m={m} setEdit={setEdit} setMess={setMess}  />
+        <EditInput m={m} setEdit={setEdit} setMess={setMess} />
       ) : (
         <div className={body}>
           <div className="flex items-center gap-1">

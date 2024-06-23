@@ -97,9 +97,7 @@ const Message = ({ m, messages, setMessages }) => {
       onMouseLeave={() => setHover(false)}
     >
       <div className={avatar}>
-        <Badge placement="top-end" overlap="circular" color="green" withBorder>
           <Avatar size="sm" src={m.sender.avatar} alt="avatar" />
-        </Badge>
       </div>
 
       {edit ? (

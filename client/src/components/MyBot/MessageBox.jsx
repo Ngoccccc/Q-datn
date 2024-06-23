@@ -1,36 +1,39 @@
-import clsx from "clsx";
-import { useRef, useEffect, useState } from "react";
-import { Badge, Avatar } from "@material-tailwind/react";
-import { format } from "date-fns";
+import { useEffect } from "react";
 import ScrollableFeed from "react-scrollable-feed";
-import {
-  isLastMessage,
-  isSameSender,
-  isSameSenderMargin,
-  isSameUser,
-} from "../config/ChatLogics";
-import useGetMessages from "../../hooks/useGetMessages";
 import useConversation from "../../zustand/useConversation";
 import { ChatState } from "../../Context/ChatProvider";
-import { useAuthContext } from "../../Context/AuthContext";
 import axios from "axios";
 import Message from "./Message";
+import { toast } from "react-toastify";
 
-// import { ChatState } from "../../Context/ChatProvider";
 
 const MessageBox = () => {
-  const { authUser } = useAuthContext();
   const { myChat } = ChatState();
-
-  const [chatDataId, setChatDataId] = useState(null);
-  const [hover, setHover] = useState(false);
-
+  const { messages, setMessages } = useConversation();
   useEffect(() => {
-    if (myChat) {
-      setChatDataId(myChat?._id);
-    }
+    const getMessages = async () => {
+      // setLoading(true);
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+        const { data } = await axios.get(
+          `/api/message/${myChat?._id}`,
+          config
+        );
+
+        setMessages(data);
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    if (myChat?._id) getMessages();
   }, [myChat]);
-  const { messages, setMessages } = useGetMessages(chatDataId);
 
   return (
     <>
