@@ -166,7 +166,7 @@ const MentionInput = () => {
           value={inputValue}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          placeholder="Type @ for categories or / for subcategories"
+          placeholder="Gõ @ để gọi chi tiêu/lập kế hoạch/thu nhập, gõ / để gọi hạng mục/loại thu nhập"
         />
         {loading && (
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">

@@ -150,7 +150,7 @@ const sendMessage = asyncHandler(async (req, res) => {
           .catch((error) => {
             console.log(error);
           });
-      }, 3000); // 5 phút = 300000 milliseconds
+      }, 300000); // 5 phút = 300000 milliseconds
 
       // }
     }
