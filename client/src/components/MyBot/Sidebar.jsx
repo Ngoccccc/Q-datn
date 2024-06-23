@@ -163,7 +163,7 @@ export function Sidebar() {
     axios
       .delete(`/api/category/delete/${id}`, config)
       .then((res) => {
-        setMyIncome(myIncome.filter((item) => item._id !== id));
+        setMyCategory(myIncome.filter((item) => item._id !== id));
       })
       .catch((error) => {
         toast.error(error.response.data.message);

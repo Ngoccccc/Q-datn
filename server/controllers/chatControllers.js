@@ -114,19 +114,9 @@ const fetchChat = asyncHandler(async (req, res) => {
 //@route           POST /api/chat/group
 //@access          Protected
 const createGroupChat = asyncHandler(async (req, res) => {
-  if (!req.body.users || !req.body.name) {
-    return res.status(400).send({ message: "Please Fill all the feilds" });
-  }
+  console.log(req.body);
 
   var users = JSON.parse(req.body.users);
-
-  if (users.length < 2) {
-    return res
-      .status(400)
-      .send("More than 2 users are required to form a group chat");
-  }
-
-  // users.push(req.user.id);
 
   // var mailUsers = []
 
@@ -145,15 +135,13 @@ const createGroupChat = asyncHandler(async (req, res) => {
       chatName: req.body.name,
       users: users,
       isGroupChat: true,
-      // groupAdmin: req.user,
+      groupAdmin: req.body.groupAdmin,
       // sheetId
     });
 
-    const fullGroupChat = await Chat.findOne({ _id: groupChat._id }).populate(
-      "users",
-      "-password"
-    );
-    // .populate("groupAdmin", "-password");
+    const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
 
     res.status(200).json(fullGroupChat);
   } catch (error) {
@@ -199,12 +187,7 @@ const createSheet = asyncHandler(async (req, res) => {
     console.error(err.message);
     res.status(500).json({ msg: "Server error" });
   }
-
-
-
-  
 });
-
 
 // @desc    Rename Group
 // @route   PUT /api/chat/rename
@@ -323,8 +306,7 @@ const getSpending = asyncHandler(async (req, res) => {
     if (chat.sheetId) {
       const spending = await readTotalSpending(chat.sheetId);
       res.json(spending);
-    }
-    else {
+    } else {
       res.json(0);
     }
   }

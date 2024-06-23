@@ -13,8 +13,13 @@ const chatModel = mongoose.Schema(
     sheetId: {
       type: String,
       // required: true,
-
-    }
+    },
+    avatar: {
+      type: String,
+      default:
+        "https://res.cloudinary.com/piyushproj/image/upload/v1719113515/s4d5d0mju5t16cs8zpqn.png",
+      
+    },
   },
   { timestamps: true }
 );
