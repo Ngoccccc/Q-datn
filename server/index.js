@@ -101,9 +101,6 @@ io.on("connection", (socket) => {
        var chat = message.chat;
 
       if (!chat.users) return console.log("chat.users not defined");
-      
-      
-
       chat.users.forEach((user) => {
         const userId = user._id || user.id;
         const senderId = message.sender._id || message.sender.id;
@@ -125,8 +122,8 @@ io.on("connection", (socket) => {
 
 
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (userData) => {
     // console.log("USER DISCONNECTED");
-    // socket.leave(userData._id);
+    socket.leave(userData._id);
   });
 });

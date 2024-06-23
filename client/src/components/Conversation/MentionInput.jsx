@@ -137,10 +137,16 @@ const MentionInput = () => {
         config
       );
 
-      socket.emit("new message", data);
+      console.log(data.message);
 
-      setMessages([...messages, data]);
-      toast.success("Message sent successfully");
+      socket.emit("new message", data.message);
+
+      setMessages([...messages, data.message]);
+      if (data.msg) {
+        toast.warning("Chi tiêu vượt quá mức lập kế hoạch");
+      }
+
+      setInputValue("");
     } catch (error) {
       toast.error("Something went wrong");
     }

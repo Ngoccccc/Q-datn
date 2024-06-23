@@ -5,6 +5,7 @@ const Chat = require("../models/chatModel");
 const {
   convertStringToNumber,
   writeGGSheet,
+  readRemaining,
 } = require("../googleSheet/googleSheetHandler");
 const Mention = require("../models/mentionModel");
 
@@ -56,17 +57,47 @@ const sendMessage = asyncHandler(async (req, res) => {
     await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
 
     message = await message.populate("mention category");
-    res.json(message);
+    // res.json(message);
 
     const chat = await Chat.findById(req.body.chatId);
+    if (!mention) {
+      res.status(200).json({
+        message,
+      });
+    }
     // ghi vào file
     if (mention) {
-      // await writeGGSheet(
-      //   mention.value,
-      //   category.value,
-      //   remainingData,
-      //   chat.sheetId
-      // );
+      if (mention.value === "chi tiêu") {
+        const sliceRemaining = content.slice(
+          mention.position,
+          category.value.length + category.position + 1
+        );
+        const remain = content.replace(sliceRemaining, "").trim();
+        let money;
+        let note = "";
+        // Bước 2: Tách chuỗi thành hai phần dựa trên khoảng trắng đầu tiên
+
+        const firstSpaceIndex = remain.indexOf(" ");
+        if (firstSpaceIndex === -1) {
+          money = convertStringToNumber(remain);
+          note = "";
+        } else {
+          money = convertStringToNumber(remain.substring(0, firstSpaceIndex));
+          note = remain.substring(firstSpaceIndex + 1);
+        }
+        const remaining = await readRemaining(chat.sheetId);
+        if (remaining - money < 0) {
+          res.status(200).json({
+            message,
+            msg: "Không đủ tiền để chi tiêu",
+          });
+        } else {
+          res.status(200).json({
+            message,
+            // msg: "Không đủ tiền để chi tiêu",
+          });
+        }
+      }
 
       // Sau 5 phút, lưu tin nhắn vào Google Sheets
       setTimeout(async () => {
@@ -91,8 +122,7 @@ const sendMessage = asyncHandler(async (req, res) => {
           remainingData,
           chat.sheetId
         )
-          .then(() => {
-          })
+          .then(() => {})
           .catch((error) => {
             console.log(error);
           });
@@ -120,7 +150,7 @@ const deleteMessage = asyncHandler(async (req, res) => {
 
     if (timeDifference > 5) {
       return res.status(403).json({
-        msg: "You can only delete messages within 5 minutes of sending",
+        msg: "Bạn chỉ có thể xóa  tin nhắn trong vòng 5 phút kể từ khi gửi",
       });
     }
 
@@ -147,7 +177,7 @@ const updateMessage = asyncHandler(async (req, res) => {
 
     if (timeDifference > 5) {
       return res.status(403).json({
-        msg: "You can only edit messages within 5 minutes of sending",
+        msg: "Bạn chỉ có thể sửa tin nhắn trong vòng 5 phút kể từ khi gửi",
       });
     }
 

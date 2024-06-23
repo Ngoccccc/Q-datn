@@ -21,7 +21,8 @@ import "../../assets/custom-scrollbar.css";
 export function Sidebar() {
   const { myChat } = ChatState();
   const [fileLink, setFileLink] = useState();
-  const { loading, createFile } = useCreateFile();
+  // const { loading, createFile } = useCreateFile();
+  const [loading, setLoading] = useState(false);
   const [categoryName, setCategoryName] = useState();
   const [incomeName, setIncomeName] = useState();
   // const [categories, setCategories] = useState([]);
@@ -74,6 +75,7 @@ export function Sidebar() {
   }, [myChat]);
 
   const handerCreateFile = async () => {
+    setLoading(true);
     if (!myChat) {
       return;
     }
@@ -95,6 +97,7 @@ export function Sidebar() {
       console.log(error);
       toast.error(error.message);
     } finally {
+      setLoading(false);
       toast.success("Tạo file thành công");
     }
   };

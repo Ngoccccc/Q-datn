@@ -104,7 +104,7 @@ const Message = ({ m, messages, setMessages }) => {
 
       {edit ? (
         // <input type="text" value={m.content} />
-        <EditInput m={m} setEdit={setEdit} setMess={setMess} />
+        <EditInput m={m} setEdit={setEdit} setMess={setMess}  />
       ) : (
         <div className={body}>
           <div className="flex items-center gap-1">

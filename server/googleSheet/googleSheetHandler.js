@@ -193,11 +193,15 @@ const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
   // mở file sheet
   const file = new GoogleSpreadsheet(sheetId, jwt);
   await file.loadInfo();
-  var sheet = file.sheetsByIndex[2];
+  var sheet = file.sheetsByIndex[3];
   const timeDayMonthYear = getTime();
 
+  const month = `Tháng ${new Date().getMonth() + 1}`;
+
   if (mention == "chi tiêu") {
+    sheet = file.sheetsByIndex[2];
     await sheet
+
       .addRow({
         "Thời gian": timeDayMonthYear,
         "Hạng mục": category,
@@ -208,17 +212,18 @@ const writeGGSheet = async (mention, category, remainingData, sheetLink) => {
       .catch((error) => {
         console.log(error);
       });
+
+    // sheet = file.sheetsByIndex[3];
+    // await sheet.loadCells("G6:AN6");
+    // const remaining = sheet.getCellByA1("V6").value;
+    // return remaining;
+
   } else if (mention == "lập kế hoạch") {
-    sheet = file.sheetsByIndex[3];
-
-    const month = `Tháng ${new Date().getMonth() + 1}`;
-
     await sheet
       .addRow({
         "Thời gian": timeDayMonthYear,
-        "Loại thu nhập": category,
-        "Số tiền": money,
-        "Ghi chú": note,
+        "Hạng mục": category,
+        [month]: money,
       })
       .then(() => {})
       .catch((error) => {
@@ -291,6 +296,67 @@ const readTotalSpending = async (sheetLink) => {
   return { day, week, month };
 };
 
+
+const readRemaining = async (sheetLink) => {
+  // lấy sheetId
+  let sheetId = "";
+  const regex = /\/d\/([a-zA-Z0-9-_]+)(?:\/|$)/;
+  const matches = sheetLink.match(regex);
+  if (matches && matches[1]) {
+    sheetId = matches[1];
+  } else {
+    return 0;
+  }
+
+  // mở file sheet
+  const file = new GoogleSpreadsheet(sheetId, jwt);
+  await file.loadInfo();
+  const sheet = file.sheetsByIndex[3];
+  await sheet.loadCells("G6:AN6");
+
+  let remaining = 0;
+  const month = new Date().getMonth() + 1;
+  if (month == 1) {
+    remaining = sheet.getCellByA1("G6").value;
+  }
+  else if (month == 2) {
+    remaining = sheet.getCellByA1("J6").value;
+  }
+  else if (month == 3) {
+    remaining = sheet.getCellByA1("M6").value;
+  }
+  else if (month == 4) {
+    remaining = sheet.getCellByA1("P6").value;
+  }
+  else if (month == 5) {
+    remaining = sheet.getCellByA1("S6").value;
+  }
+  else if (month == 6) {
+    remaining = sheet.getCellByA1("V6").value;
+  }
+  else if (month == 7) {
+    remaining = sheet.getCellByA1("Y6").value;
+  }
+  else if (month == 8) {
+    remaining = sheet.getCellByA1("AB6").value;
+  }
+  else if (month == 9) {
+    remaining = sheet.getCellByA1("AE6").value;
+  }
+  else if (month == 10) {
+    remaining = sheet.getCellByA1("AH6").value;
+  }
+  else if (month == 11) {
+    remaining = sheet.getCellByA1("AK6").value;
+  }
+  else if (month == 12) {
+    remaining = sheet.getCellByA1("AN6").value;
+  }
+  return remaining;
+};
+  
+
+
 module.exports = {
   createNewSheet,
   createNewSheetForGroup,
@@ -298,4 +364,5 @@ module.exports = {
   writeGGSheet,
   writeCategory,
   readTotalSpending,
+  readRemaining,
 };

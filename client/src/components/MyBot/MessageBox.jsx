@@ -37,9 +37,6 @@ const MessageBox = () => {
       <ScrollableFeed>
         {messages &&
           messages.map((m) => {
-            
-
-
             return <Message m={m} key={m._id} messages={messages} setMessages={setMessages} />;
           })}
       </ScrollableFeed>

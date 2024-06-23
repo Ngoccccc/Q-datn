@@ -15,9 +15,13 @@ const createCategory = asyncHandler(async (req, res) => {
 
   const chat = await Chat.findById(chatId);
 
-  const category = await Category.findOne({
-    name: { $regex: new RegExp(name, "i") },
-  });
+
+ const category = await Category.findOne({
+   chatId,
+   name: { $regex: new RegExp(`^${name}$`, "i") },
+ });
+
+
 
   if (category) {
     res.status(403);

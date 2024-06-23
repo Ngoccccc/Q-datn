@@ -129,7 +129,9 @@ const EditInput = ({ m, setEdit, setMess }) => {
       toast.success("Message sent successfully");
     } catch (error) {
       if (error.response && error.response.status === 403) {
-        toast.error("You can only edit messages within 5 minutes of sending");
+        toast.error(
+          "Bạn chỉ có thể sửa tin nhắn trong vòng 5 phút kể từ khi gửi"
+        );
       } else {
         console.error("There was an error editing the message!", error);
       }

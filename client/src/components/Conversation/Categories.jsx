@@ -32,6 +32,7 @@ export const Categories = () => {
       axios
         .get(`/api/category/${selectedChat?._id}`, config)
         .then((res) => {
+          console.log(res.data);
           setOurCategories(res.data);
         })
         .catch((error) => {

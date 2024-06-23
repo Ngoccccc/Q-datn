@@ -1,24 +1,22 @@
-// src/components/MentionInput.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
 import { useCategoryContext } from "../../Context/MyCategoryContext";
 import { toast } from "react-toastify";
 import useConversation from "../../zustand/useConversation";
+import { useOurCategoriesContext } from "./useOurCategories";
 
-const MentionInput = () => {
-  const { myChat } = ChatState();
-  const { messages, setMessages } = useConversation();
-
-  const { myCategory , myIncome} = useCategoryContext();
-
-  const [inputValue, setInputValue] = useState("");
+const EditInput = ({ m, setEdit, setMess }) => {
+  const { selectedChat } = ChatState();
+  const { messages, setMessages, ourCategories } = useOurCategoriesContext();
+  const [inputValue, setInputValue] = useState(m.content);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [trigger, setTrigger] = useState(null);
-  const [mention, setMention] = useState(null);
-  const [category, setCategory] = useState(null);
+  const [mention, setMention] = useState(m.mention);
+  const [category, setCategory] = useState(m.category);
   const [loading, setLoading] = useState(false);
+
   const [subcategories, setSubcategories] = useState([]);
 
   const categories = ["chi tiêu", "lập kế hoạch", "thu nhập"];
@@ -26,14 +24,11 @@ const MentionInput = () => {
   // const subcategories = ["quần áo", "sức khỏe", "cafe"];
 
   useEffect(() => {
-    if (mention?.value === "chi tiêu" || mention?.value === "lập kế hoạch") {
-      const categoryNames = myCategory.map((category) => category.name);
+    if (ourCategories) {
+      const categoryNames = ourCategories.map((category) => category.name);
       setSubcategories(categoryNames);
-    } else if (mention?.value === "thu nhập") {
-      const incomeNames = myIncome.map((income) => income.name);
-      setSubcategories(incomeNames);
     }
-  }, [mention, myCategory, myIncome]);
+  }, [ourCategories]);
 
   useEffect(() => {
     const triggerChar = inputValue.match(/[@/][^@/]*$/);
@@ -54,7 +49,7 @@ const MentionInput = () => {
   }, [inputValue]);
 
   useEffect(() => {
-    if (myChat) {
+    if (selectedChat) {
       const config = {
         headers: {
           "Content-type": "application/json",
@@ -62,7 +57,7 @@ const MentionInput = () => {
       };
 
       axios
-        .get(`/api/category/${myChat?._id}`, config)
+        .get(`/api/category/${selectedChat?._id}`, config)
         .then((res) => {
           const categoryNames = res.data.map((category) => category.name);
           setSubcategories(categoryNames);
@@ -71,7 +66,7 @@ const MentionInput = () => {
           console.log(error);
         });
     }
-  }, [myChat]);
+  }, [selectedChat]);
 
   const handleChange = (event) => {
     setInputValue(event.target.value);
@@ -112,25 +107,33 @@ const MentionInput = () => {
         },
       };
 
-      const { data } = await axios.post(
-        `/api/message`,
+      console.log(mention, category, inputValue);
+
+      const { data } = await axios.put(
+        `/api/message/update/${m._id}`,
         {
           mention: mention,
           category: category,
           content: inputValue,
-          chatId: myChat?._id,
+          //   chatId: myChat?._id,
         },
         config
       );
 
-      setMessages([...messages, data.message]);
-      if (data.msg) {
-        toast.warning("Chi tiêu với quá mục lập kế hoạch");
-      }
+      //   setMessages([...messages, data]);
+      // console.log(data.mention);
+      setMess(data.message);
+      setEdit(false);
       toast.success("Message sent successfully");
     } catch (error) {
-      toast.error("Something went wrong");
-    }
+      if (error.response && error.response.status === 403) {
+        toast.error(
+          "Bạn chỉ có thể sửa tin nhắn trong vòng 5 phút kể từ khi gửi"
+        );
+      } else {
+        console.error("There was an error editing the message!", error);
+      }
+    } finally { setEdit(false); }
     setLoading(false);
   };
 
@@ -197,4 +200,4 @@ const MentionInput = () => {
   );
 };
 
-export default MentionInput;
+export default EditInput;

@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { ChatState } from "../../Context/ChatProvider";
 import { useAuthContext } from "../../Context/AuthContext";
 import { useOurCategoriesContext } from "./useOurCategories";
+import Message from "./Message";
 
 const MessageBox = () => {
   const { authUser } = useAuthContext();
@@ -109,73 +110,13 @@ const MessageBox = () => {
         <ScrollableFeed>
           {messages &&
             messages.map((m) => {
-              const parts = [];
-              let currentIndex = 0;
-              const mention = m.mention;
-              const content = m.content;
-              const category = m.category;
-
-              if (mention) {
-                if (mention.position > currentIndex) {
-                  parts.push(content.slice(currentIndex, mention.position));
-                }
-
-                parts.push(
-                  <span className="text-blue-600">@{mention.value}</span>
-                );
-                currentIndex = mention.position + mention.value.length + 1; // Update currentIndex correctly
-              }
-
-              if (category) {
-                if (category.position > currentIndex) {
-                  parts.push(content.slice(currentIndex, category.position));
-                }
-                parts.push(
-                  <span className="text-gray-600 font-bold bg-blue-gray-100 rounded-full p-1 px-2 mx-2">
-                    /{category.value}
-                  </span>
-                );
-                currentIndex = category.position + category.value.length + 1; // Update currentIndex correctly
-              }
-
-              // Push any remaining text after the last mention
-              if (currentIndex < content.length) {
-                parts.push(content.slice(currentIndex));
-              }
-
               return (
-                <div className={container} key={m._id}>
-                  <div className={avatar}>
-                    <Badge
-                      placement="top-end"
-                      overlap="circular"
-                      color="green"
-                      withBorder
-                    >
-                      <Avatar size="sm" src={m.sender.avatar} alt="avatar" />
-                    </Badge>
-                  </div>
-
-                  <div className={body}>
-                    <div className="flex items-center gap-1">
-                      <div className="text-sm text-gray-500">
-                        {m.sender.username}
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {format(new Date(m.createdAt), "yyyy-MM-dd HH:mm")}
-                      </div>
-                    </div>
-                    <p
-                      className={
-                        authUser?._id == m.sender._id
-                          ? messageNotOwn
-                          : messageOwn
-                      }
-                    >
-                      {parts}
-                    </p>
-                  </div>
-                </div>
+                <Message
+                  m={m}
+                  key={m._id}
+                  messages={messages}
+                  setMessages={setMessages}
+                />
               );
             })}
         </ScrollableFeed>
