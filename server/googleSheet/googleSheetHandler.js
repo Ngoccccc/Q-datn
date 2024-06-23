@@ -1,6 +1,6 @@
 const { JWT } = require("google-auth-library");
 const { GoogleSpreadsheet } = require("google-spreadsheet");
-const creds = require("./quan-ly-chi-tieu-421003-ed917161454e.json");
+const creds = require("./quan-ly-chi-tieu-427316-03567f0bb199.json");
 
 const SCOPES = [
   "https://www.googleapis.com/auth/spreadsheets",
