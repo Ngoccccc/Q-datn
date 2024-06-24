@@ -18,7 +18,7 @@ import { ChatState } from "../../Context/ChatProvider";
 import { useAuthContext } from "../../Context/AuthContext";
 
 const EditGroup = () => {
-  const { selectedChat } = ChatState();
+  const { selectedChat, setSelectedChat } = ChatState();
   const { chats, setChats } = ChatState();
   const { authUser } = useAuthContext();
   const [open, setOpen] = useState(false);
@@ -119,6 +119,8 @@ const EditGroup = () => {
         );
         
         console.log(data);
+        setSelectedChat(data);
+        
 
       setChats(
         chats.map((chat) => {
@@ -130,7 +132,7 @@ const EditGroup = () => {
         })
       );
 
-      toast.success("Tạo nhóm thành công", {
+      toast.success("Chỉnh sửa nhóm thành công", {
         position: "top-center",
       });
       setOpen(false);
@@ -140,6 +142,7 @@ const EditGroup = () => {
       });
     }
   };
+  /// commit linh tinh
   return (
     <>
       <Tooltip
