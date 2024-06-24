@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -8,6 +8,7 @@ import {
   Typography,
   Input,
   Checkbox,
+  Tooltip,
 } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 import UserBadgeItem from "./UserBadgeItem";
@@ -16,9 +17,9 @@ import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
 import { useAuthContext } from "../../Context/AuthContext";
 
-export function CreateGroup() {
-
-  const {chats, setChats} = ChatState();
+const EditGroup = () => {
+  const { selectedChat } = ChatState();
+  const { chats, setChats } = ChatState();
   const { authUser } = useAuthContext();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -29,6 +30,11 @@ export function CreateGroup() {
     groupChatName: "",
     selectedUsers: "",
   });
+
+  useEffect(() => {
+    setGroupChatName(selectedChat.chatName);
+    setSelectedUsers(selectedChat.users.filter((u) => u._id !== authUser._id));
+  }, [selectedChat, authUser]);
 
   const handleOpen = () => setOpen(!open);
 
@@ -42,7 +48,8 @@ export function CreateGroup() {
   };
 
   const handleDelete = (delUser) => {
-    setSelectedUsers(selectedUsers.filter((sel) => sel.id !== delUser.id));
+    //   console.log(delUser);
+    setSelectedUsers(selectedUsers.filter((sel) => sel._id !== delUser._id));
   };
 
   const handleSearch = async (query) => {
@@ -71,6 +78,7 @@ export function CreateGroup() {
   };
 
   const handleSubmit = async () => {
+    console.log(selectedUsers, groupChatName);
     let hasError = false;
     let tempErrors = { groupChatName: "", selectedUsers: "" };
 
@@ -88,8 +96,10 @@ export function CreateGroup() {
 
     if (hasError) return;
 
-    // console.log(authUser);
-    selectedUsers.push(authUser);
+    // // console.log(authUser);
+
+    const newUsers = selectedUsers;
+    newUsers.push(authUser);
 
     try {
       const config = {
@@ -98,17 +108,28 @@ export function CreateGroup() {
         },
       };
       const { data } = await axios.post(
-        `/api/chat/group`,
+        `/api/chat/edit`,
         {
-          name: groupChatName,
-          users: JSON.stringify(selectedUsers.map((u) => u.id || u._id)),
-          groupAdmin: authUser._id || authUser.id,
+          chatId: selectedChat._id,
+          newName: groupChatName,
+          newUsers: JSON.stringify(newUsers.map((u) => u.id || u._id)),
+          //   groupAdmin: authUser._id || authUser.id,
         },
         config
+        );
+        
+        console.log(data);
+
+      setChats(
+        chats.map((chat) => {
+          if (chat._id === selectedChat._id) {
+            return data;
+          } else {
+            return chat;
+          }
+        })
       );
 
-      setChats([...chats, data]);
-      
       toast.success("Tạo nhóm thành công", {
         position: "top-center",
       });
@@ -119,28 +140,41 @@ export function CreateGroup() {
       });
     }
   };
-
   return (
     <>
-      <button
-        className="bg-gray-200 rounded-full p-2 hover:bg-gray-300"
-        onClick={handleOpen}
+      <Tooltip
+        placement="bottom"
+        className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
+        content={
+          <div>
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="font-normal opacity-80"
+            >
+              Sửa nhóm
+            </Typography>
+          </div>
+        }
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="size-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 4.5v15m7.5-7.5h-15"
-          />
-        </svg>
-      </button>
+        <button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-5"
+            onClick={handleOpen}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+            />
+          </svg>
+        </button>
+      </Tooltip>
       <Dialog
         size="xs"
         open={open}
@@ -150,25 +184,20 @@ export function CreateGroup() {
         <Card className="mx-auto w-full max-w-[24rem]">
           <CardBody className="flex flex-col gap-4">
             <Typography variant="h4" color="blue-gray">
-              Tạo nhóm mới
+              Nhóm
             </Typography>
             <Typography className="-mb-2" variant="h6">
               Tên nhóm
             </Typography>
             <Input
+              value={groupChatName}
               label="tên nhóm"
               size="lg"
               onChange={(e) => {
                 setGroupChatName(e.target.value);
-                setErrors({ ...errors, groupChatName: "" }); // Clear error message
               }}
               error={!!errors.groupChatName}
             />
-            {errors.groupChatName && (
-              <Typography color="red" variant="small">
-                {errors.groupChatName}
-              </Typography>
-            )}
 
             <Typography className="-mb-2" variant="h6">
               Thành viên
@@ -208,16 +237,16 @@ export function CreateGroup() {
                   />
                 ))
             )}
-
-           
           </CardBody>
           <CardFooter className="pt-0">
             <Button className="bg-blue-800" onClick={handleSubmit} fullWidth>
-              Tạo
+              Cập nhật
             </Button>
           </CardFooter>
         </Card>
       </Dialog>
     </>
   );
-}
+};
+
+export default EditGroup;

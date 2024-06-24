@@ -26,9 +26,9 @@ const useLogin = () => {
       localStorage.setItem("chat-user", JSON.stringify(data));
       setAuthUser(data);
       navigate("/");
+      toast.success("Đăng nhập thành công");
     } catch (error) {
       setErrorLogin("Tài khoản hoặc mật khẩu không hợp lệ");
-    //   toast.error(error);
     } finally {
       setLoading(false);
     }

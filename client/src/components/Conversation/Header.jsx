@@ -16,6 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ChatState } from "../../Context/ChatProvider";
 import { useAuthContext } from "../../Context/AuthContext";
 import axios from "axios";
+import EditGroup from "../Group/EditGroup";
 
 const Header = ({ setOpen }) => {
   const { selectedChat } = ChatState();
@@ -23,11 +24,18 @@ const Header = ({ setOpen }) => {
   const [fileLink, setFileLink] = useState();
   const [loading, setLoading] = useState(false);
   const [spending, setSpending] = useState({ day: 0, week: 0, month: 0 });
+  const [edit, setEdit] = useState(false);
 
   useEffect(() => {
     if (selectedChat) {
       setFileLink(selectedChat?.sheetId);
     }
+
+    if (selectedChat?.groupAdmin._id == authUser._id) {
+      setEdit(true);
+    }
+
+    console.log(selectedChat);
   }, [selectedChat]);
 
   useEffect(() => {
@@ -111,20 +119,20 @@ const Header = ({ setOpen }) => {
                 />
               </svg>
             </NavLink>
-              {console.log(selectedChat.users[0].avatar)}
-              <Avatar
-                src={
-                  selectedChat.isGroupChat
-                    ? selectedChat.avatar
-                    : selectedChat.users.length == 2
-                    ? selectedChat.users[0]._id == authUser._id
-                      ? selectedChat.users[1].avatar
-                      : selectedChat.users[0].avatar
-                    : null
-                }
-                alt="avatar"
-              />
-            <div className="flex flex-col pr-5">
+            {console.log(selectedChat.users[0].avatar)}
+            <Avatar
+              src={
+                selectedChat.isGroupChat
+                  ? selectedChat.avatar
+                  : selectedChat.users.length == 2
+                  ? selectedChat.users[0]._id == authUser._id
+                    ? selectedChat.users[1].avatar
+                    : selectedChat.users[0].avatar
+                  : null
+              }
+              alt="avatar"
+            />
+            <div className="flex flex-col">
               <Typography variant="h6">
                 {selectedChat.chatName
                   ? selectedChat.chatName
@@ -133,6 +141,13 @@ const Header = ({ setOpen }) => {
                   : selectedChat.users[0].username}
               </Typography>
             </div>
+
+            {/* edit */}
+
+            {edit && (
+              <EditGroup />
+            )}
+
             {fileLink ? (
               <Link
                 to={fileLink}

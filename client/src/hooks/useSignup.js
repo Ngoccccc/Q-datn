@@ -38,6 +38,7 @@ const useSignup = () => {
       localStorage.setItem("chat-user", JSON.stringify(data));
       setAuthUser(data);
       navigate("/");
+      toast.success("Đăng ký tài khoản thành công");
     } catch (error) {
       toast.error(error.message);
     } finally {

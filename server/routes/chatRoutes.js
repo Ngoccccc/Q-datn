@@ -10,6 +10,7 @@ const {
   mySelfChat,
   getSpending,
   getChat,
+  editChat,
 } = require("../controllers/chatControllers");
 const { protect } = require("../middleware/authMiddleware");
 const { protectRoute } = require("../middleware/protectRoute");
@@ -22,6 +23,7 @@ router.route("/find/:userID/:authID").get(protectRoute, getChat);
 router.route("/myself/:id").get(protectRoute, mySelfChat);
 router.route("/createfile").post(protectRoute, createSheet);
 router.route("/spending/:id").get(protectRoute, getSpending);
+router.route("/edit").post(protectRoute, editChat);
 
 // router.route("/group").post(protect, createGroupChat);
 router.route("/group").post(createGroupChat);

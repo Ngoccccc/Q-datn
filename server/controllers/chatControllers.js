@@ -82,6 +82,36 @@ const accessChat = asyncHandler(async (req, res) => {
   }
 });
 
+
+const editChat = asyncHandler(async (req, res) => {
+  const { chatId, newName } = req.body;
+
+  try {
+    const chat = await Chat.findById(chatId);
+
+    if (!chat) {
+      res.status(404).json({ message: "Chat not found" });
+      return;
+    }
+
+    if (newName) chat.chatName = newName;
+    if (req.body.newUsers) chat.users = JSON.parse(req.body.newUsers);
+
+    const updatedChat = await chat.save();
+
+    console.log(updatedChat);
+
+    const fullGroupChat = await Chat.findOne({ _id: chatId })
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+
+    res.status(200).json(fullGroupChat);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+
 //@description     Fetch all chats for a user
 //@route           GET /api/chat/
 //@access          Protected
@@ -118,17 +148,6 @@ const createGroupChat = asyncHandler(async (req, res) => {
 
   var users = JSON.parse(req.body.users);
 
-  // var mailUsers = []
-
-  // for (const user of users) {
-  //   const userData = await User.findById(user);
-  //   mailUsers.push(userData.email);
-  // }
-  // TODO tạo sheet cho mỗi nhóm chat
-
-  // const sheetId = await createNewSheet(mailUsers)
-
-  // console.log(sheetId)
 
   try {
     const groupChat = await Chat.create({
@@ -323,4 +342,5 @@ module.exports = {
   fetchChat,
   getSpending,
   getChat,
+  editChat,
 };

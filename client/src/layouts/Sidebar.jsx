@@ -179,18 +179,18 @@ function Sidebar() {
                 >
                   <ListItemPrefix>
                     <div className="flex items-center gap-4">
-                        <Avatar
-                          src={
-                            chat.isGroupChat
-                              ? chat.avatar
-                              : chat.users.length == 2
-                              ? chat.users[0]._id == authUser._id
-                                ? chat.users[1].avatar
-                                : chat.users[0].avatar
-                              : null
-                          }
-                          alt="avatar"
-                        />
+                      <Avatar
+                        src={
+                          chat.isGroupChat
+                            ? chat.avatar
+                            : chat.users.length == 2
+                            ? chat.users[0]._id == authUser._id
+                              ? chat.users[1].avatar
+                              : chat.users[0].avatar
+                            : null
+                        }
+                        alt="avatar"
+                      />
                       <div>
                         <Typography variant="h6">{chat.chatName}</Typography>
                         {chat.latestMessage && (
@@ -207,6 +207,7 @@ function Sidebar() {
                           </Typography>
                         )}
                       </div>
+                     
                     </div>
                   </ListItemPrefix>
                 </ListItem>
