@@ -12,13 +12,15 @@ const ChatProvider = ({ children }) => {
   const [myChat, setMyChat] = useState(null);
   const { authUser } = useAuthContext();
 
+  console.log(authUser);
+
   useEffect(() => {
     const getDataMyChat = async () => {
       if (!authUser) return;
 
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 

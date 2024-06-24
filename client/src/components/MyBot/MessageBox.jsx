@@ -6,18 +6,20 @@ import axios from "axios";
 import Message from "./Message";
 import { toast } from "react-toastify";
 import { apiUrl } from "../../../setupAxios";
+import { useAuthContext } from "../../Context/AuthContext";
 
 
 const MessageBox = () => {
   const { myChat } = ChatState();
   const { messages, setMessages } = useConversation();
+  const {authUser } =useAuthContext();
   useEffect(() => {
     const getMessages = async () => {
       // setLoading(true);
       try {
         const config = {
           headers: {
-            "Content-type": "application/json",
+            Authorization: `Bearer ${authUser.token}`,
           },
         };
         const { data } = await axios.get(

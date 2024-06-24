@@ -62,7 +62,7 @@ const EditGroup = () => {
       setLoading(true);
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       const { data } = await axios.get(
@@ -105,7 +105,7 @@ const EditGroup = () => {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       const { data } = await axios.post(

@@ -20,7 +20,7 @@ export const FriendsProvider = ({ children }) => {
     const fetchData = async () => {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 

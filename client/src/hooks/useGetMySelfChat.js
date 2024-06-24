@@ -16,7 +16,7 @@ const useGetMySelfChat = () => {
     setLoading(true);
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
 

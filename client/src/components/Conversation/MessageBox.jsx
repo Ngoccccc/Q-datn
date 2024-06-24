@@ -24,7 +24,7 @@ const MessageBox = () => {
       try {
         const config = {
           headers: {
-            "Content-type": "application/json",
+            Authorization: `Bearer ${authUser.token}`,
           },
         };
         const { data } = await axios.get(
@@ -73,7 +73,7 @@ const MessageBox = () => {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 

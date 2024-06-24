@@ -22,7 +22,7 @@ export default function SimpleMentionEditor() {
   useEffect(() => {
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
     axios
@@ -84,7 +84,7 @@ export default function SimpleMentionEditor() {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
           
         },
       };

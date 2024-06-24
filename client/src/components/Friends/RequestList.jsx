@@ -15,7 +15,7 @@ const RequestList = () => {
     const fetchData = async () => {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       await axios
@@ -35,7 +35,7 @@ const RequestList = () => {
     const userId = requestId;
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
     await axios
@@ -61,7 +61,7 @@ const RequestList = () => {
     const friendId = requestId;
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
     await axios

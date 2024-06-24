@@ -24,7 +24,7 @@ const FriendList = () => {
     if (!friend) return;
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
 

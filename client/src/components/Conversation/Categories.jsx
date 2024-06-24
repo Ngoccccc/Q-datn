@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { useOurCategoriesContext } from "./useOurCategories";
 import ListMembers from "./ListMembers";
 import { apiUrl } from "../../../setupAxios";
+import { useAuthContext } from "../../Context/AuthContext";
 
 export const Categories = () => {
   const { selectedChat } = ChatState();
@@ -22,13 +23,14 @@ export const Categories = () => {
   const [categoryName, setCategoryName] = useState();
   const [incomeName, setIncomeName] = useState();
   const [members, setMembers] = useState([]);
+  const {authUser} = useAuthContext();
 
   useEffect(() => {
     if (selectedChat) {
       setMembers(selectedChat.users);
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
@@ -59,7 +61,7 @@ export const Categories = () => {
     if (categoryName) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       axios
@@ -83,7 +85,7 @@ export const Categories = () => {
   const handleDeleteCategory = (id) => {
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
     axios
@@ -102,7 +104,7 @@ export const Categories = () => {
     if (incomeName) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       axios
@@ -124,7 +126,7 @@ export const Categories = () => {
   const handleDeleteIncome = (id) => {
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
     axios

@@ -3,6 +3,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
 import { apiUrl } from "../../../setupAxios";
+import { useAuthContext } from "../../Context/AuthContext";
 
 const OurCategoriesContext = createContext();
 
@@ -14,13 +15,14 @@ export const OurCategoriesProvider = ({ children }) => {
   const [ourCategories, setOurCategories] = useState([]);
   const [ourIncomes, setOurIncomes] = useState([]);
   const [messages, setMessages] = useState([]);
-  const {selectedChat} = ChatState();
+  const { selectedChat } = ChatState();
+  const { authUser } = useAuthContext();
 
  useEffect(() => {
    if (selectedChat) {
      const config = {
        headers: {
-         "Content-type": "application/json",
+         Authorization: `Bearer ${authUser.token}`,
        },
      };
 
@@ -39,7 +41,7 @@ export const OurCategoriesProvider = ({ children }) => {
     if (selectedChat) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 

@@ -79,7 +79,7 @@ const ProfileDialog = ({ setOpen }) => {
     try {
       const config = {
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 

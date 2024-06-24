@@ -71,7 +71,7 @@ const MentionInput = () => {
     if (selectedChat) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
@@ -122,7 +122,7 @@ const MentionInput = () => {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 

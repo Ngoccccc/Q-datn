@@ -5,10 +5,13 @@ import { useCategoryContext } from "../../Context/MyCategoryContext";
 import { toast } from "react-toastify";
 import useConversation from "../../zustand/useConversation";
 import { apiUrl } from "../../../setupAxios";
+import { useAuthContext } from "../../Context/AuthContext";
 
 const EditInput = ({ m, setEdit, setMess }) => {
   const { myChat } = ChatState();
   const { messages, setMessages } = useConversation();
+
+  const {authUser} = useAuthContext();
 
   const { myCategory } = useCategoryContext();
 
@@ -55,7 +58,7 @@ const EditInput = ({ m, setEdit, setMess }) => {
     if (myChat) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
@@ -106,7 +109,7 @@ const EditInput = ({ m, setEdit, setMess }) => {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 

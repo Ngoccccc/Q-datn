@@ -44,7 +44,7 @@ const Header = ({ setOpen }) => {
       try {
         const config = {
           headers: {
-            "Content-type": "application/json",
+            Authorization: `Bearer ${authUser.token}`,
           },
         };
         const { data } = await axios.get(
@@ -75,7 +75,7 @@ const Header = ({ setOpen }) => {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 

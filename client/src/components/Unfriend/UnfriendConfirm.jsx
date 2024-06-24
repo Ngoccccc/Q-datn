@@ -15,7 +15,7 @@ export function UnfriendConfirm({ setOpen, friend }) {
   const handlerUnFriend = async () => {
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
       };
       

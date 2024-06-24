@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { useCategoryContext } from "../../Context/MyCategoryContext";
 import "../../assets/custom-scrollbar.css";
 import { apiUrl } from "../../../setupAxios";
+import { useAuthContext } from "../../Context/AuthContext";
 
 export function Sidebar() {
   const { myChat } = ChatState();
@@ -30,6 +31,7 @@ export function Sidebar() {
   const { myCategory, setMyCategory, myIncome, setMyIncome } =
     useCategoryContext();
   const [visableClick, setVisableClick] = useState(true);
+  const {authUser } = useAuthContext();
 
   useEffect(() => {
     if (myChat) {
@@ -41,7 +43,7 @@ export function Sidebar() {
     if (myChat) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
@@ -60,7 +62,7 @@ export function Sidebar() {
     if (myChat) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
@@ -84,7 +86,7 @@ export function Sidebar() {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
@@ -113,7 +115,7 @@ export function Sidebar() {
     if (categoryName) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       axios
@@ -139,7 +141,7 @@ export function Sidebar() {
     if (incomeName) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       axios
@@ -161,7 +163,7 @@ export function Sidebar() {
   const handleDeleteCategory = (id) => {
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
     axios
@@ -178,7 +180,7 @@ export function Sidebar() {
   const handleDeleteIncome = (id) => {
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
     axios

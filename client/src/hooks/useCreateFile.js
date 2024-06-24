@@ -3,18 +3,21 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import useGetMySelfChat from "../hooks/useGetMySelfChat";
 import { apiUrl } from "../../setupAxios";
+import { useAuthContext } from "../Context/AuthContext";
 
 const useCreateFile = () => {
   const [loading, setLoading] = useState(false);
 
   const { chat, setChat } = useGetMySelfChat();
 
+  const { authUser } = useAuthContext();
+
   const createFile = async ({ chatId, setFileLink }) => {
     setLoading(true);
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 

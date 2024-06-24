@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const generateTokenAndSetCookie = require("../config/generateToken");
 const User = require("../models/userModel");
+const generateToken = require("../config/generateToken");
 
 const signup = async (req, res) => {
   try {
@@ -30,7 +31,7 @@ const signup = async (req, res) => {
 
     if (newUser) {
       // Generate JWT token here
-      generateTokenAndSetCookie(newUser._id, res);
+      // generateTokenAndSetCookie(newUser._id, res);
       await newUser.save();
 
       res.status(201).json({
@@ -38,6 +39,7 @@ const signup = async (req, res) => {
         username: newUser.username,
         avatar: newUser.avatar,
         email: newUser.email,
+        token: generateToken(newUser._id),
       });
     } else {
       res.status(400).json({ error: "Invalid user data" });
@@ -64,13 +66,14 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "Invalid username or password" });
     }
 
-    generateTokenAndSetCookie(user._id, res);
+    // generateTokenAndSetCookie(user._id, res);
 
     res.status(200).json({
       _id: user._id,
       username: user.username,
       avatar: user.avatar,
       email: user.email,
+      token: generateToken(user._id),
     });
   } catch (error) {
     console.log("Error in login controller", error.message);

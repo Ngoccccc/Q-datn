@@ -60,7 +60,7 @@ export function NotificationIcon() {
     const fetchData = async () => {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       await axios

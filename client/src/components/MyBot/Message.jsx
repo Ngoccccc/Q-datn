@@ -37,7 +37,7 @@ const Message = ({ m, messages, setMessages }) => {
   const handlerDeleteMessage = async () => {
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
 

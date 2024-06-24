@@ -35,7 +35,7 @@ function Sidebar() {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
@@ -62,7 +62,7 @@ function Sidebar() {
       // setLoading(true);
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       const { data } = await axios.get(
@@ -87,7 +87,7 @@ function Sidebar() {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       const { data } = await axios.post(
