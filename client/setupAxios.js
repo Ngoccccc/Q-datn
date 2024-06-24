@@ -1,5 +1,3 @@
 
 
-const apiUrl = "https://quanlichitieu.onrender.com/";
- 
-export const apiUrl;
+export const apiUrl = "https://quanlichitieu.onrender.com";
