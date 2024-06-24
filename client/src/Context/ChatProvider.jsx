@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuthContext } from "../Context/AuthContext";
 import axios from "axios";
+import { apiUrl } from "../../setupAxios";
 
 const ChatContext = createContext();
 
@@ -11,19 +12,21 @@ const ChatProvider = ({ children }) => {
   const [myChat, setMyChat] = useState(null);
   const { authUser } = useAuthContext();
 
+  console.log(authUser);
+
   useEffect(() => {
     const getDataMyChat = async () => {
       if (!authUser) return;
 
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
       try {
         const response = await axios.get(
-          `/api/chat/myself/${authUser._id}`,
+          `${apiUrl}/api/chat/myself/${authUser._id}`,
           config
         );
         setMyChat(response.data[0]);

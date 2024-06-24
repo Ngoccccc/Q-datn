@@ -36,12 +36,12 @@ const Message = ({ m, messages, setMessages }) => {
   const handlerDeleteMessage = async () => {
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
 
     await axios
-      .delete(`/api/message/delete/${m._id}`, config)
+      .delete(`${apiUrl}/api/message/delete/${m._id}`, config)
       .then((res) => {
         const newMessages = messages.filter((message) => message._id !== m._id);
         setMessages(newMessages);

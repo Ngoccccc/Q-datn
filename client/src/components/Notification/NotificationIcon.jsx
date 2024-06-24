@@ -13,8 +13,9 @@ import axios from "axios";
 import { redirect, useNavigate } from "react-router-dom";
 import { ChatState } from "../../Context/ChatProvider";
 import io from "socket.io-client";
+import { apiUrl } from "../../../setupAxios";
 
-const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
+const ENDPOINT = apiUrl; // "https://talk-a-tive.herokuapp.com"; -> After deployment
 var socket, selectedChatCompare;
 
 function ClockIcon() {
@@ -59,11 +60,11 @@ export function NotificationIcon() {
     const fetchData = async () => {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       await axios
-        .get(`/api/friend/getrequest/${authUser._id}`, config)
+        .get(`${apiUrl}/api/friend/getrequest/${authUser._id}`, config)
         .then((response) => {
           setRequests(response.data);
           setNotification([...response.data, ...notification]);

@@ -11,6 +11,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuthContext } from "../../Context/AuthContext";
 import useGetMessages from "../../hooks/useGetMessages";
+import { apiUrl } from "../../../setupAxios";
 
 export default function SimpleMentionEditor() {
 
@@ -21,11 +22,11 @@ export default function SimpleMentionEditor() {
   useEffect(() => {
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
     axios
-      .get(`/api/chat/myself/${authUser._id}`, config)
+      .get(`${apiUrl}/api/chat/myself/${authUser._id}`, config)
       .then((res) => {
         setChatDataId(res.data[0]._id);
       })
@@ -83,13 +84,13 @@ export default function SimpleMentionEditor() {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
           
         },
       };
       setEditorState(EditorState.createEmpty());
       const { data } = await axios.post(
-        "/api/message",
+        `${apiUrl}/api/message`,
         {
           content,
           mentions,

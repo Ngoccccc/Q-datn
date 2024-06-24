@@ -2,6 +2,8 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
+import { apiUrl } from "../../../setupAxios";
+import { useAuthContext } from "../../Context/AuthContext";
 
 const OurCategoriesContext = createContext();
 
@@ -13,18 +15,19 @@ export const OurCategoriesProvider = ({ children }) => {
   const [ourCategories, setOurCategories] = useState([]);
   const [ourIncomes, setOurIncomes] = useState([]);
   const [messages, setMessages] = useState([]);
-  const {selectedChat} = ChatState();
+  const { selectedChat } = ChatState();
+  const { authUser } = useAuthContext();
 
  useEffect(() => {
    if (selectedChat) {
      const config = {
        headers: {
-         "Content-type": "application/json",
+         Authorization: `Bearer ${authUser.token}`,
        },
      };
 
      axios
-       .get(`/api/category/${selectedChat?._id}`, config)
+       .get(`${apiUrl}/api/category/${selectedChat?._id}`, config)
        .then((res) => {
          setOurCategories(res.data);
        })
@@ -38,12 +41,12 @@ export const OurCategoriesProvider = ({ children }) => {
     if (selectedChat) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
       axios
-        .get(`/api/income/${selectedChat?._id}`, config)
+        .get(`${apiUrl}/api/income/${selectedChat?._id}`, config)
         .then((res) => {
           setOurIncomes(res.data);
         })

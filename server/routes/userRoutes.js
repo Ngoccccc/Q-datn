@@ -5,8 +5,7 @@ const { protectRoute } = require("../middleware/protectRoute");
 
 const router = express.Router();
 
-
-router.route("/:id").get(allUsers);
-router.post("/update", updateUser);
+router.route("/:id").get(protect, allUsers);
+router.post("/update", protect, updateUser);
 
 module.exports = router;

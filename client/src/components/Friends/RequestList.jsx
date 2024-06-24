@@ -3,6 +3,7 @@ import { Avatar, Typography } from "@material-tailwind/react";
 import { useAuthContext } from "../../Context/AuthContext";
 import axios from "axios";
 import { useFriendsContext } from "./useFriendsContext";
+import { apiUrl } from "../../../setupAxios";
 
 const RequestList = () => {
   const [requests, setRequests] = useState([]);
@@ -14,11 +15,11 @@ const RequestList = () => {
     const fetchData = async () => {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       await axios
-        .get(`/api/friend/getrequest/${authUser._id}`, config)
+        .get(`${apiUrl}/api/friend/getrequest/${authUser._id}`, config)
         .then((response) => {
           setRequests(response.data);
         })
@@ -34,12 +35,12 @@ const RequestList = () => {
     const userId = requestId;
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
     await axios
       .post(
-        `/api/friend/accept`,
+        `${apiUrl}/api/friend/accept`,
         {
           userId,
           accepterId,
@@ -60,12 +61,12 @@ const RequestList = () => {
     const friendId = requestId;
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
     await axios
       .post(
-        `/api/friend/cancelFriendRequest`,
+        `${apiUrl}/api/friend/cancelFriendRequest`,
         {
           userId,
           friendId,

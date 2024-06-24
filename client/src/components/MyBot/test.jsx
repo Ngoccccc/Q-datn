@@ -6,6 +6,7 @@ import { useCategoryContext } from "../../Context/MyCategoryContext";
 import { toast } from "react-toastify";
 import useConversation from "../../zustand/useConversation";
 import { useAuthContext } from "../../Context/AuthContext";
+import { apiUrl } from "../../../setupAxios";
 
 const MentionInput = () => {
   const {authUser} = useAuthContext();
@@ -59,12 +60,12 @@ const MentionInput = () => {
     if (myChat) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
       axios
-        .get(`/api/category/${myChat?._id}`, config)
+        .get(`${apiUrl}/api/category/${myChat?._id}`, config)
         .then((res) => {
           const categoryNames = res.data.map((category) => category.name);
           setSubcategories(categoryNames);
@@ -110,12 +111,12 @@ const MentionInput = () => {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
       const { data } = await axios.post(
-        `/api/message`,
+        `${apiUrl}/api/message`,
         {
           mention: mention,
           category: category,

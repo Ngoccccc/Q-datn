@@ -7,8 +7,8 @@ import { toast } from "react-toastify";
 import { useOurCategoriesContext } from "./useOurCategories";
 import io from "socket.io-client";
 import { useAuthContext } from "../../Context/AuthContext";
-
-const ENDPOINT = "http://localhost:5000"; // ""https://talk-a-tive.herokuapp.com""; -> After deployment
+import { apiUrl } from "../../../setupAxios";
+const ENDPOINT = apiUrl; // ""https://talk-a-tive.herokuapp.com""; -> After deployment
 var socket, selectedChatCompare;
 
 const MentionInput = () => {
@@ -71,12 +71,12 @@ const MentionInput = () => {
     if (selectedChat) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
       axios
-        .get(`/api/category/${selectedChat?._id}`, config)
+        .get(`${apiUrl}/api/category/${selectedChat?._id}`, config)
         .then((res) => {
           const categoryNames = res.data.map((category) => category.name);
           setSubcategories(categoryNames);
@@ -122,12 +122,12 @@ const MentionInput = () => {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
       const { data } = await axios.post(
-        `/api/message`,
+        `${apiUrl}/api/message`,
         {
           mention: mention,
           category: category,

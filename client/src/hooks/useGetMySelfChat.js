@@ -4,6 +4,8 @@ import { useAuthContext } from "../Context/AuthContext";
 import axios from "axios";
 import useConversation from "../zustand/useConversation";
 
+import { apiUrl } from "../../setupAxios";
+
 const useGetMySelfChat = () => {
   const [loading, setLoading] = useState(false);
   const [chat, setChat] = useState([]);
@@ -14,21 +16,25 @@ const useGetMySelfChat = () => {
     setLoading(true);
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
 
-    axios.get(`/api/chat/myself/${authUser._id}`, config).then((res) => {
-      setChat(res.data[0]);
-      setSelectedConversation(res.data[0]);
-      if (res.data[0].sheetId) {
-        setFile(res.data[0].sheetId);
-      }
-    }).catch((error) => {
-      toast.error(error.message);
-    }).finally(() => {
-      setLoading(false);
-    });
+    axios
+      .get(`${apiUrl}/api/chat/myself/${authUser._id}`, config)
+      .then((res) => {
+        setChat(res.data[0]);
+        setSelectedConversation(res.data[0]);
+        if (res.data[0].sheetId) {
+          setFile(res.data[0].sheetId);
+        }
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   return { loading, chat };

@@ -3,6 +3,7 @@ import { useAuthContext } from "../Context/AuthContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { apiUrl } from "../../setupAxios";
 
 const useLogout = () => {
 	const navigate = useNavigate();
@@ -17,7 +18,7 @@ const useLogout = () => {
 					"Content-type": "application/json",
 				},
 			};
-			await axios.post("/api/auth/logout", config);
+			await axios.post(`${apiUrl}/api/auth/logout`, config);
 
 			localStorage.removeItem("chat-user");
 			setAuthUser(null);

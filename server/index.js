@@ -42,19 +42,19 @@ app.use("/api/friend", friendRoutes);
 app.use("/api/income", incomeRoutes);
 
 // Deployment
-const __dirname1 = path.resolve();
+// const __dirname1 = path.resolve();
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname1, "../client/dist")));
+// if (process.env.NODE_ENV === "production1") {
+//   app.use(express.static(path.join(__dirname1, "../client/dist")));
 
-  app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname1, "../client", "dist", "index.html"))
-  );
-} else {
-  app.get("/", (req, res) => {
-    res.send("API is running..");
-  });
-}
+//   app.get("*", (req, res) =>
+//     res.sendFile(path.resolve(__dirname1, "../client", "dist", "index.html"))
+//   );
+// } else {
+//   app.get("/", (req, res) => {
+//     res.send("API is running..");
+//   });
+// }
 
 // Error Handling middlewares
 app.use(notFound);

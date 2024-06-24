@@ -16,6 +16,7 @@ import UserListItem from "./UserListItem";
 import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
 import { useAuthContext } from "../../Context/AuthContext";
+import { apiUrl } from "../../../setupAxios";
 
 const EditGroup = () => {
   const { selectedChat, setSelectedChat } = ChatState();
@@ -61,11 +62,11 @@ const EditGroup = () => {
       setLoading(true);
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       const { data } = await axios.get(
-        `/api/user/${authUser._id}?search=${query}`,
+        `${apiUrl}/api/user/${authUser._id}?search=${query}`,
         config
       );
       setLoading(false);
@@ -104,11 +105,11 @@ const EditGroup = () => {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       const { data } = await axios.post(
-        `/api/chat/edit`,
+        `${apiUrl}/api/chat/edit`,
         {
           chatId: selectedChat._id,
           newName: groupChatName,
@@ -116,7 +117,7 @@ const EditGroup = () => {
           //   groupAdmin: authUser._id || authUser.id,
         },
         config
-        );
+      );
         
         console.log(data);
         setSelectedChat(data);

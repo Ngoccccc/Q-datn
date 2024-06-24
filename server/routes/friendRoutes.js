@@ -9,15 +9,17 @@ const {
   cancelFriendRequest,
 } = require("../controllers/friendControllers.js");
 
+const { protect } = require("../middleware/authMiddleware.js");
+
 const router = express.Router();
 
-router.get("/get/:id", getFriends);
+router.get("/get/:id", protect, getFriends);
 
-router.post("/request", sendFriendRequest);
-router.get("/getrequest/:id", getFriendRequests);
+router.post("/request", protect, sendFriendRequest);
+router.get("/getrequest/:id", protect, getFriendRequests);
 
-router.post("/accept", acceptFriendRequest);
-router.post("/unfiend", unFriend);
-router.post("/cancelFriendRequest", cancelFriendRequest);
+router.post("/accept", protect, acceptFriendRequest);
+router.post("/unfiend", protect, unFriend);
+router.post("/cancelFriendRequest", protect, cancelFriendRequest);
 
 module.exports = router;

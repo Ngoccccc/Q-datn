@@ -6,6 +6,7 @@ import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
 import { toast } from "react-toastify";
 import { UnfriendConfirm } from "../Unfriend/UnfriendConfirm";
+import { apiUrl } from "../../../setupAxios";
 
 const FriendList = () => {
   const { friends } = useFriendsContext();
@@ -23,13 +24,13 @@ const FriendList = () => {
     if (!friend) return;
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
 
     await axios
       .post(
-        `/api/chat`,
+        `${apiUrl}/api/chat`,
         { myId: authUser._id, userId: friend.id || friend._id },
         config
       )

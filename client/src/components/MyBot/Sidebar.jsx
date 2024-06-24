@@ -17,6 +17,8 @@ import { ChatState } from "../../Context/ChatProvider";
 import { toast } from "react-toastify";
 import { useCategoryContext } from "../../Context/MyCategoryContext";
 import "../../assets/custom-scrollbar.css";
+import { apiUrl } from "../../../setupAxios";
+import { useAuthContext } from "../../Context/AuthContext";
 
 export function Sidebar() {
   const { myChat } = ChatState();
@@ -29,6 +31,7 @@ export function Sidebar() {
   const { myCategory, setMyCategory, myIncome, setMyIncome } =
     useCategoryContext();
   const [visableClick, setVisableClick] = useState(true);
+  const {authUser } = useAuthContext();
 
   useEffect(() => {
     if (myChat) {
@@ -40,12 +43,12 @@ export function Sidebar() {
     if (myChat) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
       axios
-        .get(`/api/category/${myChat?._id}`, config)
+        .get(`${apiUrl}/api/category/${myChat?._id}`, config)
         .then((res) => {
           setMyCategory(res.data);
         })
@@ -59,12 +62,12 @@ export function Sidebar() {
     if (myChat) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
       axios
-        .get(`/api/income/${myChat?._id}`, config)
+        .get(`${apiUrl}/api/income/${myChat?._id}`, config)
         .then((res) => {
           setMyIncome(res.data);
         })
@@ -83,12 +86,12 @@ export function Sidebar() {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
       const { data } = await axios.post(
-        "/api/chat/createfile",
+        `${apiUrl}/api/chat/createfile`,
         { chatId },
         config
       );
@@ -112,12 +115,12 @@ export function Sidebar() {
     if (categoryName) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       axios
         .post(
-          `/api/category/create`,
+          `${apiUrl}/api/category/create`,
           { name: categoryName, chatId: myChat?._id },
           config
         )
@@ -138,12 +141,12 @@ export function Sidebar() {
     if (incomeName) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
       axios
         .post(
-          `/api/income/create`,
+          `${apiUrl}/api/income/create`,
           { name: incomeName, chatId: myChat?._id },
           config
         )
@@ -160,11 +163,11 @@ export function Sidebar() {
   const handleDeleteCategory = (id) => {
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
     axios
-      .delete(`/api/category/delete/${id}`, config)
+      .delete(`${apiUrl}/api/category/delete/${id}`, config)
       .then((res) => {
         setMyCategory(myIncome.filter((item) => item._id !== id));
       })
@@ -177,11 +180,11 @@ export function Sidebar() {
   const handleDeleteIncome = (id) => {
     const config = {
       headers: {
-        "Content-type": "application/json",
+        Authorization: `Bearer ${authUser.token}`,
       },
     };
     axios
-      .delete(`/api/income/delete/${id}`, config)
+      .delete(`${apiUrl}/api/income/delete/${id}`, config)
       .then((res) => {
         setMyIncome(myIncome.filter((item) => item._id !== id));
       })

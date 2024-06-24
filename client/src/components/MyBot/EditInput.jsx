@@ -4,10 +4,14 @@ import { ChatState } from "../../Context/ChatProvider";
 import { useCategoryContext } from "../../Context/MyCategoryContext";
 import { toast } from "react-toastify";
 import useConversation from "../../zustand/useConversation";
+import { apiUrl } from "../../../setupAxios";
+import { useAuthContext } from "../../Context/AuthContext";
 
 const EditInput = ({ m, setEdit, setMess }) => {
   const { myChat } = ChatState();
   const { messages, setMessages } = useConversation();
+
+  const {authUser} = useAuthContext();
 
   const { myCategory } = useCategoryContext();
 
@@ -54,12 +58,12 @@ const EditInput = ({ m, setEdit, setMess }) => {
     if (myChat) {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
       axios
-        .get(`/api/category/${myChat?._id}`, config)
+        .get(`${apiUrl}/api/category/${myChat?._id}`, config)
         .then((res) => {
           const categoryNames = res.data.map((category) => category.name);
           setSubcategories(categoryNames);
@@ -105,14 +109,14 @@ const EditInput = ({ m, setEdit, setMess }) => {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
       console.log(mention, category, inputValue);
 
       const { data } = await axios.put(
-        `/api/message/update/${m._id}`,
+        `${apiUrl}/api/message/update/${m._id}`,
         {
           mention: mention,
           category: category,

@@ -17,13 +17,13 @@ const { protectRoute } = require("../middleware/protectRoute");
 
 const router = express.Router();
 
-router.route("/").post(protectRoute, accessChat);
-router.route("/").get(protectRoute, fetchChats);
-router.route("/find/:userID/:authID").get(protectRoute, getChat);
-router.route("/myself/:id").get(protectRoute, mySelfChat);
-router.route("/createfile").post(protectRoute, createSheet);
-router.route("/spending/:id").get(protectRoute, getSpending);
-router.route("/edit").post(protectRoute, editChat);
+router.route("/").post(protect, accessChat);
+router.route("/").get(protect, fetchChats);
+router.route("/find/:userID/:authID").get(protect, getChat);
+router.route("/myself/:id").get(protect, mySelfChat);
+router.route("/createfile").post(protect, createSheet);
+router.route("/spending/:id").get(protect, getSpending);
+router.route("/edit").post(protect, editChat);
 
 // router.route("/group").post(protect, createGroupChat);
 router.route("/group").post(createGroupChat);

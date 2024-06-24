@@ -17,6 +17,7 @@ import { ChatState } from "../../Context/ChatProvider";
 import { useAuthContext } from "../../Context/AuthContext";
 import axios from "axios";
 import EditGroup from "../Group/EditGroup";
+import { apiUrl } from "../../../setupAxios";
 
 const Header = ({ setOpen }) => {
   const { selectedChat } = ChatState();
@@ -43,11 +44,11 @@ const Header = ({ setOpen }) => {
       try {
         const config = {
           headers: {
-            "Content-type": "application/json",
+            Authorization: `Bearer ${authUser.token}`,
           },
         };
         const { data } = await axios.get(
-          `/api/chat/spending/${selectedChat._id}`,
+          `${apiUrl}/api/chat/spending/${selectedChat._id}`,
           config
         );
         if (data == 0) {
@@ -74,12 +75,12 @@ const Header = ({ setOpen }) => {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          Authorization: `Bearer ${authUser.token}`,
         },
       };
 
       const { data } = await axios.post(
-        "/api/chat/createfile",
+        `${apiUrl}/api/chat/createfile`,
         { chatId },
         config
       );

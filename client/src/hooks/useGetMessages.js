@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import useConversation from "../zustand/useConversation";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { apiUrl } from "../../setupAxios";
+import { useAuthContext } from "../Context/AuthContext";
 
 const useGetMessages = () => {
   const [loading, setLoading] = useState(false);
   const { messages, setMessages, selectedConversation } = useConversation();
+  const {authUser} = useAuthContext();
   
 
   useEffect(() => {
@@ -14,11 +17,11 @@ const useGetMessages = () => {
       try {
         const config = {
           headers: {
-            "Content-type": "application/json",
+            Authorization: `Bearer ${authUser.token}`,
           },
         };
         const { data } = await axios.get(
-          `/api/message/${selectedConversation?._id}`,
+          `${apiUrl}/api/message/${selectedConversation?._id}`,
           config
         );
 
