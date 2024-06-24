@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const generateTokenAndSetCookie = require("../config/generateToken");
 const User = require("../models/userModel");
-const generateToken = require("../config/generateToken");
+const generateToken = require("../config/generateTokenOld");
 
 const signup = async (req, res) => {
   try {
@@ -33,6 +33,7 @@ const signup = async (req, res) => {
       // Generate JWT token here
       // generateTokenAndSetCookie(newUser._id, res);
       await newUser.save();
+      // console.log(generateToken(newUser._id));
 
       res.status(201).json({
         _id: newUser._id,
