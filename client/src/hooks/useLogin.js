@@ -19,7 +19,7 @@ const useLogin = () => {
       };
 
       const { data } = await axios.post(
-        "/api/auth/login",
+        "https://quan-ly-chi-tieu-api.vercel.app/api/auth/login",
         { email, password },
         config
       );
