@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { useAuthContext } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { apiUrl } from "../../setupAxios";
 
 const useSignup = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const useSignup = () => {
       };
 
       const { data } = await axios.post(
-        "/api/auth/signup",
+        `${apiUrl}/api/auth/signup`,
         {
           username,
           email,

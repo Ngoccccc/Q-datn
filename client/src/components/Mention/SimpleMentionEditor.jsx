@@ -20,10 +20,11 @@ import '@draft-js-plugins/mention/lib/plugin.css';
 import { ChatState } from '../../Context/ChatProvider';
 import axios from 'axios';
 import io from "socket.io-client";
+import { apiUrl } from '../../../setupAxios';
 
 
 // import { useToast } from "@chakra-ui/react";
-const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
+const ENDPOINT = apiUrl; // "https://talk-a-tive.herokuapp.com"; -> After deployment
 var socket, selectedChatCompare;
 
 
@@ -182,7 +183,7 @@ export default function SimpleMentionEditor({ messages, setMessages }) {
       setNewMessage("");
       setEditorState(EditorState.createEmpty());
       const { data } = await axios.post(
-        "/api/message",
+        `${apiUrl}/api/message`,
         {
           content,
           mentions,

@@ -5,6 +5,7 @@ import { useCategoryContext } from "../../Context/MyCategoryContext";
 import { toast } from "react-toastify";
 import useConversation from "../../zustand/useConversation";
 import { useOurCategoriesContext } from "./useOurCategories";
+import { apiUrl } from "../../../setupAxios";
 
 const EditInput = ({ m, setEdit, setMess }) => {
   const { selectedChat } = ChatState();
@@ -57,7 +58,7 @@ const EditInput = ({ m, setEdit, setMess }) => {
       };
 
       axios
-        .get(`/api/category/${selectedChat?._id}`, config)
+        .get(`${apiUrl}/api/category/${selectedChat?._id}`, config)
         .then((res) => {
           const categoryNames = res.data.map((category) => category.name);
           setSubcategories(categoryNames);
@@ -110,7 +111,7 @@ const EditInput = ({ m, setEdit, setMess }) => {
       console.log(mention, category, inputValue);
 
       const { data } = await axios.put(
-        `/api/message/update/${m._id}`,
+        `${apiUrl}/api/message/update/${m._id}`,
         {
           mention: mention,
           category: category,

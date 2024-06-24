@@ -15,6 +15,7 @@ import UserListItem from "./UserListItem";
 import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
 import { useAuthContext } from "../../Context/AuthContext";
+import { apiUrl } from "../../../setupAxios";
 
 export function CreateGroup() {
 
@@ -58,7 +59,7 @@ export function CreateGroup() {
         },
       };
       const { data } = await axios.get(
-        `/api/user/${authUser._id}?search=${query}`,
+        `${apiUrl}/api/user/${authUser._id}?search=${query}`,
         config
       );
       setLoading(false);
@@ -98,7 +99,7 @@ export function CreateGroup() {
         },
       };
       const { data } = await axios.post(
-        `/api/chat/group`,
+        `${apiUrl}/api/chat/group`,
         {
           name: groupChatName,
           users: JSON.stringify(selectedUsers.map((u) => u.id || u._id)),

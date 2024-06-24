@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import useGetMySelfChat from "../hooks/useGetMySelfChat";
+import { apiUrl } from "../../setupAxios";
 
 const useCreateFile = () => {
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ const useCreateFile = () => {
       };
 
       const { data } = await axios.post(
-        "/api/chat/createfile",
+        `${apiUrl}/api/chat/createfile`,
         { chatId },
         config
       );

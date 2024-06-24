@@ -6,6 +6,7 @@ import { useAuthContext } from "../../Context/AuthContext";
 import EditInput from "./EditInput";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { apiUrl } from "../../../setupAxios";
 
 const Message = ({ m, messages, setMessages }) => {
   const { authUser } = useAuthContext();
@@ -41,7 +42,7 @@ const Message = ({ m, messages, setMessages }) => {
     };
 
     await axios
-      .delete(`/api/message/delete/${m._id}`, config)
+      .delete(`${apiUrl}/api/message/delete/${m._id}`, config)
       .then((res) => {
         const newMessages = messages.filter((message) => message._id !== m._id);
         setMessages(newMessages);

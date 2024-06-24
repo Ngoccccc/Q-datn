@@ -3,6 +3,7 @@ import { Avatar, Typography } from "@material-tailwind/react";
 import { useAuthContext } from "../../Context/AuthContext";
 import axios from "axios";
 import { useFriendsContext } from "./useFriendsContext";
+import { apiUrl } from "../../../setupAxios";
 
 const RequestList = () => {
   const [requests, setRequests] = useState([]);
@@ -18,7 +19,7 @@ const RequestList = () => {
         },
       };
       await axios
-        .get(`/api/friend/getrequest/${authUser._id}`, config)
+        .get(`${apiUrl}/api/friend/getrequest/${authUser._id}`, config)
         .then((response) => {
           setRequests(response.data);
         })
@@ -39,7 +40,7 @@ const RequestList = () => {
     };
     await axios
       .post(
-        `/api/friend/accept`,
+        `${apiUrl}/api/friend/accept`,
         {
           userId,
           accepterId,
@@ -65,7 +66,7 @@ const RequestList = () => {
     };
     await axios
       .post(
-        `/api/friend/cancelFriendRequest`,
+        `${apiUrl}/api/friend/cancelFriendRequest`,
         {
           userId,
           friendId,

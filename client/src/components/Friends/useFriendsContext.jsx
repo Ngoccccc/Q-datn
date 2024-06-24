@@ -2,6 +2,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { useAuthContext } from "../../Context/AuthContext";
+import { apiUrl } from "../../../setupAxios";
 
 const FriendsContext = createContext();
 
@@ -24,7 +25,7 @@ export const FriendsProvider = ({ children }) => {
       };
 
       await axios
-        .get(`/api/friend/get/${authUser._id}`, config)
+        .get(`${apiUrl}/api/friend/get/${authUser._id}`, config)
         .then((response) => {
           setFriends(response.data);
         })

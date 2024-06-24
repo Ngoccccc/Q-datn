@@ -3,14 +3,9 @@ import { useRef, useEffect, useState } from "react";
 import { Badge, Avatar } from "@material-tailwind/react";
 import { format } from "date-fns";
 import ScrollableFeed from "react-scrollable-feed";
-import {
-  isLastMessage,
-  isSameSender,
-  isSameSenderMargin,
-  isSameUser,
-} from "../config/ChatLogics";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { apiUrl } from "../../../setupAxios";
 
 
 import { ChatState } from "../../Context/ChatProvider";
@@ -33,7 +28,7 @@ const MessageBox = () => {
           },
         };
         const { data } = await axios.get(
-          `/api/message/${selectedChat?._id}`,
+          `${apiUrl}/api/message/${selectedChat?._id}`,
           config
         );
 
@@ -85,7 +80,7 @@ const MessageBox = () => {
       // setLoading(true);
 
       const { data } = await axios.get(
-        `/api/message/${selectedChat._id}`,
+        `${apiUrl}/api/message/${selectedChat._id}`,
         config
       );
       setMessages(data);

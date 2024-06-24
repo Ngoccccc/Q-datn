@@ -15,9 +15,10 @@ import ChatLoading from "../components/Sketeton/ChatLoading";
 import axios from "axios";
 import { useAuthContext } from "../Context/AuthContext";
 import { io } from "socket.io-client";
+import { apiUrl } from "../../setupAxios";
 
 var socket;
-const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = apiUrl;
 
 function Sidebar() {
   const { authUser } = useAuthContext();
@@ -38,7 +39,7 @@ function Sidebar() {
         },
       };
 
-      const { data } = await axios.get(`/api/chat/`, config);
+      const { data } = await axios.get(`${apiUrl}/api/chat/`, config);
       setChats(data);
     } catch (error) {
       toast.error(error.message);
@@ -65,7 +66,7 @@ function Sidebar() {
         },
       };
       const { data } = await axios.get(
-        `/api/user/${authUser._id}?search=${query}`,
+        `${apiUrl}/api/user/${authUser._id}?search=${query}`,
         config
       );
       // setLoading(false);
@@ -90,7 +91,7 @@ function Sidebar() {
         },
       };
       const { data } = await axios.post(
-        `/api/friend/request`,
+        `${apiUrl}/api/friend/request`,
         { authId, userId },
         config
       );

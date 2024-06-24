@@ -5,6 +5,7 @@ import { ChatState } from "../../Context/ChatProvider";
 import axios from "axios";
 import Message from "./Message";
 import { toast } from "react-toastify";
+import { apiUrl } from "../../../setupAxios";
 
 
 const MessageBox = () => {
@@ -20,7 +21,7 @@ const MessageBox = () => {
           },
         };
         const { data } = await axios.get(
-          `/api/message/${myChat?._id}`,
+          `${apiUrl}/api/message/${myChat?._id}`,
           config
         );
 

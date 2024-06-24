@@ -12,6 +12,7 @@ import { ChatState } from "../../Context/ChatProvider";
 import { toast } from "react-toastify";
 import { useOurCategoriesContext } from "./useOurCategories";
 import ListMembers from "./ListMembers";
+import { apiUrl } from "../../../setupAxios";
 
 export const Categories = () => {
   const { selectedChat } = ChatState();
@@ -32,7 +33,7 @@ export const Categories = () => {
       };
 
       axios
-        .get(`/api/category/${selectedChat?._id}`, config)
+        .get(`${apiUrl}/api/category/${selectedChat?._id}`, config)
         .then((res) => {
           console.log(res.data);
           setOurCategories(res.data);
@@ -42,7 +43,7 @@ export const Categories = () => {
         });
 
       axios
-        .get(`/api/income/${selectedChat?._id}`, config)
+        .get(`${apiUrl}/api/income/${selectedChat?._id}`, config)
         .then((res) => {
           setOurIncomes(res.data);
         })
@@ -63,7 +64,7 @@ export const Categories = () => {
       };
       axios
         .post(
-          `/api/category/create`,
+          `${apiUrl}/api/category/create`,
           { name: categoryName, chatId: selectedChat?._id },
           config
         )
@@ -86,7 +87,7 @@ export const Categories = () => {
       },
     };
     axios
-      .delete(`/api/category/delete/${id}`, config)
+      .delete(`${apiUrl}/api/category/delete/${id}`, config)
       .then((res) => {
         setOurCategories(ourCategories.filter((item) => item._id !== id));
       })
@@ -106,7 +107,7 @@ export const Categories = () => {
       };
       axios
         .post(
-          `/api/income/create`,
+          `${apiUrl}/api/income/create`,
           { name: incomeName, chatId: selectedChat?._id },
           config
         )
@@ -127,7 +128,7 @@ export const Categories = () => {
       },
     };
     axios
-      .delete(`/api/income/delete/${id}`, config)
+      .delete(`${apiUrl}/api/income/delete/${id}`, config)
       .then((res) => {
         setOurIncomes(ourIncomes.filter((item) => item._id !== id));
       })

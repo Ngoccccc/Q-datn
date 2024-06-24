@@ -2,6 +2,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
+import { apiUrl } from "../../../setupAxios";
 
 const OurCategoriesContext = createContext();
 
@@ -24,7 +25,7 @@ export const OurCategoriesProvider = ({ children }) => {
      };
 
      axios
-       .get(`/api/category/${selectedChat?._id}`, config)
+       .get(`${apiUrl}/api/category/${selectedChat?._id}`, config)
        .then((res) => {
          setOurCategories(res.data);
        })
@@ -43,7 +44,7 @@ export const OurCategoriesProvider = ({ children }) => {
       };
 
       axios
-        .get(`/api/income/${selectedChat?._id}`, config)
+        .get(`${apiUrl}/api/income/${selectedChat?._id}`, config)
         .then((res) => {
           setOurIncomes(res.data);
         })

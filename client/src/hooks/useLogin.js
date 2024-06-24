@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { useAuthContext } from "../Context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { apiUrl } from "../../setupAxios";
 
 const useLogin = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const useLogin = () => {
       };
 
       const { data } = await axios.post(
-        "/api/auth/login",
+        `${apiUrl}/api/auth/login`,
         { email, password },
         config
       );

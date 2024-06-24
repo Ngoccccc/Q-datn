@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuthContext } from "../Context/AuthContext";
 import axios from "axios";
+import { apiUrl } from "../../setupAxios";
 
 const ChatContext = createContext();
 
@@ -23,7 +24,7 @@ const ChatProvider = ({ children }) => {
 
       try {
         const response = await axios.get(
-          `/api/chat/myself/${authUser._id}`,
+          `${apiUrl}/api/chat/myself/${authUser._id}`,
           config
         );
         setMyChat(response.data[0]);

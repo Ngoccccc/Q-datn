@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../../Context/AuthContext";
 import axios from "axios";
+import { apiUrl } from "../../../setupAxios";
 
 const ProfileDialog = ({ setOpen }) => {
   const { authUser, setAuthUser } = useAuthContext();
@@ -83,7 +84,7 @@ const ProfileDialog = ({ setOpen }) => {
       };
 
       const { data } = await axios.post(
-        "/api/user/update",
+        `${apiUrl}/api/user/update`,
         {
           id: authUser._id,
           email,

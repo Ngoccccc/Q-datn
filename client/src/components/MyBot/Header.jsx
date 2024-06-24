@@ -9,6 +9,7 @@ import { ChatState } from "../../Context/ChatProvider";
 import axios from "axios";
 import { toast } from "react-toastify";
 import useConversation from "../../zustand/useConversation";
+import { apiUrl } from "../../../setupAxios";
 
 const Header = () => {
   const { myChat } = ChatState();
@@ -24,7 +25,7 @@ const Header = () => {
           },
         };
         const { data } = await axios.get(
-          `/api/chat/spending/${myChat._id}`,
+          `${apiUrl}/api/chat/spending/${myChat._id}`,
           config
         );
         if (data == 0) {

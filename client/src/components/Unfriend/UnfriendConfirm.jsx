@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuthContext } from "../../Context/AuthContext";
 import { useFriendsContext } from "../Friends/useFriendsContext";
+import { apiUrl } from "../../../setupAxios";
 export function UnfriendConfirm({ setOpen, friend }) {
   const [isFavorite, setIsFavorite] = React.useState(false);
 
@@ -20,7 +21,7 @@ export function UnfriendConfirm({ setOpen, friend }) {
       
       await axios
         .post(
-          `/api/friend/unfiend`,
+          `${apiUrl}/api/friend/unfiend`,
           { userId: authUser._id, friendId: friend._id || friend.id },
           config
         )
